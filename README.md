@@ -165,7 +165,6 @@ Whenever changes are pushed to `main`, GitHub Pages automatically compiles and d
 
 - **Author**: Shreya ([@shre8ya](https://github.com/shre8ya))
 - **Email**: `isolatoryshreya@gmail.com`
-- **Target**: GATE CSE 2027 (IIT Madras) • AIR < 100
 - **College**: Guru Gobind Singh Indraprastha University (GGSIPU), 5th Sem CSE
 
 ---
