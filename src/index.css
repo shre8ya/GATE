@@ -6,30 +6,30 @@
 
 :root {
   /* LIGHT PAPER NOTEBOOK (Default) */
-  --paper-bg: #F9F7F1;
+  --paper-bg: #F8F6F0;
   --paper-card: #FFFFFF;
-  --paper-card-subtle: #F3EFE6;
-  --paper-grid: rgba(148, 163, 184, 0.22);
+  --paper-card-subtle: #F1ECE1;
+  --paper-grid: rgba(100, 116, 139, 0.12);
   
   --ink-primary: #1E293B;
   --ink-secondary: #475569;
   --ink-muted: #64748B;
   --ink-border: #1E293B;
 
-  /* Highlighter Markers */
-  --highlight-yellow: #FEF08A;
-  --highlight-green: #BBF7D0;
-  --highlight-blue: #BAE6FD;
-  --highlight-pink: #FBCFE8;
-  --highlight-orange: #FED7AA;
-  --highlight-purple: #DDD6FE;
+  /* Muted, Calm Scholar Highlighters (No eye-piercing neon) */
+  --highlight-yellow: #F5EED8;
+  --highlight-green: #E2EDE4;
+  --highlight-blue: #DEE8F0;
+  --highlight-pink: #EFE4E6;
+  --highlight-orange: #F3E9DD;
+  --highlight-purple: #E7E3EE;
 
-  /* Pen Ink Accents */
-  --ink-blue: #2563EB;
-  --ink-green: #15803D;
-  --ink-red: #DC2626;
-  --ink-purple: #7C3AED;
-  --ink-amber: #D97706;
+  /* Classic Fountain Pen Ink Accents */
+  --ink-blue: #1E3A8A;
+  --ink-green: #1B4D3E;
+  --ink-red: #8B2635;
+  --ink-purple: #4A2E68;
+  --ink-amber: #78350F;
 
   /* Typography */
   --font-title: 'Kalam', cursive, -apple-system, sans-serif;
@@ -45,16 +45,16 @@
   --sketch-shadow-sm: 2px 2px 0px var(--ink-border);
 
   /* Tape & Pin */
-  --washi-tape: rgba(254, 243, 199, 0.85);
-  --tape-border: rgba(217, 119, 6, 0.3);
+  --washi-tape: rgba(245, 238, 216, 0.9);
+  --tape-border: rgba(180, 160, 130, 0.35);
 }
 
-/* PARCHMENT (Warm Cream / Default) */
+/* PARCHMENT (Warm Natural Cream / Default) */
 [data-paper-theme='parchment'], :root {
-  --paper-bg: #F9F7F1;
+  --paper-bg: #F8F6F0;
   --paper-card: #FFFFFF;
-  --paper-card-subtle: #F3EFE6;
-  --paper-grid: rgba(148, 163, 184, 0.22);
+  --paper-card-subtle: #F1ECE1;
+  --paper-grid: rgba(100, 116, 139, 0.12);
   --ink-primary: #1E293B;
   --ink-secondary: #475569;
   --ink-muted: #64748B;
@@ -63,93 +63,61 @@
 
 /* IVORY (Classic Moleskine Vanilla) */
 [data-paper-theme='ivory'] {
-  --paper-bg: #FAF6E9;
-  --paper-card: #FFFDF8;
-  --paper-card-subtle: #F2EBD7;
-  --paper-grid: rgba(180, 160, 120, 0.22);
+  --paper-bg: #FAF7EF;
+  --paper-card: #FFFEFA;
+  --paper-card-subtle: #F0EAD8;
+  --paper-grid: rgba(140, 125, 95, 0.12);
   --ink-primary: #2B261F;
   --ink-secondary: #574E40;
   --ink-muted: #827562;
   --ink-border: #2B261F;
-  --highlight-yellow: #FEF3C7;
-  --highlight-green: #D1FAE5;
-  --highlight-blue: #E0F2FE;
+  --highlight-yellow: #F7EFCF;
+  --highlight-green: #E0EBE2;
+  --highlight-blue: #DCE7F0;
 }
 
-/* SAGE STUDY PAD (Mint Green - reduced eye strain) */
+/* SAGE STUDY PAD (Pale Mint Tea Leaf - Reduced Eye Strain) */
 [data-paper-theme='sage'] {
-  --paper-bg: #EDF5F0;
-  --paper-card: #F9FCFA;
-  --paper-card-subtle: #DEEBE2;
-  --paper-grid: rgba(46, 125, 80, 0.18);
+  --paper-bg: #EFF4F1;
+  --paper-card: #FAFCFA;
+  --paper-card-subtle: #DFEAE3;
+  --paper-grid: rgba(35, 95, 60, 0.10);
   --ink-primary: #153322;
   --ink-secondary: #2E523C;
   --ink-muted: #547B64;
   --ink-border: #153322;
-  --highlight-yellow: #FEF9C3;
-  --highlight-green: #BBF7D0;
-  --highlight-blue: #CCFBF1;
+  --highlight-yellow: #F4EED6;
+  --highlight-green: #D7E8DC;
+  --highlight-blue: #D8E6E9;
 }
 
-/* ROSE SKETCHBOOK (Warm Pastel Coral) */
+/* ROSE SKETCHBOOK (Dusty Antique Rose Wash) */
 [data-paper-theme='rose'] {
-  --paper-bg: #FDF2F4;
+  --paper-bg: #FAF2F3;
   --paper-card: #FFFFFF;
-  --paper-card-subtle: #FCE4E8;
-  --paper-grid: rgba(225, 29, 72, 0.14);
+  --paper-card-subtle: #F3E4E7;
+  --paper-grid: rgba(150, 70, 85, 0.09);
   --ink-primary: #381E24;
   --ink-secondary: #6B3944;
   --ink-muted: #9E5666;
   --ink-border: #381E24;
-  --highlight-yellow: #FEF08A;
-  --highlight-green: #D1FAE5;
-  --highlight-pink: #FCE7F3;
+  --highlight-yellow: #F4ECD6;
+  --highlight-green: #DEE8E1;
+  --highlight-pink: #EBDCE0;
 }
 
-/* BLUEPRINT DRAFTING (Engineering Technical Grid) */
+/* BLUEPRINT DRAFTING (Technical Drafting Paper) */
 [data-paper-theme='blueprint'] {
-  --paper-bg: #EBF4FC;
-  --paper-card: #F8FBFE;
-  --paper-card-subtle: #D8ECF8;
-  --paper-grid: rgba(2, 132, 199, 0.22);
+  --paper-bg: #EEF4F8;
+  --paper-card: #FAFDFE;
+  --paper-card-subtle: #DCE8F0;
+  --paper-grid: rgba(30, 80, 130, 0.11);
   --ink-primary: #0C2840;
   --ink-secondary: #1F4568;
   --ink-muted: #436C94;
   --ink-border: #0C2840;
-  --highlight-blue: #BAE6FD;
-  --highlight-yellow: #FEF08A;
-}
-
-/* DARK CHALKBOARD THEME (Toggleable) */
-[data-paper-theme='chalkboard'], [data-theme='chalkboard'] {
-  --paper-bg: #151922;
-  --paper-card: #1E2430;
-  --paper-card-subtle: #252D3C;
-  --paper-grid: rgba(255, 255, 255, 0.05);
-
-  --ink-primary: #F8FAFC;
-  --ink-secondary: #CBD5E1;
-  --ink-muted: #94A3B8;
-  --ink-border: #E2E8F0;
-
-  --highlight-yellow: rgba(254, 240, 138, 0.25);
-  --highlight-green: rgba(187, 247, 208, 0.25);
-  --highlight-blue: rgba(186, 230, 253, 0.25);
-  --highlight-pink: rgba(251, 207, 232, 0.25);
-  --highlight-orange: rgba(254, 215, 170, 0.25);
-
-  --ink-blue: #60A5FA;
-  --ink-green: #4ADE80;
-  --ink-red: #F87171;
-  --ink-purple: #C084FC;
-  --ink-amber: #FBBF24;
-
-  --sketch-shadow: 3px 3px 0px rgba(255, 255, 255, 0.8);
-  --sketch-shadow-lg: 5px 5px 0px rgba(255, 255, 255, 0.8);
-  --sketch-shadow-sm: 2px 2px 0px rgba(255, 255, 255, 0.8);
-
-  --washi-tape: rgba(255, 255, 255, 0.15);
-  --tape-border: rgba(255, 255, 255, 0.3);
+  --highlight-blue: #D3E3F0;
+  --highlight-yellow: #F2EBD6;
 }
 
 html {
@@ -281,26 +249,28 @@ h1, h2, h3, h4, .font-title {
 }
 
 .btn-sketch-primary {
-  background: var(--highlight-yellow);
-  color: #0F172A;
+  background: var(--ink-primary);
+  color: #FFFFFF;
+  border-color: var(--ink-primary);
 }
 .btn-sketch-primary:hover {
-  background: #FDE047;
+  background: #334155;
+  color: #FFFFFF;
 }
 
 .btn-sketch-blue {
   background: var(--highlight-blue);
-  color: #0F172A;
+  color: var(--ink-primary);
 }
 
 .btn-sketch-green {
   background: var(--highlight-green);
-  color: #0F172A;
+  color: var(--ink-primary);
 }
 
 .btn-sketch-pink {
   background: var(--highlight-pink);
-  color: #0F172A;
+  color: var(--ink-primary);
 }
 
 /* Hand-Drawn Badges / Sticky Tags */
@@ -319,11 +289,11 @@ h1, h2, h3, h4, .font-title {
   color: var(--ink-primary);
 }
 
-.badge-sketch-yellow { background: var(--highlight-yellow); color: #0F172A; }
-.badge-sketch-green { background: var(--highlight-green); color: #0F172A; }
-.badge-sketch-blue { background: var(--highlight-blue); color: #0F172A; }
-.badge-sketch-pink { background: var(--highlight-pink); color: #0F172A; }
-.badge-sketch-orange { background: var(--highlight-orange); color: #0F172A; }
+.badge-sketch-yellow { background: var(--highlight-yellow); color: var(--ink-primary); }
+.badge-sketch-green { background: var(--highlight-green); color: var(--ink-primary); }
+.badge-sketch-blue { background: var(--highlight-blue); color: var(--ink-primary); }
+.badge-sketch-pink { background: var(--highlight-pink); color: var(--ink-primary); }
+.badge-sketch-orange { background: var(--highlight-orange); color: var(--ink-primary); }
 
 /* Hand-Drawn Inputs */
 .input-sketch {

@@ -47,32 +47,33 @@ export default function App() {
   const [showReminders, setShowReminders] = useState(false);
   const [showReschedule, setShowReschedule] = useState(false);
 
-  // Theme State (Notebook Paper vs Chalkboard)
-  const [theme, setTheme] = useState(() => loadItem('theme_mode', 'paper'));
-  const [paperTheme, setPaperTheme] = useState(() => loadItem('paper_theme', 'parchment'));
+  // Paper Stationery Theme State (Sanitized, No Chalkboard)
+  const [theme, setTheme] = useState(() => {
+    const saved = loadItem('theme_mode', 'paper');
+    return saved === 'chalkboard' ? 'paper' : saved;
+  });
+  const [paperTheme, setPaperTheme] = useState(() => {
+    const saved = loadItem('paper_theme', 'parchment');
+    return saved === 'chalkboard' ? 'parchment' : saved;
+  });
 
   useEffect(() => {
-    document.documentElement.setAttribute('data-theme', theme);
-    saveItem('theme_mode', theme);
+    document.documentElement.setAttribute('data-theme', 'paper');
+    saveItem('theme_mode', 'paper');
   }, [theme]);
 
   useEffect(() => {
-    document.documentElement.setAttribute('data-paper-theme', paperTheme);
-    saveItem('paper_theme', paperTheme);
+    const safeTheme = paperTheme === 'chalkboard' ? 'parchment' : paperTheme;
+    document.documentElement.setAttribute('data-paper-theme', safeTheme);
+    saveItem('paper_theme', safeTheme);
   }, [paperTheme]);
 
-  const handleToggleTheme = () => {
-    setTheme(prev => prev === 'chalkboard' ? 'paper' : 'chalkboard');
+  const handleSelectPaperTheme = (newPaperTheme) => {
+    const safeTheme = newPaperTheme === 'chalkboard' ? 'parchment' : newPaperTheme;
+    setPaperTheme(safeTheme);
+    setTheme('paper');
   };
 
-  const handleSelectPaperTheme = (newPaperTheme) => {
-    setPaperTheme(newPaperTheme);
-    if (newPaperTheme === 'chalkboard') {
-      setTheme('chalkboard');
-    } else {
-      setTheme('paper');
-    }
-  };
 
   // Dynamic Master Schedule (Can be rescheduled by AI)
   const [masterSchedule, setMasterSchedule] = useState(() => 

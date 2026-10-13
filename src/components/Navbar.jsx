@@ -165,7 +165,6 @@ export default function Navbar({
               <option value="sage">🌿 Sage Mint</option>
               <option value="rose">🌸 Rose Coral</option>
               <option value="blueprint">🩵 Blueprint Grid</option>
-              <option value="chalkboard">🖍️ Chalkboard</option>
             </select>
           </div>
 

@@ -549,7 +549,7 @@ export default function TodayMission({
         }}>
           <div className="sketch-card" style={{ padding: '10px 14px', background: 'var(--paper-card-subtle)' }}>
             <div style={{ fontSize: '0.8rem', color: 'var(--ink-muted)' }}>PRACTICAL EXAMS (5th Sem)</div>
-            <div className="font-title" style={{ fontSize: '1.25rem', color: '#0284C7' }}>
+            <div className="font-title" style={{ fontSize: '1.25rem', color: 'var(--ink-blue)' }}>
               {diffDays(practicalDate)} Days Left
             </div>
             <div style={{ fontSize: '0.78rem', color: 'var(--ink-secondary)' }}>Starts 26 Nov 2026 (2.5h/day)</div>
@@ -565,7 +565,7 @@ export default function TodayMission({
 
           <div className="sketch-card" style={{ padding: '10px 14px', background: 'var(--paper-card-subtle)' }}>
             <div style={{ fontSize: '0.8rem', color: 'var(--ink-muted)' }}>CRASH SYLLABUS DEADLINE</div>
-            <div className="font-title" style={{ fontSize: '1.25rem', color: '#16A34A' }}>
+            <div className="font-title" style={{ fontSize: '1.25rem', color: 'var(--ink-green)' }}>
               {diffDays(crashDeadline)} Days Left
             </div>
             <div style={{ fontSize: '0.78rem', color: 'var(--ink-secondary)' }}>6 Core Sections + Daily Maths</div>
@@ -573,7 +573,7 @@ export default function TodayMission({
 
           <div className="sketch-card" style={{ padding: '10px 14px', background: 'var(--paper-card-subtle)' }}>
             <div style={{ fontSize: '0.8rem', color: 'var(--ink-muted)' }}>GATE 2027 EXAM DAY</div>
-            <div className="font-title" style={{ fontSize: '1.25rem', color: '#9333EA' }}>
+            <div className="font-title" style={{ fontSize: '1.25rem', color: 'var(--ink-purple)' }}>
               {diffDays(gateExamDate)} Days Left
             </div>
             <div style={{ fontSize: '0.78rem', color: 'var(--ink-secondary)' }}>IIT Madras (Feb 2027)</div>
@@ -611,8 +611,8 @@ export default function TodayMission({
                 <span>General Aptitude (15m)</span>
                 <strong>{aptMarks}m</strong>
               </div>
-              <div style={{ width: '100%', height: '6px', background: 'var(--paper-dark)', borderRadius: '3px', marginTop: '4px', overflow: 'hidden' }}>
-                <div style={{ width: `${(aptMarks / 15) * 100}%`, height: '100%', background: '#D97706', transition: 'width 0.3s' }} />
+              <div style={{ width: '100%', height: '6px', background: 'var(--paper-card-subtle)', borderRadius: '3px', marginTop: '4px', overflow: 'hidden' }}>
+                <div style={{ width: `${(aptMarks / 15) * 100}%`, height: '100%', background: 'var(--ink-amber)', transition: 'width 0.3s' }} />
               </div>
             </div>
 
@@ -621,8 +621,8 @@ export default function TodayMission({
                 <span>Engg Maths & Discrete (13m)</span>
                 <strong>{mathsMarks}m</strong>
               </div>
-              <div style={{ width: '100%', height: '6px', background: 'var(--paper-dark)', borderRadius: '3px', marginTop: '4px', overflow: 'hidden' }}>
-                <div style={{ width: `${(mathsMarks / 13) * 100}%`, height: '100%', background: '#2563EB', transition: 'width 0.3s' }} />
+              <div style={{ width: '100%', height: '6px', background: 'var(--paper-card-subtle)', borderRadius: '3px', marginTop: '4px', overflow: 'hidden' }}>
+                <div style={{ width: `${(mathsMarks / 13) * 100}%`, height: '100%', background: 'var(--ink-blue)', transition: 'width 0.3s' }} />
               </div>
             </div>
 
@@ -631,8 +631,8 @@ export default function TodayMission({
                 <span>Core CS Sections (72m)</span>
                 <strong>{coreMarks}m</strong>
               </div>
-              <div style={{ width: '100%', height: '6px', background: 'var(--paper-dark)', borderRadius: '3px', marginTop: '4px', overflow: 'hidden' }}>
-                <div style={{ width: `${(coreMarks / 72) * 100}%`, height: '100%', background: '#16A34A', transition: 'width 0.3s' }} />
+              <div style={{ width: '100%', height: '6px', background: 'var(--paper-card-subtle)', borderRadius: '3px', marginTop: '4px', overflow: 'hidden' }}>
+                <div style={{ width: `${(coreMarks / 72) * 100}%`, height: '100%', background: 'var(--ink-green)', transition: 'width 0.3s' }} />
               </div>
             </div>
           </div>
@@ -648,7 +648,7 @@ export default function TodayMission({
           {/* Daily Motivational Quote Note */}
           <div className="sketch-card" style={{ 
             padding: '16px 20px', 
-            background: 'var(--highlight-yellow)', 
+            background: 'var(--paper-card)', 
             position: 'relative',
             border: '2px solid var(--ink-border)'
           }}>
@@ -658,7 +658,7 @@ export default function TodayMission({
                 <span style={{ fontSize: '1.5rem' }}>📌</span>
                 <div>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                    <span className="badge-sketch" style={{ background: '#FEF9C3', fontSize: '0.75rem', fontWeight: 700 }}>
+                    <span className="badge-sketch" style={{ fontSize: '0.75rem', fontWeight: 700 }}>
                       DAILY INSPIRATION • {currentQuote?.theme || 'Consistency'}
                     </span>
                   </div>
@@ -667,13 +667,13 @@ export default function TodayMission({
                     fontSize: '1.05rem', 
                     fontStyle: 'italic', 
                     fontWeight: 600, 
-                    color: '#1E293B',
+                    color: 'var(--ink-primary)',
                     lineHeight: 1.45
                   }}>
                     "{currentQuote?.quote}"
                   </blockquote>
-                  <div style={{ fontSize: '0.85rem', color: '#475569', fontWeight: 600 }}>
-                    — <span style={{ color: '#0F172A', fontWeight: 700 }}>{currentQuote?.author}</span> ({currentQuote?.role})
+                  <div style={{ fontSize: '0.85rem', color: 'var(--ink-secondary)', fontWeight: 600 }}>
+                    — <span style={{ color: 'var(--ink-primary)', fontWeight: 700 }}>{currentQuote?.author}</span> ({currentQuote?.role})
                   </div>
                 </div>
               </div>

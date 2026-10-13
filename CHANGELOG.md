@@ -4,7 +4,26 @@ All notable changes to this project are documented in this file using Semantic V
 
 ---
 
-## [v1.4.0] — 2026-10-13 (Current Release)
+## [v1.4.1] — 2026-10-13 (Current Release)
+### 📺 Unacademy Removed & Replaced with 100% Free YouTube Hinglish Alternatives
+- **GATE General Aptitude**: Replaced all Unacademy references and paywalled course links across daily warmups, round plans, and resource directories with **GATE Wallah's Complete General Aptitude Course (Hinglish)** (`https://www.youtube.com/playlist?list=PLvTTv60o7qj-PgF3DhvvTK6_-g_FU8wCT`).
+- **Data Structures PYQ Revision**: Replaced Unacademy CS links with **Gate Smashers Data Structures Complete Series (Hinglish)** by Varun Singla (`https://www.youtube.com/playlist?list=PLxCzCOWd7aiEwaANNt3wBGKR4t9lvwKzs`).
+- Fully playable in the in-app distraction-free player without logins or subscriptions.
+
+### 🎨 Color Palette Softened (No More Catchy / Garish Neons)
+- **Eliminated Glaring Colors**: Replaced eye-straining high-saturation marker colors with soothing, calm, scholar-grade watercolor washes (`#F5EED8` linen cream, `#E2EDE4` soft sage, `#DEE8F0` muted slate, `#EFE4E6` dusty rose).
+- **Fountain Pen Ink Accents**: Refined pen accents to deep Oxford navy (`#1E3A8A`), Brunswick green (`#1B4D3E`), Venetian burgundy (`#8B2635`), and sepia walnut (`#78350F`).
+- **Distinguished Primary Buttons**: Converted `.btn-sketch-primary` from bright yellow to a solid, handsome fountain pen ink stamp with crisp white typography.
+- **Calm Daily Inspiration Note**: Transformed the daily quote card from loud yellow into a serene paper card that harmonizes with the desk aesthetic.
+
+### 🖍️ Chalkboard Theme Completely Removed
+- Purged the chalkboard dark theme from the theme selector, CSS stylesheets, and DOM logic.
+- Implemented automatic sanitization ensuring any previous cached chalkboard setting seamlessly defaults to classic Parchment paper.
+
+---
+
+## [v1.4.0] — 2026-10-13
+
 ### ⚔️ Transformation: From "Productivity Theater" to "High-Performance Weapon"
 In direct response to the brutal and real critique of competitive GATE CSE prep habits, this release restructures the dashboard around active recall, spaced repetition, distraction elimination, and ruthless score tracking.
 
