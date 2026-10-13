@@ -21,12 +21,21 @@ import {
   Coffee,
   Plus,
   Minus,
-  X
+  X,
+  Target,
+  Brain,
+  Video,
+  Award,
+  Layers,
+  HelpCircle,
+  Check
 } from 'lucide-react';
 import { playBell, playSuccessChime, playClick, startAmbientSound, stopAmbientSound } from '../utils/audio';
 import { getDailyQuote, DAILY_MOTIVATIONAL_QUOTES } from '../data/quotes';
 import { fireTaskConfetti, fireFullDayConfetti } from '../utils/confetti';
 import { getTodayGoogleCalendarUrl } from '../utils/googleCalendar';
+import VideoPlayerModal from './VideoPlayerModal';
+import ActiveRecallModal from './ActiveRecallModal';
 
 export default function TodayMission({ 
   currentDate, 
@@ -37,7 +46,11 @@ export default function TodayMission({
   dayStatus, 
   onUpdateDayStatus, 
   onLogStudySession, 
-  onOpenReschedule 
+  onOpenReschedule,
+  errorLog = [],
+  onAddErrorItem,
+  onUpdateErrorItem,
+  onAddFormula
 }) {
   const currentMasterItem = masterSchedule.find(m => m.date === currentDate) || masterSchedule[0];
   const currentMathsItem = mathsSchedule.find(m => m.date === currentDate) || null;
@@ -222,20 +235,94 @@ export default function TodayMission({
   const gateExamDate = new Date('2027-02-06');
   const diffDays = (target) => Math.ceil((target - todayObj) / (1000 * 60 * 60 * 24));
 
-  const handleTogglePhase = (e, phaseKey) => {
-    const nextVal = !currentStatus[phaseKey];
+  // GATE CSE Marks Weightage Logic (15 Aptitude + 13 Maths + 72 Core CS = 100 Marks)
+  const totalMasterDays = masterSchedule.length || 80;
+  const completedMasterDays = masterSchedule.filter(m => dayStatus[m.date]?.status === 'Done').length;
+  
+  const completedPhase1Count = Object.values(dayStatus).filter(s => s?.phase1).length;
+  const completedPhase2Count = Object.values(dayStatus).filter(s => s?.phase2).length;
+  const completedPhase3Count = Object.values(dayStatus).filter(s => s?.phase3).length;
+
+  const aptMarks = Math.min(15, parseFloat(((completedPhase1Count / Math.max(1, totalMasterDays)) * 15).toFixed(1)));
+  const mathsMarks = Math.min(13, parseFloat(((completedPhase2Count / Math.max(1, totalMasterDays)) * 13).toFixed(1)));
+  const coreMarks = Math.min(72, parseFloat(((completedPhase3Count / Math.max(1, totalMasterDays)) * 72).toFixed(1)));
+  const totalMarksUnlocked = (aptMarks + mathsMarks + coreMarks).toFixed(1);
+
+  // In-App Video Player State
+  const [videoModal, setVideoModal] = useState({
+    isOpen: false,
+    title: '',
+    subject: '',
+    sourceUrl: '',
+    searchUrl: ''
+  });
+
+  const handleOpenVideo = (title, subject, sourceUrl, searchUrl) => {
+    playClick();
+    setVideoModal({
+      isOpen: true,
+      title,
+      subject,
+      sourceUrl,
+      searchUrl
+    });
+  };
+
+  // Active Recall Gatekeeper State
+  const [activeRecallModal, setActiveRecallModal] = useState({
+    isOpen: false,
+    phaseKey: null,
+    phaseTitle: '',
+    subject: ''
+  });
+
+  const handleTriggerRecall = (e, phaseKey, phaseTitle, subject) => {
+    e?.stopPropagation();
+    if (!currentStatus[phaseKey]) {
+      setActiveRecallModal({
+        isOpen: true,
+        phaseKey,
+        phaseTitle,
+        subject
+      });
+    } else {
+      applyPhaseToggle(phaseKey, false);
+    }
+  };
+
+  const handleConfirmRecall = ({ coreConcept, attemptedCount, correctCount }) => {
+    const phaseKey = activeRecallModal.phaseKey;
+    if (!phaseKey) return;
+
+    let recallText = '';
+    if (coreConcept) {
+      recallText = `\n[Active Recall • ${activeRecallModal.phaseTitle}]: ${coreConcept}`;
+    }
+    if (attemptedCount !== null && correctCount !== null) {
+      recallText += ` (Accuracy: ${correctCount}/${attemptedCount})`;
+    }
+
+    const updatedNote = (noteText ? noteText + recallText : recallText.trim()).trim();
+    setNoteText(updatedNote);
+
+    applyPhaseToggle(phaseKey, true, updatedNote);
+    fireTaskConfetti();
+  };
+
+  const applyPhaseToggle = (phaseKey, nextVal, customNote = null) => {
     const updated = {
       ...currentStatus,
-      [phaseKey]: nextVal
+      [phaseKey]: nextVal,
+      note: customNote !== null ? customNote : (currentStatus.note || '')
     };
-    
+
     if (updated.phase1 && updated.phase2 && updated.phase3 && updated.phase4) {
       updated.status = 'Done';
       fireFullDayConfetti();
     } else if (updated.phase1 || updated.phase2 || updated.phase3 || updated.phase4) {
       updated.status = 'In Progress';
       if (nextVal) {
-        fireTaskConfetti(e);
+        fireTaskConfetti();
       } else {
         playClick();
       }
@@ -245,6 +332,97 @@ export default function TodayMission({
     }
 
     onUpdateDayStatus(currentDate, updated);
+  };
+
+  // Spaced-Repetition Error Review Logic
+  const dueErrors = errorLog.filter(e => !e.resolved && (!e.nextReviewDate || e.nextReviewDate <= currentDate));
+  const reviewIntervals = [1, 3, 7, 21, 60];
+
+  const handleReviewDueError = (errorItem, success) => {
+    playClick();
+    if (!onUpdateErrorItem) return;
+
+    if (success) {
+      const nextStep = (errorItem.intervalStep || 0) + 1;
+      if (nextStep >= reviewIntervals.length) {
+        onUpdateErrorItem({
+          ...errorItem,
+          intervalStep: nextStep,
+          resolved: true,
+          lastReviewed: currentDate
+        });
+        fireTaskConfetti();
+      } else {
+        const daysToAdd = reviewIntervals[nextStep] || 30;
+        const d = new Date();
+        d.setDate(d.getDate() + daysToAdd);
+        onUpdateErrorItem({
+          ...errorItem,
+          intervalStep: nextStep,
+          nextReviewDate: d.toISOString().split('T')[0],
+          lastReviewed: currentDate
+        });
+        playSuccessChime();
+      }
+    } else {
+      const d = new Date();
+      d.setDate(d.getDate() + 1);
+      onUpdateErrorItem({
+        ...errorItem,
+        intervalStep: 0,
+        nextReviewDate: d.toISOString().split('T')[0],
+        lastReviewed: currentDate
+      });
+      playClick();
+    }
+  };
+
+  // Quick Error Logger inside Phase 4
+  const [showQuickErrorForm, setShowQuickErrorForm] = useState(false);
+  const [quickErrRef, setQuickErrRef] = useState('');
+  const [quickErrCategory, setQuickErrCategory] = useState('Conceptual');
+  const [quickErrWhyWrong, setQuickErrWhyWrong] = useState('');
+  const [quickErrCorrect, setQuickErrCorrect] = useState('');
+
+  const handleQuickAddError = (e) => {
+    e.preventDefault();
+    if (!quickErrRef.trim() || !quickErrWhyWrong.trim()) return;
+    playSuccessChime();
+
+    const nextDate = new Date();
+    nextDate.setDate(nextDate.getDate() + 1);
+
+    if (onAddErrorItem) {
+      onAddErrorItem({
+        id: 'err-' + Date.now(),
+        dateAdded: currentDate,
+        subject: currentMasterItem?.subject || 'GATE Core',
+        topic: currentMasterItem?.mainFocus || 'PYQ Problem',
+        questionRef: quickErrRef.trim(),
+        category: quickErrCategory,
+        whyWrong: quickErrWhyWrong.trim(),
+        correctConcept: quickErrCorrect.trim(),
+        intervalStep: 0,
+        nextReviewDate: nextDate.toISOString().split('T')[0],
+        resolved: false
+      });
+    }
+
+    setQuickErrRef('');
+    setQuickErrWhyWrong('');
+    setQuickErrCorrect('');
+    setShowQuickErrorForm(false);
+    fireTaskConfetti();
+  };
+
+  const handleTogglePhase = (e, phaseKey) => {
+    const phaseTitles = {
+      phase1: 'General Aptitude Warm-up',
+      phase2: 'Engineering Mathematics Lecture',
+      phase3: 'Core Subject Deep Block',
+      phase4: 'Practice & PYQ Solving'
+    };
+    handleTriggerRecall(e, phaseKey, phaseTitles[phaseKey] || 'Study Block', currentMasterItem?.subject || 'GATE');
   };
 
   const handleMarkDayDone = (e) => {
@@ -401,6 +579,64 @@ export default function TodayMission({
             <div style={{ fontSize: '0.78rem', color: 'var(--ink-secondary)' }}>IIT Madras (Feb 2027)</div>
           </div>
         </div>
+
+        {/* GATE 2027 Marks Weightage Reality Bar (15 Aptitude + 13 Maths + 72 Core CS = 100) */}
+        <div style={{
+          background: 'var(--paper-card-subtle)',
+          border: '2px solid var(--ink-border)',
+          borderRadius: '8px',
+          padding: '14px 18px',
+          marginTop: '16px'
+        }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '8px', marginBottom: '8px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <span className="badge-sketch badge-sketch-green" style={{ fontWeight: 800 }}>
+                🎯 MARKS UNLOCKED
+              </span>
+              <span className="font-title" style={{ fontSize: '1.25rem', fontWeight: 700 }}>
+                {totalMarksUnlocked} / 100 Marks
+              </span>
+              <span style={{ fontSize: '0.8rem', color: 'var(--ink-secondary)' }}>
+                ({completedMasterDays} of {totalMasterDays} syllabus days conquered)
+              </span>
+            </div>
+            <div style={{ fontSize: '0.78rem', color: 'var(--ink-muted)' }}>
+              Target: AIR &lt; 100 (~75+ Marks)
+            </div>
+          </div>
+
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '10px' }}>
+            <div style={{ background: 'var(--paper-card)', padding: '6px 10px', borderRadius: '6px', border: '1.5px solid var(--ink-border)' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.78rem', color: 'var(--ink-secondary)' }}>
+                <span>General Aptitude (15m)</span>
+                <strong>{aptMarks}m</strong>
+              </div>
+              <div style={{ width: '100%', height: '6px', background: 'var(--paper-dark)', borderRadius: '3px', marginTop: '4px', overflow: 'hidden' }}>
+                <div style={{ width: `${(aptMarks / 15) * 100}%`, height: '100%', background: '#D97706', transition: 'width 0.3s' }} />
+              </div>
+            </div>
+
+            <div style={{ background: 'var(--paper-card)', padding: '6px 10px', borderRadius: '6px', border: '1.5px solid var(--ink-border)' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.78rem', color: 'var(--ink-secondary)' }}>
+                <span>Engg Maths & Discrete (13m)</span>
+                <strong>{mathsMarks}m</strong>
+              </div>
+              <div style={{ width: '100%', height: '6px', background: 'var(--paper-dark)', borderRadius: '3px', marginTop: '4px', overflow: 'hidden' }}>
+                <div style={{ width: `${(mathsMarks / 13) * 100}%`, height: '100%', background: '#2563EB', transition: 'width 0.3s' }} />
+              </div>
+            </div>
+
+            <div style={{ background: 'var(--paper-card)', padding: '6px 10px', borderRadius: '6px', border: '1.5px solid var(--ink-border)' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.78rem', color: 'var(--ink-secondary)' }}>
+                <span>Core CS Sections (72m)</span>
+                <strong>{coreMarks}m</strong>
+              </div>
+              <div style={{ width: '100%', height: '6px', background: 'var(--paper-dark)', borderRadius: '3px', marginTop: '4px', overflow: 'hidden' }}>
+                <div style={{ width: `${(coreMarks / 72) * 100}%`, height: '100%', background: '#16A34A', transition: 'width 0.3s' }} />
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
 
       {/* Main Grid: Mission Breakdown + Focus Pomodoro Suite */}
@@ -511,7 +747,20 @@ export default function TodayMission({
               </div>
 
               {/* Action Links from Planner */}
-              <div style={{ display: 'flex', gap: '6px', flexShrink: 0 }}>
+              <div style={{ display: 'flex', gap: '6px', flexShrink: 0, flexWrap: 'wrap' }}>
+                <button 
+                  onClick={() => handleOpenVideo(
+                    currentAptItem?.topic || 'General Aptitude',
+                    'General Aptitude',
+                    currentAptItem?.sourceUrl,
+                    currentAptItem?.searchUrl
+                  )}
+                  className="btn-sketch btn-sketch-primary"
+                  style={{ padding: '6px 10px', fontSize: '0.8rem' }}
+                  title="Play lecture in distraction-free in-app modal"
+                >
+                  <Play size={13} fill="currentColor" /> Play in App
+                </button>
                 {currentAptItem?.sourceUrl && (
                   <a 
                     href={currentAptItem.sourceUrl} 
@@ -578,7 +827,20 @@ export default function TodayMission({
               </div>
 
               {/* Action Links from Planner */}
-              <div style={{ display: 'flex', gap: '6px', flexShrink: 0 }}>
+              <div style={{ display: 'flex', gap: '6px', flexShrink: 0, flexWrap: 'wrap' }}>
+                <button 
+                  onClick={() => handleOpenVideo(
+                    currentMathsItem?.lectureTopic || currentMasterItem?.mathsLecture || 'Engineering Maths',
+                    'Engineering Mathematics',
+                    currentMathsItem?.playlistUrl,
+                    currentMathsItem?.searchUrl
+                  )}
+                  className="btn-sketch btn-sketch-primary"
+                  style={{ padding: '6px 10px', fontSize: '0.8rem' }}
+                  title="Play lecture in distraction-free in-app modal"
+                >
+                  <Play size={13} fill="currentColor" /> Play in App
+                </button>
                 {currentMathsItem?.playlistUrl && (
                   <a 
                     href={currentMathsItem.playlistUrl} 
@@ -640,7 +902,20 @@ export default function TodayMission({
               </div>
 
               {/* Action Links */}
-              <div style={{ display: 'flex', gap: '6px', flexShrink: 0 }}>
+              <div style={{ display: 'flex', gap: '6px', flexShrink: 0, flexWrap: 'wrap' }}>
+                <button 
+                  onClick={() => handleOpenVideo(
+                    currentMasterItem?.mainFocus || 'Core CS Lecture',
+                    currentMasterItem?.subject || 'Core CS',
+                    '',
+                    `https://www.youtube.com/results?search_query=${encodeURIComponent((currentMasterItem?.subject || '') + ' ' + (currentMasterItem?.mainFocus || '') + ' GATE')}`
+                  )}
+                  className="btn-sketch btn-sketch-primary"
+                  style={{ padding: '6px 10px', fontSize: '0.8rem' }}
+                  title="Search & study inside distraction-free modal"
+                >
+                  <Play size={13} fill="currentColor" /> Play in App
+                </button>
                 <a 
                   href={`https://www.youtube.com/results?search_query=${encodeURIComponent(currentMasterItem?.subject + ' ' + currentMasterItem?.mainFocus + ' GATE')}`} 
                   target="_blank" 
@@ -649,13 +924,13 @@ export default function TodayMission({
                   style={{ padding: '6px 10px', fontSize: '0.8rem' }}
                   title="Search exact lecture on YouTube"
                 >
-                  <Search size={14} /> Search Video
+                  <Search size={14} /> YouTube
                 </a>
               </div>
             </div>
           </div>
 
-          {/* Phase 4: Practice & Revision Block */}
+          {/* Phase 4: Practice & Revision Block with Spaced-Repetition Error Flashcard Review */}
           <div className="sketch-card" style={{ 
             padding: '18px 20px', 
             background: currentStatus.phase4 ? 'var(--highlight-green)' : 'var(--paper-card)'
@@ -674,15 +949,23 @@ export default function TodayMission({
                     <span style={{ fontSize: '0.85rem', color: 'var(--ink-secondary)' }}>Active Problem Solving</span>
                   </div>
                   <h3 className="font-title" style={{ fontSize: '1.15rem', marginTop: '6px' }}>
-                    GO-PDFs PYQ Solving & Error Logging
+                    GO-PDFs PYQ Solving & Error Flashcard Review
                   </h3>
                   <p style={{ fontSize: '0.9rem', color: 'var(--ink-secondary)', marginTop: '4px' }}>
-                    Solve 5-8 previous year questions on today's concepts. If any mistake happens, log it immediately into the Error Log.
+                    Solve 5-8 previous year questions on today's concepts. Review due error flashcards below (+1d, +3d, +7d, +21d, +60d) to cement traps permanently.
                   </p>
                 </div>
               </div>
 
-              <div style={{ display: 'flex', gap: '6px', flexShrink: 0 }}>
+              <div style={{ display: 'flex', gap: '6px', flexShrink: 0, flexWrap: 'wrap' }}>
+                <button
+                  className="btn-sketch btn-sketch-pink"
+                  onClick={() => setShowQuickErrorForm(prev => !prev)}
+                  style={{ padding: '6px 10px', fontSize: '0.8rem' }}
+                  title="Log a trap or mistake encountered during PYQs"
+                >
+                  <Plus size={14} /> {showQuickErrorForm ? 'Close Form' : 'Log Mistake'}
+                </button>
                 <a 
                   href="https://gateoverflow.in" 
                   target="_blank" 
@@ -693,6 +976,182 @@ export default function TodayMission({
                   <ExternalLink size={14} /> GateOverflow
                 </a>
               </div>
+            </div>
+
+            {/* Quick Add Error Form */}
+            {showQuickErrorForm && (
+              <form onSubmit={handleQuickAddError} style={{ 
+                marginTop: '16px', 
+                padding: '14px 16px', 
+                background: 'var(--paper-card-subtle)', 
+                border: '2px dashed var(--ink-border)', 
+                borderRadius: '8px' 
+              }}>
+                <div className="font-title" style={{ fontSize: '0.95rem', fontWeight: 700, marginBottom: '8px', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                  <AlertTriangle size={15} color="#DC2626" /> Log Today's PYQ Trap / Error
+                </div>
+                <div style={{ display: 'grid', gridTemplateColumns: '1.5fr 1fr', gap: '10px', marginBottom: '8px' }}>
+                  <input
+                    type="text"
+                    className="input-sketch"
+                    placeholder="Question Ref (e.g. GATE 2022 Q14 - Pointers in C)"
+                    value={quickErrRef}
+                    onChange={(e) => setQuickErrRef(e.target.value)}
+                    required
+                    style={{ fontSize: '0.85rem', padding: '6px 10px' }}
+                  />
+                  <select
+                    className="input-sketch"
+                    value={quickErrCategory}
+                    onChange={(e) => setQuickErrCategory(e.target.value)}
+                    style={{ fontSize: '0.85rem', padding: '6px 10px' }}
+                  >
+                    <option value="Conceptual">Conceptual Flaw</option>
+                    <option value="Calculation">Calculation / Arithmetic</option>
+                    <option value="Silly Mistake">Read Question Wrong / Misread</option>
+                    <option value="Formula Trap">Formula Trap / Edge Case</option>
+                    <option value="Time Pressure">Rushed Under Time Pressure</option>
+                  </select>
+                </div>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', marginBottom: '10px' }}>
+                  <textarea
+                    className="input-sketch"
+                    rows={2}
+                    placeholder="Why did you get it wrong? (What flawed intuition tricked you?)"
+                    value={quickErrWhyWrong}
+                    onChange={(e) => setQuickErrWhyWrong(e.target.value)}
+                    required
+                    style={{ fontSize: '0.82rem', padding: '6px 10px' }}
+                  />
+                  <textarea
+                    className="input-sketch"
+                    rows={2}
+                    placeholder="Correct Concept / Rule to never forget (The golden fix)"
+                    value={quickErrCorrect}
+                    onChange={(e) => setQuickErrCorrect(e.target.value)}
+                    style={{ fontSize: '0.82rem', padding: '6px 10px' }}
+                  />
+                </div>
+                <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '8px' }}>
+                  <button
+                    type="button"
+                    className="btn-sketch"
+                    onClick={() => setShowQuickErrorForm(false)}
+                    style={{ padding: '4px 12px', fontSize: '0.8rem' }}
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    className="btn-sketch btn-sketch-primary"
+                    style={{ padding: '4px 14px', fontSize: '0.8rem' }}
+                  >
+                    Save to Weapon Vault (Due tomorrow)
+                  </button>
+                </div>
+              </form>
+            )}
+
+            {/* Embedded Spaced-Repetition Due Error Review Queue */}
+            <div style={{ marginTop: '14px', paddingTop: '12px', borderTop: '1.5px dashed var(--ink-border)' }}>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '8px' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                  <Brain size={15} color="var(--ink-primary)" />
+                  <span className="font-title" style={{ fontSize: '0.92rem', fontWeight: 700 }}>
+                    Spaced-Repetition Error Flashcards
+                  </span>
+                  <span className={`badge-sketch ${dueErrors.length > 0 ? 'badge-sketch-pink' : 'badge-sketch-green'}`} style={{ fontSize: '0.72rem' }}>
+                    {dueErrors.length} Due Today
+                  </span>
+                </div>
+                <span style={{ fontSize: '0.75rem', color: 'var(--ink-muted)' }}>
+                  Intervals: 1d → 3d → 7d → 21d → 60d
+                </span>
+              </div>
+
+              {dueErrors.length === 0 ? (
+                <div style={{ 
+                  background: 'var(--paper-card-subtle)', 
+                  padding: '10px 14px', 
+                  borderRadius: '6px', 
+                  fontSize: '0.82rem', 
+                  color: 'var(--ink-secondary)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '6px'
+                }}>
+                  <Check size={14} color="#16A34A" /> No pending error flashcards due today! You're clean on mistake revisions.
+                </div>
+              ) : (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                  {dueErrors.slice(0, 3).map((err) => {
+                    const step = err.intervalStep || 0;
+                    const nextDays = reviewIntervals[step] || 1;
+                    return (
+                      <div key={err.id} style={{
+                        background: 'var(--paper-card)',
+                        border: '1.5px solid var(--ink-border)',
+                        borderRadius: '6px',
+                        padding: '10px 12px',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'space-between',
+                        gap: '10px',
+                        flexWrap: 'wrap'
+                      }}>
+                        <div style={{ flex: '1 1 240px' }}>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '2px' }}>
+                            <span className="badge-sketch badge-sketch-orange" style={{ fontSize: '0.7rem' }}>
+                              {err.category || 'Trap'}
+                            </span>
+                            <span style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--ink-secondary)' }}>
+                              {err.subject}
+                            </span>
+                            <span style={{ fontSize: '0.75rem', color: 'var(--ink-muted)' }}>
+                              • Step {step + 1}/{reviewIntervals.length}
+                            </span>
+                          </div>
+                          <div style={{ fontSize: '0.88rem', fontWeight: 700 }}>
+                            {err.questionRef}
+                          </div>
+                          <div style={{ fontSize: '0.8rem', color: '#DC2626', marginTop: '2px' }}>
+                            Flaw: {err.whyWrong}
+                          </div>
+                          {err.correctConcept && (
+                            <div style={{ fontSize: '0.78rem', color: 'var(--ink-secondary)', marginTop: '2px', fontStyle: 'italic' }}>
+                              Fix: {err.correctConcept}
+                            </div>
+                          )}
+                        </div>
+
+                        <div style={{ display: 'flex', gap: '6px', flexShrink: 0 }}>
+                          <button
+                            className="btn-sketch"
+                            onClick={() => handleReviewDueError(err, false)}
+                            style={{ padding: '4px 8px', fontSize: '0.75rem', background: 'var(--highlight-pink)' }}
+                            title="Reset interval to 1 day"
+                          >
+                            ✗ Struggled (1d)
+                          </button>
+                          <button
+                            className="btn-sketch btn-sketch-primary"
+                            onClick={() => handleReviewDueError(err, true)}
+                            style={{ padding: '4px 10px', fontSize: '0.75rem' }}
+                            title={`Promote to next interval (+${reviewIntervals[Math.min(reviewIntervals.length - 1, step + 1)] || 30}d)`}
+                          >
+                            ✓ Mastered (+{reviewIntervals[Math.min(reviewIntervals.length - 1, step + 1)] || 30}d)
+                          </button>
+                        </div>
+                      </div>
+                    );
+                  })}
+                  {dueErrors.length > 3 && (
+                    <div style={{ fontSize: '0.78rem', color: 'var(--ink-muted)', textAlign: 'center', fontStyle: 'italic' }}>
+                      + {dueErrors.length - 3} more errors waiting in your Weapon Vault tab.
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
           </div>
 
@@ -1103,6 +1562,33 @@ export default function TodayMission({
 
       </div>
 
+      {/* Distraction-Free Embedded In-App Video Player */}
+      <VideoPlayerModal
+        isOpen={videoModal.isOpen}
+        onClose={() => setVideoModal(prev => ({ ...prev, isOpen: false }))}
+        title={videoModal.title}
+        subject={videoModal.subject}
+        sourceUrl={videoModal.sourceUrl}
+        searchUrl={videoModal.searchUrl}
+        currentDate={currentDate}
+        onSaveNoteToToday={(newNote) => {
+          const updated = (noteText ? noteText + '\n' + newNote : newNote).trim();
+          setNoteText(updated);
+          onUpdateDayStatus(currentDate, { ...currentStatus, note: updated });
+        }}
+        onAddFormula={onAddFormula}
+      />
+
+      {/* Active Recall Gatekeeper */}
+      <ActiveRecallModal
+        isOpen={activeRecallModal.isOpen}
+        onClose={() => setActiveRecallModal(prev => ({ ...prev, isOpen: false, phaseKey: null }))}
+        phaseTitle={activeRecallModal.phaseTitle}
+        subject={activeRecallModal.subject}
+        onConfirmRecall={handleConfirmRecall}
+      />
+
     </div>
   );
 }
+

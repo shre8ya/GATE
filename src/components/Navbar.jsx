@@ -36,15 +36,24 @@ export default function Navbar({
   notifPermission
 }) {
   const tabs = [
-    { id: 'today', label: "Today's Mission", icon: Compass, badge: 'Live' },
-    { id: 'calendar', label: 'Calendar Desk', icon: Calendar, badge: 'Clickable' },
-    { id: 'planner', label: '80-Day Planner', icon: BookOpen },
-    { id: 'subjects', label: 'Subjects & Videos', icon: BookOpen },
-    { id: 'sunday', label: 'Sunday Tests & Papers', icon: CheckCircle },
-    { id: 'errorlog', label: 'Error Log', icon: AlertTriangle, count: todayStats?.errorsDue || 0 },
-    { id: 'university', label: 'IPU Exam Sync', icon: GraduationCap },
-    { id: 'syllabus', label: 'Syllabus Matrix', icon: BookOpen },
-    { id: 'formulas', label: 'Formula Vault', icon: Zap },
+    { 
+      id: 'today', 
+      label: "War Room (Today)", 
+      icon: Compass, 
+      badge: 'Live' 
+    },
+    { 
+      id: 'vault', 
+      label: 'Weapon Vault (Errors & Formulas)', 
+      icon: AlertTriangle, 
+      count: todayStats?.errorsDue || 0 
+    },
+    { 
+      id: 'radar', 
+      label: 'Radar (Calendar & Planner)', 
+      icon: Calendar, 
+      badge: 'Roadmap' 
+    },
   ];
 
   return (

@@ -4,7 +4,45 @@ All notable changes to this project are documented in this file using Semantic V
 
 ---
 
-## [v1.3.0] — 2026-10-13 (Current Release)
+## [v1.4.0] — 2026-10-13 (Current Release)
+### ⚔️ Transformation: From "Productivity Theater" to "High-Performance Weapon"
+In direct response to the brutal and real critique of competitive GATE CSE prep habits, this release restructures the dashboard around active recall, spaced repetition, distraction elimination, and ruthless score tracking.
+
+### 🎯 3 Consolidated Operational Workspaces (Eliminated 9-Tab Cognitive Overload)
+- **War Room (Today)**: Your daily battleground featuring the 4-phase mission, in-app video launcher, spaced-repetition error review, and active recall gatekeeper.
+- **Weapon Vault (Errors & Formulas)**: Unites the Error & Mistake Log (Spaced Review), Formula Vault & Photo Scans, and Question Papers Hub & Mocks.
+- **Radar (Calendar & Planner)**: Consolidates the Interactive Desk Calendar, 80-Day Master Timeline, Subject Video Directory, Official Syllabus Matrix, and IPU Exam Synergy.
+- Seamless backward-compatible routing preserving all saved tabs and localStorage states.
+
+### 🛡️ P1: Distraction-Free In-App Video Player (`VideoPlayerModal`)
+- Plays recommended lecture playlists and videos directly inside an in-app hand-drawn modal via privacy-respecting `youtube-nocookie.com`.
+- Automatically strips recommendation feeds, sidebar rabbit holes, comments, and related videos that pull students into YouTube binges.
+- Includes a live **Margin Notes Scratchpad** syncing directly into today's mission notes.
+- Quick **+ Capture Formula to Vault** button to save equations on the fly without leaving the lecture.
+
+### 🧠 P2: Embedded Spaced-Repetition Error Flashcards (Phase 4)
+- Embedded due mistake flashcards directly into **Phase 4: Practice & PYQ Solving**.
+- 1-Click interval progression: `+1d` → `+3d` → `+7d` → `+21d` → `+60d` → `Mastered`.
+- "Mastered" and "Struggled (Reset to 1d)" buttons provide active retrieval testing before students start new practice.
+- **Inline + Log Mistake Form**: Instantly log tricky traps, question references, trap categories (Conceptual, Calculation, Formula Trap, etc.), and correct concepts right from Phase 4.
+
+### 🛑 P3: Active Recall Gatekeeper (`ActiveRecallModal`)
+- Prevents passive "dopamine checking" where students click Done without retaining anything.
+- Clicking any study phase checkbox triggers a 30-second Active Recall verification modal.
+- Requires retrieving the core concept/trap learned and logging PYQ accuracy (e.g., 6/8 correct) before locking in the completion.
+- Non-blocking "Skip (I'm in a rush)" escape bypass so students are never blocked under tight schedules.
+
+### 📊 P5: GATE CSE Marks Weightage Reality Bar
+- Replaced arbitrary percentages with a live **Marks Unlocked Reality Bar** strictly mapped to official GATE marks weightage:
+  - **General Aptitude**: 15 Marks
+  - **Engineering & Discrete Mathematics**: 13 Marks
+  - **Core Computer Science**: 72 Marks
+  - **Total**: Live score out of 100 Marks with target AIR < 100 (~75+ marks benchmark).
+
+---
+
+## [v1.3.0] — 2026-10-13
+
 ### ⏱️ Customizable Pomodoro Study Clock (User Option)
 - **Arbitrary Study Time Option**: Users can now set any study duration from 1 to 240 minutes via a dedicated hand-drawn input box or quick preset chips (`15m`, `25m`, `30m`, `45m`, `60m`, `90m`, `120m`).
 - **Persistent Preferences**: Custom study duration is saved to `localStorage` (`gate_pomodoro_custom_mins_v1`), remembering the user's preferred duration across sessions and reloads.

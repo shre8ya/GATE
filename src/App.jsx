@@ -9,6 +9,8 @@ import UniversitySyncView from './components/UniversitySyncView';
 import SyllabusMatrixView from './components/SyllabusMatrixView';
 import FormulaVaultView from './components/FormulaVaultView';
 import CalendarView from './components/CalendarView';
+import VaultWorkspace from './components/VaultWorkspace';
+import RadarWorkspace from './components/RadarWorkspace';
 import PersonalizationModal from './components/PersonalizationModal';
 import BackupModal from './components/BackupModal';
 import RemindersModal from './components/RemindersModal';
@@ -29,8 +31,14 @@ import {
 import { loadItem, saveItem, resetAllData } from './utils/storage';
 
 export default function App() {
-  // Navigation & Current Active Date
-  const [activeTab, setActiveTab] = useState('today');
+  // Navigation & Current Active Date (Consolidated 3 Core Workspaces)
+  const [activeTab, setActiveTab] = useState(() => {
+    const saved = loadItem('active_tab', 'today');
+    if (['today', 'vault', 'radar'].includes(saved)) return saved;
+    if (['errorlog', 'formulas', 'sunday'].includes(saved)) return 'vault';
+    if (['calendar', 'planner', 'subjects', 'syllabus', 'university'].includes(saved)) return 'radar';
+    return 'today';
+  });
   const [currentDate, setCurrentDate] = useState('2026-10-13'); // Live Day 1
 
   // Modals
@@ -285,7 +293,7 @@ export default function App() {
         notifPermission={notifPermission}
       />
 
-      {/* Main Tab Views */}
+      {/* Main Tab Workspaces (3 Consolidated Views) */}
       <main style={{ flex: 1 }}>
         {activeTab === 'today' && (
           <TodayMission 
@@ -298,49 +306,23 @@ export default function App() {
             onUpdateDayStatus={handleUpdateDayStatus}
             onLogStudySession={handleLogStudySession}
             onOpenReschedule={() => setShowReschedule(true)}
+            errorLog={errorLog}
+            onAddErrorItem={handleAddErrorItem}
+            onUpdateErrorItem={handleUpdateErrorItem}
+            onAddFormula={handleAddCustomFormula}
           />
         )}
 
-        {activeTab === 'calendar' && (
-          <CalendarView 
-            masterSchedule={masterSchedule}
-            dayStatus={dayStatus}
-            currentDate={currentDate}
-            onSelectDate={(d) => {
-              setCurrentDate(d);
-              setActiveTab('today');
-            }}
-            onOpenReschedule={() => setShowReschedule(true)}
-            onUpdateDayStatus={handleUpdateDayStatus}
-          />
-        )}
-
-
-        {activeTab === 'planner' && (
-          <MasterPlannerView 
-            masterSchedule={masterSchedule}
-            dayStatus={dayStatus}
-            onUpdateDayStatus={handleUpdateDayStatus}
-            onSelectDate={(d) => {
-              setCurrentDate(d);
-              setActiveTab('today');
-            }}
-          />
-        )}
-
-        {activeTab === 'subjects' && (
-          <SubjectExplorerView 
-            coreSubjects={CORE_SUBJECTS_DATA}
-            engineeringMaths={ENGINEERING_MATHS_DATA}
-            generalAptitude={GENERAL_APTITUDE_DATA}
-            playlistDirectory={PLAYLIST_DIRECTORY_DATA}
-            subjectDayStatus={subjectDayStatus}
-            onUpdateSubjectDayStatus={handleUpdateSubjectDayStatus}
-          />
-        )}
-
-        {activeTab === 'sunday' && (
-          <SundayRevisionView 
+        {activeTab === 'vault' && (
+          <VaultWorkspace 
+            errorLog={errorLog}
+            onAddErrorItem={handleAddErrorItem}
+            onUpdateErrorItem={handleUpdateErrorItem}
+            onDeleteErrorItem={handleDeleteErrorItem}
+            formulaData={FORMULA_VAULT_DATA}
+            customFormulas={customFormulas}
+            onAddCustomFormula={handleAddCustomFormula}
+            onDeleteCustomFormula={handleDeleteCustomFormula}
             sundayRevisionData={SUNDAY_REVISION_DATA}
             sundayStatus={sundayStatus}
             onUpdateSundayStatus={handleUpdateSundayStatus}
@@ -350,37 +332,29 @@ export default function App() {
           />
         )}
 
-        {activeTab === 'errorlog' && (
-          <ErrorLogView 
-            errorLog={errorLog}
-            onAddErrorItem={handleAddErrorItem}
-            onUpdateErrorItem={handleUpdateErrorItem}
-            onDeleteErrorItem={handleDeleteErrorItem}
-          />
-        )}
-
-        {activeTab === 'university' && (
-          <UniversitySyncView 
+        {activeTab === 'radar' && (
+          <RadarWorkspace 
+            masterSchedule={masterSchedule}
+            dayStatus={dayStatus}
+            currentDate={currentDate}
+            onSelectDate={(d) => {
+              setCurrentDate(d);
+              setActiveTab('today');
+            }}
+            onOpenReschedule={() => setShowReschedule(true)}
+            onUpdateDayStatus={handleUpdateDayStatus}
+            coreSubjects={CORE_SUBJECTS_DATA}
+            engineeringMaths={ENGINEERING_MATHS_DATA}
+            generalAptitude={GENERAL_APTITUDE_DATA}
+            playlistDirectory={PLAYLIST_DIRECTORY_DATA}
+            subjectDayStatus={subjectDayStatus}
+            onUpdateSubjectDayStatus={handleUpdateSubjectDayStatus}
             universityExamsData={UNIVERSITY_EXAMS_DATA}
             uniStatus={uniStatus}
             onUpdateUniStatus={handleUpdateUniStatus}
-          />
-        )}
-
-        {activeTab === 'syllabus' && (
-          <SyllabusMatrixView 
-            officialSyllabus={OFFICIAL_SYLLABUS_DATA}
+            syllabusData={OFFICIAL_SYLLABUS_DATA}
             syllabusProgress={syllabusProgress}
             onUpdateSyllabusProgress={handleUpdateSyllabusProgress}
-          />
-        )}
-
-        {activeTab === 'formulas' && (
-          <FormulaVaultView 
-            preloadedFormulas={FORMULA_VAULT_DATA}
-            customFormulas={customFormulas}
-            onAddCustomFormula={handleAddCustomFormula}
-            onDeleteCustomFormula={handleDeleteCustomFormula}
           />
         )}
       </main>
