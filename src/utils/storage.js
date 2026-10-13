@@ -23,15 +23,19 @@ export function getProfilesList() {
       // Check legacy profiles list if any
       const legacy = localStorage.getItem(STORAGE_KEY_PREFIX + 'profiles_list');
       if (legacy) {
-        const parsed = JSON.parse(legacy);
-        if (Array.isArray(parsed) && parsed.length > 0) {
-          const migrated = parsed.map((p, idx) => ({
-            ...DEFAULT_PROFILE,
-            ...p,
-            id: p.id ? (p.id.startsWith('profile_') ? p.id : `profile_${p.id}`) : (idx === 0 ? 'profile_default' : `profile_${Date.now()}_${idx}`)
-          }));
-          saveProfilesList(migrated);
-          return migrated;
+        try {
+          const parsed = JSON.parse(legacy);
+          if (Array.isArray(parsed) && parsed.length > 0) {
+            const migrated = parsed.map((p, idx) => ({
+              ...DEFAULT_PROFILE,
+              ...p,
+              id: p.id ? (p.id.startsWith('profile_') ? p.id : `profile_${p.id}`) : (idx === 0 ? 'profile_default' : `profile_${Date.now()}_${idx}`)
+            }));
+            saveProfilesList(migrated);
+            return migrated;
+          }
+        } catch (e) {
+          console.warn('Error parsing legacy profiles:', e);
         }
       }
       saveProfilesList([DEFAULT_PROFILE]);
@@ -82,18 +86,25 @@ export function loadProfileItem(profileId, key, defaultValue) {
   const scopedKey = `${STORAGE_KEY_PREFIX}${pId}_${key}`;
   try {
     const raw = localStorage.getItem(scopedKey);
-    if (raw !== null) {
-      return JSON.parse(raw);
+    if (raw !== null && raw !== 'undefined') {
+      try {
+        return JSON.parse(raw);
+      } catch {
+        return raw;
+      }
     }
     
-    // Seamless legacy migration for the default profile
-    if (pId === 'profile_default') {
-      const legacyRaw = localStorage.getItem(STORAGE_KEY_PREFIX + key);
-      if (legacyRaw !== null) {
-        const val = JSON.parse(legacyRaw);
-        saveProfileItem(pId, key, val);
-        return val;
+    // Seamless legacy migration if scoped key does not yet exist
+    const legacyRaw = localStorage.getItem(STORAGE_KEY_PREFIX + key);
+    if (legacyRaw !== null && legacyRaw !== 'undefined') {
+      let val = legacyRaw;
+      try {
+        val = JSON.parse(legacyRaw);
+      } catch {
+        val = legacyRaw;
       }
+      saveProfileItem(pId, key, val);
+      return val;
     }
     return defaultValue;
   } catch (err) {
