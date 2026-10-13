@@ -1,0 +1,62 @@
+{
+  "cs": [
+    {
+      "title": "Section 1: Engineering Mathematics",
+      "content": "Discrete Mathematics: Propositional and first order logic. Sets, relations, functions, partial orders and\nlattices. Monoids, Groups. Graphs: connectivity, matching, colouring. Combinatorics: counting, recurrence\nrelations, generating functions.\nLinear Algebra: Matrices, determinants, system of linear equations, eigenvalues and eigenvectors, LU\ndecomposition.\nCalculus: Limits, continuity and differentiability, Maxima and minima, Mean value theorem, Integration.\nProbability and Statistics: Random variables, Uniform, normal, exponential, Poisson and binomial\ndistributions. Mean, median, mode and standard deviation. Conditional probability and Bayes theorem."
+    },
+    {
+      "title": "Section 2: Digital Logic",
+      "content": "Boolean algebra and minimization \u2013 algebraic technique, Karnaugh map, tabular method. Design of\ncombinational and sequential circuits. Number representation and arithmetic (fixed and floating point)."
+    },
+    {
+      "title": "Section 3: Computer Organization and Architecture",
+      "content": "Instruction set and  addressing modes. Design of arithmetic and logic unit (ALU). Design of control unit \u2013\nhardwired and microprogrammed. Memory interfacing and hierarchy: performance, cache memory mapping.\nI/O interface (interrupt and DMA). Instruction pipelining, pipeline hazards."
+    },
+    {
+      "title": "Section 4: Programming and Data Structures",
+      "content": "Programming in C. Recursion. Arrays, stacks, queues, linked lists, trees, binary search trees, binary heaps,\ngraphs."
+    },
+    {
+      "title": "Section 5: Algorithms",
+      "content": "Searching, sorting, hashing. Asymptotic worst case time and space complexity. Algorithm design techniques:\ngreedy, dynamic programming and divide\u2010and\u2010conquer. Graph traversals, minimum spanning trees, shortest\npaths."
+    },
+    {
+      "title": "Section 6: Theory of Computation",
+      "content": "Regular expressions and finite automata. Context-free grammars and push-down automata. Regular and\ncontext-free languages, pumping lemma. Turing machines and undecidability."
+    },
+    {
+      "title": "Section 7: Compiler Design",
+      "content": "Lexical analysis, parsing, syntax-directed translation. Runtime environments. Intermediate code generation.\nLocal optimisation, Data flow analyses: constant propagation, liveness analysis, common sub expression\nelimination."
+    },
+    {
+      "title": "Section 8: Operating System",
+      "content": "System  calls,  processes,  threads,  inter\u2010process  communication,  concurrency  and  synchronization.\nDeadlock. CPU and I/O scheduling. Memory management and virtual memory. File systems.\nGATE 2027 IIT Madras  | Organizing Institute"
+    },
+    {
+      "title": "Section 9: Databases",
+      "content": "ER\u2010model. Relational model: relational algebra, tuple calculus, SQL. Integrity constraints, normal forms. File\norganization, indexing (e.g., B and B+ trees). Transactions and concurrency control."
+    },
+    {
+      "title": "Section 10: Computer Networks",
+      "content": "Principles of Layering; Basics of switching (circuit, packet and virtual circuit) and performance metrics;\nData link layer: error detection, Medium Access Control, Ethernet; Distance vector and link state routing;\nIPv4 - Fragmentation, CIDR Notation, Network Address Translation; TCP- flow control and congestion\ncontrol, socket API; DNS and HTTP."
+    }
+  ],
+  "ga": [
+    {
+      "title": "Section 1: Verbal Aptitude",
+      "content": "Basic English grammar: tenses, articles, adjectives, prepositions, conjunctions, verb-noun agreement, and other\nparts of speech.\nBasic vocabulary: words, idioms, and phrases in context.\nReading and comprehension, Narrative sequencing."
+    },
+    {
+      "title": "Section 2: Quantitative Aptitude",
+      "content": "Data interpretation: data graphs (bar graphs, pie charts, and other graphs representing data), 2-and 3-dimensional\nplots, maps, and tables.\nNumerical computation and estimation: ratios, percentages, powers, exponents and logarithms, permutations and\ncombinations, and series. Mensuration and geometry, Elementary statistics and probability."
+    },
+    {
+      "title": "Section 3: Analytical Aptitude",
+      "content": "Logic: deduction and induction, Analogy, Numerical relations and reasoning."
+    },
+    {
+      "title": "Section 4: Spatial Aptitude",
+      "content": "Transformation of shapes: translation, rotation, scaling, mirroring, assembling, and grouping  paper folding,\ncutting, and patterns in 2 and 3 dimensions."
+    }
+  ]
+}

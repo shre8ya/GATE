@@ -1,0 +1,212 @@
+import React from 'react';
+import { 
+  Flame, 
+  Clock, 
+  Calendar, 
+  BookOpen, 
+  CheckCircle, 
+  AlertTriangle, 
+  GraduationCap, 
+  Compass, 
+  Zap, 
+  Bot, 
+  Bell, 
+  Download, 
+  Settings,
+  Sparkles,
+  Sun,
+  Moon
+} from 'lucide-react';
+
+export default function Navbar({ 
+  activeTab, 
+  setActiveTab, 
+  streak = 1, 
+  todayStats, 
+  onOpenSettings, 
+  onOpenBackup, 
+  onOpenReminders,
+  onOpenReschedule,
+  theme,
+  onToggleTheme,
+  notifPermission
+}) {
+  const tabs = [
+    { id: 'today', label: "Today's Journal", icon: Compass, badge: 'Live' },
+    { id: 'planner', label: '80-Day Planner', icon: Calendar },
+    { id: 'subjects', label: 'Subjects & Videos', icon: BookOpen },
+    { id: 'sunday', label: 'Sunday Tests', icon: CheckCircle },
+    { id: 'errorlog', label: 'Error Log', icon: AlertTriangle, count: todayStats?.errorsDue || 0 },
+    { id: 'university', label: 'IPU Exam Sync', icon: GraduationCap },
+    { id: 'syllabus', label: 'Syllabus Matrix', icon: BookOpen },
+    { id: 'formulas', label: 'Formula Vault', icon: Zap },
+    { id: 'aimentor', label: 'AI Study Mentor', icon: Bot, highlight: true },
+  ];
+
+  return (
+    <header className="sketch-card" style={{ 
+      margin: '14px 18px', 
+      padding: '12px 18px', 
+      position: 'sticky', 
+      top: '10px', 
+      zIndex: 100,
+      background: 'var(--paper-card)'
+    }}>
+      <div className="tape-strip"></div>
+      
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '16px', flexWrap: 'wrap' }}>
+        
+        {/* Brand & Handwriting Title */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+          <div style={{ 
+            display: 'flex', 
+            alignItems: 'center', 
+            justifyContent: 'center',
+            width: '42px', 
+            height: '42px', 
+            borderRadius: 'var(--sketch-radius-sm)',
+            background: 'var(--highlight-yellow)',
+            border: '2px solid var(--ink-border)',
+            boxShadow: '2px 2px 0px var(--ink-border)'
+          }}>
+            <span style={{ fontSize: '1.4rem' }}>📓</span>
+          </div>
+          <div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <span className="font-title" style={{ fontSize: '1.4rem', fontWeight: 700 }}>
+                GATE <span className="highlight-pen">MATRIX</span>
+              </span>
+              <span className="badge-sketch badge-sketch-yellow">CSE 2027</span>
+              <span style={{ fontSize: '0.85rem', color: 'var(--ink-muted)', fontStyle: 'italic' }}>
+                IIT Madras Organizer
+              </span>
+            </div>
+            <div style={{ fontSize: '0.85rem', color: 'var(--ink-secondary)', display: 'flex', alignItems: 'center', gap: '6px' }}>
+              <span>✏️ Personal Study Journal & 12-Week Roadmap</span>
+            </div>
+          </div>
+        </div>
+
+        {/* Center: Hand-Drawn Stats Badges */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
+          
+          <div className="badge-sketch badge-sketch-orange" title="Daily Study Streak">
+            <Flame size={15} color="#D97706" fill="#D97706" />
+            <span>Streak: {streak}d 🔥</span>
+          </div>
+
+          <div className="badge-sketch badge-sketch-blue" title="Today's Target Hours">
+            <Clock size={15} color="#2563EB" />
+            <span>Target: {todayStats?.hoursToday || 2.5}h / day</span>
+          </div>
+
+          <div className="badge-sketch badge-sketch-pink" title="Days to GATE 2027">
+            <GraduationCap size={15} color="#DB2777" />
+            <span>GATE '27: ~114d</span>
+          </div>
+
+          {/* AI Rescheduler Button */}
+          <button 
+            className="btn-sketch btn-sketch-primary"
+            onClick={onOpenReschedule}
+            style={{ padding: '4px 10px', fontSize: '0.85rem' }}
+            title="Missed a topic or day? Reorganize with AI"
+          >
+            <Sparkles size={14} /> AI Reschedule
+          </button>
+        </div>
+
+        {/* Right: Theme Toggle, Notifications, Backup, Settings */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+          
+          <button 
+            className="btn-sketch"
+            onClick={onToggleTheme}
+            style={{ padding: '6px 10px', fontSize: '0.85rem' }}
+            title="Toggle Notebook Paper / Chalkboard theme"
+          >
+            {theme === 'chalkboard' ? '📝 Paper' : '🖍️ Chalk'}
+          </button>
+
+          <button 
+            className="btn-sketch" 
+            onClick={onOpenReminders}
+            title={notifPermission === 'granted' ? "Reminders (Active)" : "Enable Alerts"}
+            style={{ padding: '6px 10px' }}
+          >
+            <Bell size={16} color={notifPermission === 'granted' ? "#15803D" : "currentColor"} />
+          </button>
+
+          <button 
+            className="btn-sketch" 
+            onClick={onOpenBackup}
+            title="Backup & Restore Data (Export JSON)"
+            style={{ padding: '6px 10px' }}
+          >
+            <Download size={16} />
+          </button>
+
+          <button 
+            className="btn-sketch" 
+            onClick={onOpenSettings}
+            title="Profile & Settings"
+            style={{ padding: '6px 10px' }}
+          >
+            <Settings size={16} />
+          </button>
+        </div>
+
+      </div>
+
+      {/* Tabs Menu Strip */}
+      <nav style={{ 
+        display: 'flex', 
+        alignItems: 'center', 
+        gap: '8px', 
+        marginTop: '12px', 
+        paddingTop: '10px', 
+        borderTop: '2px dashed var(--ink-border)',
+        overflowX: 'auto',
+        whiteSpace: 'nowrap',
+        scrollbarWidth: 'none'
+      }}>
+        {tabs.map((tab) => {
+          const Icon = tab.icon;
+          const isActive = activeTab === tab.id;
+          return (
+            <button
+              key={tab.id}
+              onClick={() => setActiveTab(tab.id)}
+              className="btn-sketch"
+              style={{
+                background: isActive 
+                  ? 'var(--highlight-yellow)' 
+                  : tab.highlight 
+                  ? 'var(--highlight-purple)' 
+                  : 'var(--paper-card)',
+                boxShadow: isActive ? '3px 3px 0px var(--ink-border)' : '1px 1px 0px var(--ink-border)',
+                transform: isActive ? 'translate(-1px, -1px)' : 'none',
+                fontWeight: 700,
+                fontSize: '0.9rem',
+                padding: '6px 12px'
+              }}
+            >
+              <Icon size={16} />
+              <span>{tab.label}</span>
+              {tab.badge && (
+                <span className="badge-sketch badge-sketch-pink" style={{ padding: '1px 5px', fontSize: '0.7rem' }}>
+                  {tab.badge}
+                </span>
+              )}
+              {tab.count > 0 && (
+                <span className="badge-sketch badge-sketch-orange" style={{ padding: '1px 5px', fontSize: '0.7rem' }}>
+                  {tab.count}
+                </span>
+              )}
+            </button>
+          );
+        })}
+      </nav>
+    </header>
+  );
+}

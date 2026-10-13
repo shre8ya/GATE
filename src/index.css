@@ -1,0 +1,337 @@
+/* ==========================================================================
+   GATE MATRIX — HAND-DRAWN SCHOLAR'S STUDY JOURNAL DESIGN SYSTEM
+   Authentic sketched notebook aesthetic with hand-drawn borders, graph paper, 
+   washi tape, highlighters, and fountain pen ink typography.
+   ========================================================================== */
+
+:root {
+  /* LIGHT PAPER NOTEBOOK (Default) */
+  --paper-bg: #F9F7F1;
+  --paper-card: #FFFFFF;
+  --paper-card-subtle: #F3EFE6;
+  --paper-grid: rgba(148, 163, 184, 0.22);
+  
+  --ink-primary: #1E293B;
+  --ink-secondary: #475569;
+  --ink-muted: #64748B;
+  --ink-border: #1E293B;
+
+  /* Highlighter Markers */
+  --highlight-yellow: #FEF08A;
+  --highlight-green: #BBF7D0;
+  --highlight-blue: #BAE6FD;
+  --highlight-pink: #FBCFE8;
+  --highlight-orange: #FED7AA;
+  --highlight-purple: #DDD6FE;
+
+  /* Pen Ink Accents */
+  --ink-blue: #2563EB;
+  --ink-green: #15803D;
+  --ink-red: #DC2626;
+  --ink-purple: #7C3AED;
+  --ink-amber: #D97706;
+
+  /* Typography */
+  --font-title: 'Kalam', cursive, -apple-system, sans-serif;
+  --font-accent: 'Caveat', cursive, sans-serif;
+  --font-body: 'Patrick Hand', 'Architects Daughter', cursive, sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+
+  /* Hand-Drawn Wobbly Shapes */
+  --sketch-radius: 255px 15px 225px 15px/15px 225px 15px 255px;
+  --sketch-radius-sm: 180px 10px 160px 12px/12px 170px 10px 180px;
+  --sketch-shadow: 3px 3px 0px var(--ink-border);
+  --sketch-shadow-lg: 5px 5px 0px var(--ink-border);
+  --sketch-shadow-sm: 2px 2px 0px var(--ink-border);
+
+  /* Tape & Pin */
+  --washi-tape: rgba(254, 243, 199, 0.85);
+  --tape-border: rgba(217, 119, 6, 0.3);
+}
+
+/* DARK CHALKBOARD THEME (Toggleable) */
+[data-theme='chalkboard'] {
+  --paper-bg: #151922;
+  --paper-card: #1E2430;
+  --paper-card-subtle: #252D3C;
+  --paper-grid: rgba(255, 255, 255, 0.05);
+
+  --ink-primary: #F8FAFC;
+  --ink-secondary: #CBD5E1;
+  --ink-muted: #94A3B8;
+  --ink-border: #E2E8F0;
+
+  --highlight-yellow: rgba(254, 240, 138, 0.25);
+  --highlight-green: rgba(187, 247, 208, 0.25);
+  --highlight-blue: rgba(186, 230, 253, 0.25);
+  --highlight-pink: rgba(251, 207, 232, 0.25);
+  --highlight-orange: rgba(254, 215, 170, 0.25);
+
+  --ink-blue: #60A5FA;
+  --ink-green: #4ADE80;
+  --ink-red: #F87171;
+  --ink-purple: #C084FC;
+  --ink-amber: #FBBF24;
+
+  --sketch-shadow: 3px 3px 0px rgba(255, 255, 255, 0.8);
+  --sketch-shadow-lg: 5px 5px 0px rgba(255, 255, 255, 0.8);
+  --sketch-shadow-sm: 2px 2px 0px rgba(255, 255, 255, 0.8);
+
+  --washi-tape: rgba(255, 255, 255, 0.15);
+  --tape-border: rgba(255, 255, 255, 0.3);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: var(--font-body);
+  background-color: var(--paper-bg);
+  color: var(--ink-primary);
+  min-height: 100vh;
+  line-height: 1.5;
+  font-size: 1.05rem;
+  /* Authentic Grid Paper Texture */
+  background-image: 
+    linear-gradient(var(--paper-grid) 1px, transparent 1px),
+    linear-gradient(90deg, var(--paper-grid) 1px, transparent 1px);
+  background-size: 26px 26px;
+  background-attachment: fixed;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Custom Sketched Scrollbar */
+::-webkit-scrollbar {
+  width: 9px;
+  height: 9px;
+}
+::-webkit-scrollbar-track {
+  background: var(--paper-bg);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--ink-muted);
+  border: 1px solid var(--ink-border);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--ink-primary);
+}
+
+/* Hand-Drawn Headings */
+h1, h2, h3, h4, .font-title {
+  font-family: var(--font-title);
+  letter-spacing: -0.01em;
+  font-weight: 700;
+  color: var(--ink-primary);
+}
+
+.font-accent {
+  font-family: var(--font-accent);
+}
+
+.font-mono {
+  font-family: var(--font-mono);
+}
+
+/* Hand-Drawn Notebook Card */
+.sketch-card {
+  background: var(--paper-card);
+  border: 2px solid var(--ink-border);
+  border-radius: var(--sketch-radius);
+  box-shadow: var(--sketch-shadow);
+  position: relative;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.sketch-card:hover {
+  box-shadow: var(--sketch-shadow-lg);
+}
+
+/* Washi Tape Strip decoration */
+.tape-strip {
+  position: absolute;
+  top: -10px;
+  left: 20px;
+  width: 80px;
+  height: 18px;
+  background: var(--washi-tape);
+  border: 1px dashed var(--tape-border);
+  transform: rotate(-2deg);
+  box-shadow: 1px 1px 2px rgba(0,0,0,0.06);
+  z-index: 2;
+  pointer-events: none;
+}
+
+.tape-strip-right {
+  left: auto;
+  right: 20px;
+  transform: rotate(2deg);
+}
+
+/* Hand-Drawn Buttons */
+.btn-sketch {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 8px 16px;
+  font-family: var(--font-title);
+  font-size: 0.95rem;
+  font-weight: 700;
+  background: var(--paper-card);
+  color: var(--ink-primary);
+  border: 2px solid var(--ink-border);
+  border-radius: var(--sketch-radius-sm);
+  box-shadow: var(--sketch-shadow-sm);
+  cursor: pointer;
+  transition: transform 0.1s ease, box-shadow 0.1s ease;
+  user-select: none;
+  text-decoration: none;
+}
+
+.btn-sketch:hover {
+  transform: translate(-1px, -1px);
+  box-shadow: var(--sketch-shadow);
+}
+
+.btn-sketch:active {
+  transform: translate(2px, 2px);
+  box-shadow: 0px 0px 0px var(--ink-border);
+}
+
+.btn-sketch-primary {
+  background: var(--highlight-yellow);
+  color: #0F172A;
+}
+.btn-sketch-primary:hover {
+  background: #FDE047;
+}
+
+.btn-sketch-blue {
+  background: var(--highlight-blue);
+  color: #0F172A;
+}
+
+.btn-sketch-green {
+  background: var(--highlight-green);
+  color: #0F172A;
+}
+
+.btn-sketch-pink {
+  background: var(--highlight-pink);
+  color: #0F172A;
+}
+
+/* Hand-Drawn Badges / Sticky Tags */
+.badge-sketch {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 9px;
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  font-weight: 700;
+  border: 1.5px solid var(--ink-border);
+  border-radius: var(--sketch-radius-sm);
+  box-shadow: 1px 1px 0px var(--ink-border);
+  background: var(--paper-card-subtle);
+  color: var(--ink-primary);
+}
+
+.badge-sketch-yellow { background: var(--highlight-yellow); color: #0F172A; }
+.badge-sketch-green { background: var(--highlight-green); color: #0F172A; }
+.badge-sketch-blue { background: var(--highlight-blue); color: #0F172A; }
+.badge-sketch-pink { background: var(--highlight-pink); color: #0F172A; }
+.badge-sketch-orange { background: var(--highlight-orange); color: #0F172A; }
+
+/* Hand-Drawn Inputs */
+.input-sketch {
+  background: var(--paper-card);
+  border: 2px solid var(--ink-border);
+  border-radius: var(--sketch-radius-sm);
+  color: var(--ink-primary);
+  padding: 8px 14px;
+  font-family: var(--font-body);
+  font-size: 1rem;
+  width: 100%;
+  outline: none;
+  box-shadow: inset 1px 1px 2px rgba(0,0,0,0.06);
+}
+
+.input-sketch:focus {
+  border-color: var(--ink-blue);
+  box-shadow: 2px 2px 0px var(--ink-border);
+}
+
+/* Highlighter Stroke for text */
+.highlight-pen {
+  background: var(--highlight-yellow);
+  padding: 1px 6px;
+  border-radius: 4px;
+  display: inline;
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+}
+
+.highlight-pen-green { background: var(--highlight-green); }
+.highlight-pen-blue { background: var(--highlight-blue); }
+.highlight-pen-pink { background: var(--highlight-pink); }
+
+/* Hand-Drawn Checkbox */
+.sketch-check {
+  width: 22px;
+  height: 22px;
+  border: 2px solid var(--ink-border);
+  border-radius: 4px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  background: var(--paper-card);
+  transition: all 0.1s ease;
+  user-select: none;
+}
+.sketch-check.checked {
+  background: var(--highlight-green);
+  box-shadow: inset 1px 1px 0px rgba(0,0,0,0.2);
+}
+
+/* Modals */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.65);
+  backdrop-filter: blur(4px);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.modal-sketch {
+  background: var(--paper-card);
+  border: 3px solid var(--ink-border);
+  border-radius: var(--sketch-radius);
+  box-shadow: 8px 8px 0px var(--ink-border);
+  max-width: 680px;
+  width: 100%;
+  max-height: 85vh;
+  overflow-y: auto;
+  position: relative;
+}
+
+/* Sticky Note Widget */
+.sticky-paper {
+  background: #FEF9C3;
+  color: #1E293B;
+  border: 1.5px solid #CA8A04;
+  box-shadow: 3px 3px 0px #A16207;
+  padding: 14px;
+  border-radius: 2px 14px 4px 18px;
+  transform: rotate(-1deg);
+}
