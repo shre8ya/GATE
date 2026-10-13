@@ -17,8 +17,9 @@ All notable changes to this project are documented in this file using Semantic V
 - **Removed Journal & Achievements**: Completely removed the redundant Journal and Trophies view and navbar tab as requested to keep the workspace laser-focused on active study tasks.
 - **Primary Tab Clarity**: Streamlined the primary view title to **Today's Mission**.
 
-### 📐 Calendar Alignment Fix
+### 📐 Calendar Alignment & Visual Cleanup
 - **Desk Calendar Grid Alignment**: Fixed the asymmetrical shift caused by notebook paper margin CSS. The 7-day grid and header labels (`SUN` through `SAT`) are now symmetrically aligned across all viewport sizes with responsive overflow protection.
+- **Removed IPU Exam Milestone Color**: Removed the distinctive pink background coloring and legend chip for IPU exam milestone days to keep the calendar visually uniform and clean.
 
 ---
 

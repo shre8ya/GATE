@@ -379,7 +379,7 @@ export default function TodayMission({
 
           <div className="sketch-card" style={{ padding: '10px 14px', background: 'var(--paper-card-subtle)' }}>
             <div style={{ fontSize: '0.8rem', color: 'var(--ink-muted)' }}>IPU THEORY EXAMS</div>
-            <div className="font-title" style={{ fontSize: '1.25rem', color: '#D97706' }}>
+            <div className="font-title" style={{ fontSize: '1.25rem', color: 'var(--ink-primary)' }}>
               {diffDays(uniTheoryDate)} Days Left
             </div>
             <div style={{ fontSize: '0.78rem', color: 'var(--ink-secondary)' }}>11 Dec - 31 Dec (Evening 2-5 PM)</div>

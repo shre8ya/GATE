@@ -420,7 +420,6 @@ export default function CalendarView({
             if (cell.status === 'Done') bg = 'var(--highlight-green)';
             else if (cell.status === 'In Progress') bg = 'var(--highlight-blue)';
             else if (cell.isGateExam) bg = 'var(--highlight-yellow)';
-            else if (cell.isIpuExam) bg = 'var(--highlight-pink)';
             else if (cell.isSunday) bg = 'var(--highlight-orange)';
 
             return (
@@ -473,8 +472,6 @@ export default function CalendarView({
                       <span style={{ fontSize: '0.7rem', color: '#1E40AF', fontWeight: 800 }}>●</span>
                     ) : cell.isGateExam ? (
                       <span style={{ fontSize: '0.75rem' }}>🏆</span>
-                    ) : cell.isIpuExam ? (
-                      <span style={{ fontSize: '0.75rem' }}>🏛️</span>
                     ) : cell.isSunday ? (
                       <span style={{ fontSize: '0.75rem' }}>🎯</span>
                     ) : null}
@@ -546,9 +543,6 @@ export default function CalendarView({
           </span>
           <span style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
             <span style={{ width: '12px', height: '12px', background: 'var(--highlight-blue)', border: '1px solid #1E40AF', borderRadius: '3px' }}></span> In Progress
-          </span>
-          <span style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
-            <span style={{ width: '12px', height: '12px', background: 'var(--highlight-pink)', border: '1px solid #9F1239', borderRadius: '3px' }}></span> IPU Exam Milestone
           </span>
           <span style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
             <span style={{ width: '12px', height: '12px', background: 'var(--highlight-orange)', border: '1px solid #9A3412', borderRadius: '3px' }}></span> Sunday Test Block
