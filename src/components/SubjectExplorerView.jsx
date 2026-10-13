@@ -7,7 +7,10 @@ import {
   Clock, 
   PlayCircle, 
   Layers,
-  FileText
+  FileText,
+  Target,
+  Zap,
+  Video
 } from 'lucide-react';
 import { playClick, playSuccessChime } from '../utils/audio';
 
@@ -22,14 +25,14 @@ export default function SubjectExplorerView({
   const [selectedSubjectKey, setSelectedSubjectKey] = useState('c_programming');
 
   const subjectList = [
-    { key: 'c_programming', name: 'C Programming', icon: '💻', count: coreSubjects.c_programming?.days?.length || 5 },
-    { key: 'data_structures', name: 'Data Structures', icon: '🌲', count: coreSubjects.data_structures?.days?.length || 9 },
+    { key: 'c_programming', name: 'C Programming', icon: '⌨', count: coreSubjects.c_programming?.days?.length || 5 },
+    { key: 'data_structures', name: 'Data Structures', icon: '⬡', count: coreSubjects.data_structures?.days?.length || 9 },
     { key: 'algorithms', name: 'Algorithms (DAA)', icon: '⚡', count: coreSubjects.algorithms?.days?.length || 13 },
-    { key: 'compiler_design', name: 'Compiler Design', icon: '⚙️', count: coreSubjects.compiler_design?.days?.length || 7 },
-    { key: 'operating_systems', name: 'Operating Systems', icon: '🖥️', count: coreSubjects.operating_systems?.days?.length || 10 },
-    { key: 'computer_networks', name: 'Computer Networks', icon: '🌐', count: coreSubjects.computer_networks?.days?.length || 8 },
-    { key: 'engineering_maths', name: 'Engineering Maths', icon: '📐', count: engineeringMaths?.days?.length || 52 },
-    { key: 'general_aptitude', name: 'General Aptitude', icon: '🧩', count: generalAptitude?.days?.length || 52 },
+    { key: 'compiler_design', name: 'Compiler Design', icon: '⚙', count: coreSubjects.compiler_design?.days?.length || 7 },
+    { key: 'operating_systems', name: 'Operating Systems', icon: '⌘', count: coreSubjects.operating_systems?.days?.length || 10 },
+    { key: 'computer_networks', name: 'Computer Networks', icon: '◎', count: coreSubjects.computer_networks?.days?.length || 8 },
+    { key: 'engineering_maths', name: 'Engineering Maths', icon: '⌬', count: engineeringMaths?.days?.length || 52 },
+    { key: 'general_aptitude', name: 'General Aptitude', icon: '★', count: generalAptitude?.days?.length || 52 },
   ];
 
   let currentSubject = null;
@@ -181,7 +184,7 @@ export default function SubjectExplorerView({
             alignItems: 'center'
           }}>
             <span style={{ fontSize: '0.82rem', fontWeight: 700, color: 'var(--ink-green)', display: 'flex', alignItems: 'center', gap: '4px' }}>
-              🎯 Free Practice Quizzes:
+              <Target size={13} color="#000" strokeWidth={2} /> Free Practice Quizzes:
             </span>
             {currentSubject.quizzes.map((qz, idx) => (
               <a
@@ -237,17 +240,17 @@ export default function SubjectExplorerView({
                       </span>
                       {day.round && (
                         <span className="badge-sketch badge-sketch-orange" style={{ fontSize: '0.75rem' }}>
-                          🔄 {day.round}
+                          ↻ {day.round}
                         </span>
                       )}
                       {day.bookRef && (
-                        <span className="badge-sketch badge-sketch-blue" style={{ fontSize: '0.75rem' }}>
-                          📖 {day.bookRef}
+                        <span className="badge-sketch badge-sketch-blue" style={{ fontSize: '0.75rem', display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                          <BookOpen size={11} color="#000" strokeWidth={2} /> {day.bookRef}
                         </span>
                       )}
                       {day.sameDaySubject && (
                         <span className="badge-sketch" style={{ fontSize: '0.75rem' }}>
-                          🔗 With: {day.sameDaySubject}
+                          ⚯ With: {day.sameDaySubject}
                         </span>
                       )}
                     </div>
@@ -267,20 +270,20 @@ export default function SubjectExplorerView({
 
                     {/* Source details */}
                     {(day.source || day.playlist || day.mainPlaylist) && (
-                      <div style={{ fontSize: '0.8rem', color: 'var(--ink-purple)', marginTop: '4px' }}>
-                        🎥 Source: <strong>{day.source || day.playlist || day.mainPlaylist}</strong>
+                      <div style={{ fontSize: '0.8rem', color: 'var(--ink-purple)', marginTop: '4px', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                        <Video size={13} color="#000" strokeWidth={2} /> Source: <strong>{day.source || day.playlist || day.mainPlaylist}</strong>
                       </div>
                     )}
 
                     {(day.practicePyq || day.quickPractice) && (
-                      <div style={{ fontSize: '0.85rem', color: 'var(--ink-green)', marginTop: '6px', fontWeight: 700 }}>
-                        🎯 Practice Target: {day.practicePyq || day.quickPractice}
+                      <div style={{ fontSize: '0.85rem', color: 'var(--ink-green)', marginTop: '6px', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '4px' }}>
+                        <Target size={13} color="#000" strokeWidth={2} /> Practice Target: {day.practicePyq || day.quickPractice}
                       </div>
                     )}
 
                     {day.notes && (
-                      <div style={{ fontSize: '0.8rem', color: 'var(--ink-amber)', marginTop: '4px' }}>
-                        💡 Note: {day.notes}
+                      <div style={{ fontSize: '0.8rem', color: 'var(--ink-amber)', marginTop: '4px', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                        <Zap size={13} color="#000" strokeWidth={2} /> Note: {day.notes}
                       </div>
                     )}
                   </div>

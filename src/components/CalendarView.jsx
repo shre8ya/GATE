@@ -258,7 +258,7 @@ export default function CalendarView({
               <span style={{ fontSize: '0.85rem', color: 'var(--ink-secondary)' }}>Master Schedule & Custom Plan Editor</span>
             </div>
             <h1 className="font-title" style={{ fontSize: '1.9rem', margin: '6px 0 0' }}>
-              🗓️ GATE 2027 Study Desk Calendar
+              GATE 2027 Study Desk Calendar
             </h1>
             <p style={{ color: 'var(--ink-secondary)', fontSize: '0.95rem', marginTop: '4px' }}>
               Click any date to inspect details, add personal college/study tasks, toggle completion, or sync directly to Google Calendar.
@@ -282,7 +282,7 @@ export default function CalendarView({
               }}
               style={{ fontSize: '0.85rem' }}
             >
-              🎯 Current Month (Oct)
+              Current Month (Oct)
             </button>
           </div>
         </div>
@@ -473,10 +473,30 @@ export default function CalendarView({
                     ) : cell.status === 'In Progress' ? (
                       <span style={{ fontSize: '0.7rem', color: '#1E40AF', fontWeight: 800 }}>●</span>
                     ) : cell.isGateExam ? (
-                      <span style={{ fontSize: '0.75rem' }}>🏆</span>
+                      <span style={{ fontSize: '0.75rem', fontWeight: 700 }}>★</span>
                     ) : cell.isSunday ? (
-                      <span style={{ fontSize: '0.75rem' }}>🎯</span>
+                      <span style={{ fontSize: '0.75rem', fontWeight: 700 }}>◎</span>
                     ) : null}
+
+                    {/* AI Task Shift Indicator Badge */}
+                    {cell.scheduleItem?.shiftStatus?.type === 'shifted_out' && (
+                      <span 
+                        className="badge-sketch" 
+                        style={{ fontSize: '0.6rem', border: '1px dashed #000', padding: '0 3px', fontWeight: 700 }}
+                        title={`Task shifted to ${cell.scheduleItem.shiftStatus.targetDate}`}
+                      >
+                        ↪ Moved
+                      </span>
+                    )}
+                    {cell.scheduleItem?.shiftStatus?.type === 'shifted_in' && (
+                      <span 
+                        className="badge-sketch badge-sketch-blue" 
+                        style={{ fontSize: '0.6rem', padding: '0 3px', fontWeight: 700 }}
+                        title={`Absorbed from ${cell.scheduleItem.shiftStatus.originDate}`}
+                      >
+                        ⚡ Catch-Up
+                      </span>
+                    )}
 
                     {/* Custom task indicator */}
                     {customTasksCount > 0 && (
@@ -594,7 +614,7 @@ export default function CalendarView({
               <div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                   <span className="badge-sketch badge-sketch-yellow" style={{ fontSize: '0.85rem' }}>
-                    📅 {modalDay.dateStr}
+                    {modalDay.dateStr}
                   </span>
                   <span className="badge-sketch" style={{ 
                     background: modalDay.status === 'Done' ? 'var(--highlight-green)' : 'var(--highlight-blue)',
@@ -674,13 +694,36 @@ export default function CalendarView({
                 <div className="font-title" style={{ fontSize: '1.25rem', marginTop: '4px' }}>
                   {modalDay.scheduleItem.subject}: {modalDay.scheduleItem.mainFocus}
                 </div>
+
+                {/* AI Task Shift Detailed Route Badge */}
+                {modalDay.scheduleItem.shiftStatus && (
+                  <div style={{
+                    marginTop: '8px',
+                    padding: '8px 12px',
+                    borderRadius: '6px',
+                    background: modalDay.scheduleItem.shiftStatus.type === 'shifted_out' ? 'rgba(0,0,0,0.03)' : 'var(--paper-card-subtle)',
+                    border: modalDay.scheduleItem.shiftStatus.type === 'shifted_out' ? '1.5px dashed #000' : '1.5px solid #000',
+                    fontSize: '0.84rem'
+                  }}>
+                    {modalDay.scheduleItem.shiftStatus.type === 'shifted_out' ? (
+                      <div>
+                        <strong>↪ Task Shifted:</strong> "<em>{modalDay.scheduleItem.shiftStatus.movedTopic || modalDay.scheduleItem.mainFocus}</em>" was moved to <strong>{modalDay.scheduleItem.shiftStatus.targetDate} ({modalDay.scheduleItem.shiftStatus.targetDay})</strong> via <em>{modalDay.scheduleItem.shiftStatus.strategy}</em>.
+                      </div>
+                    ) : (
+                      <div>
+                        <strong>⚡ Absorbed Catch-Up Task:</strong> Shifted here from <strong>{modalDay.scheduleItem.shiftStatus.originDate}</strong> ({modalDay.scheduleItem.shiftStatus.originSubject}: <em>{modalDay.scheduleItem.shiftStatus.originTopic}</em>) via <em>{modalDay.scheduleItem.shiftStatus.strategy}</em>.
+                      </div>
+                    )}
+                  </div>
+                )}
+
                 {modalDay.scheduleItem.mathsLecture && (
-                  <div style={{ fontSize: '0.88rem', color: 'var(--ink-blue)', marginTop: '4px' }}>
-                    📐 <strong>Maths:</strong> {modalDay.scheduleItem.mathsLecture}
+                  <div style={{ fontSize: '0.88rem', color: 'var(--ink-blue)', marginTop: '6px' }}>
+                    <strong>Maths Lecture:</strong> {modalDay.scheduleItem.mathsLecture}
                   </div>
                 )}
                 <div style={{ fontSize: '0.82rem', color: 'var(--ink-secondary)', marginTop: '4px' }}>
-                  ⏱️ <strong>Target Hours:</strong> {modalDay.scheduleItem.totalHrs} hrs | <strong>Easy Start:</strong> {modalDay.scheduleItem.easyStartMin}m
+                  <strong>Target Hours:</strong> {modalDay.scheduleItem.totalHrs} hrs | <strong>Easy Start:</strong> {modalDay.scheduleItem.easyStartMin}m
                 </div>
               </div>
             )}
@@ -689,7 +732,7 @@ export default function CalendarView({
             <div style={{ marginTop: '14px' }}>
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '8px' }}>
                 <h3 className="font-title" style={{ fontSize: '1.15rem', margin: 0 }}>
-                  📝 My Custom Tasks & Notes ({modalDay.dayCustomEvents?.length || 0})
+                  My Custom Tasks & Notes ({modalDay.dayCustomEvents?.length || 0})
                 </h3>
               </div>
 
@@ -728,7 +771,7 @@ export default function CalendarView({
                           </div>
                           <div style={{ fontSize: '0.75rem', color: 'var(--ink-secondary)', display: 'flex', gap: '8px', marginTop: '2px' }}>
                             <span className="badge-sketch" style={{ padding: '1px 5px', fontSize: '0.7rem' }}>{task.category}</span>
-                            <span>⏱️ {task.plannedHrs}h</span>
+                            <span>{task.plannedHrs}h</span>
                             {task.notes && <span>• {task.notes}</span>}
                           </div>
                         </div>

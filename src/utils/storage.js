@@ -6,7 +6,7 @@ export const STORAGE_KEY_PREFIX = 'GATE_MATRIX_2027_';
 export const DEFAULT_PROFILE = {
   id: 'profile_default',
   name: 'Shreya',
-  avatar: '🦉',
+  avatar: '⌘',
   targetRank: 'AIR < 100',
   targetScore: '80+ Marks',
   college: 'GGSIPU (5th Sem CSE)',

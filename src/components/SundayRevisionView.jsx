@@ -11,7 +11,12 @@ import {
   FileText,
   ExternalLink,
   CheckCircle2,
-  Filter
+  Filter,
+  Target,
+  BarChart3,
+  ShieldAlert,
+  AlertTriangle,
+  Calendar
 } from 'lucide-react';
 import { playClick, playSuccessChime, playBell } from '../utils/audio';
 import { fireTaskConfetti, fireFullDayConfetti } from '../utils/confetti';
@@ -258,8 +263,8 @@ export default function SundayRevisionView({
               <span className="badge-sketch badge-sketch-pink">WEEKLY CONSOLIDATION & QUESTION PAPERS VAULT</span>
               <span style={{ fontSize: '0.85rem', color: 'var(--ink-secondary)' }}>Protocol: 30m Notes → 90m Timed Test → 60m Error Redo</span>
             </div>
-            <h1 className="font-title" style={{ fontSize: '1.9rem', margin: '6px 0 0' }}>
-              📝 Sunday Revision & Official Question Papers Hub
+            <h1 className="font-title" style={{ fontSize: '1.9rem', margin: '6px 0 0', display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <FileText size={22} color="#000" strokeWidth={2.2} /> Sunday Revision & Official Question Papers Hub
             </h1>
             <p style={{ color: 'var(--ink-secondary)', fontSize: '0.95rem', marginTop: '4px' }}>
               Practice full-length previous year GATE question papers and IPU End-Term exams with integrated clock timers.
@@ -287,14 +292,16 @@ export default function SundayRevisionView({
           <button 
             className={`btn-sketch ${viewTab === 'protocols' ? 'btn-sketch-primary' : ''}`}
             onClick={() => setViewTab('protocols')}
+            style={{ display: 'flex', alignItems: 'center', gap: '6px' }}
           >
-            📋 Weekly Sunday Revision Schedule
+            <Calendar size={15} color="#000" strokeWidth={2} /> Weekly Sunday Revision Schedule
           </button>
           <button 
             className={`btn-sketch ${viewTab === 'papers' ? 'btn-sketch-primary' : ''}`}
             onClick={() => setViewTab('papers')}
+            style={{ display: 'flex', alignItems: 'center', gap: '6px' }}
           >
-            📜 Official GATE & IPU Question Papers ({OFFICIAL_PAPERS.length})
+            <BookOpen size={15} color="#000" strokeWidth={2} /> Official GATE & IPU Question Papers ({OFFICIAL_PAPERS.length})
           </button>
         </div>
       </div>
@@ -401,8 +408,8 @@ export default function SundayRevisionView({
             /* Question Papers Vault List */
             <>
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '10px' }}>
-                <h2 className="font-title" style={{ fontSize: '1.35rem', margin: 0 }}>
-                  📜 Previous Year & University Question Papers
+                <h2 className="font-title" style={{ fontSize: '1.35rem', margin: 0, display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <BookOpen size={18} color="#000" strokeWidth={2.2} /> Previous Year & University Question Papers
                 </h2>
                 <div style={{ display: 'flex', gap: '6px' }}>
                   <button 
@@ -449,13 +456,15 @@ export default function SundayRevisionView({
                         {paper.title}
                       </h3>
 
-                      <div style={{ fontSize: '0.85rem', color: 'var(--ink-secondary)' }}>
-                        🎯 <strong>High-Weightage Topics:</strong> {paper.keyTopics}
+                      <div style={{ fontSize: '0.85rem', color: 'var(--ink-secondary)', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                        <Target size={13} color="#000" strokeWidth={2} />
+                        <span><strong>High-Weightage Topics:</strong> {paper.keyTopics}</span>
                       </div>
 
                       {paper.cutoff && (
-                        <div style={{ fontSize: '0.8rem', color: 'var(--ink-green)', marginTop: '4px', fontWeight: 600 }}>
-                          📊 Benchmark Cutoff: {paper.cutoff}
+                        <div style={{ fontSize: '0.8rem', color: 'var(--ink-green)', marginTop: '4px', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '6px' }}>
+                          <BarChart3 size={13} color="#000" strokeWidth={2} />
+                          <span>Benchmark Cutoff: {paper.cutoff}</span>
                         </div>
                       )}
                     </div>
@@ -550,9 +559,13 @@ export default function SundayRevisionView({
               color: 'var(--ink-muted)', 
               background: 'var(--paper-card-subtle)', 
               padding: '8px', 
-              borderRadius: '6px' 
+              borderRadius: '6px',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '6px'
             }}>
-              🔒 Close books, put phone on silent. Follow virtual GATE calculator rules only.
+              <ShieldAlert size={14} color="#000" strokeWidth={2} />
+              <span>Close books, put phone on silent. Follow virtual GATE calculator rules only.</span>
             </div>
           </div>
 
@@ -560,7 +573,7 @@ export default function SundayRevisionView({
           <div className="sketch-card" style={{ padding: '20px' }}>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '14px' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                <Award size={18} color="#D97706" />
+                <Award size={18} color="#000" strokeWidth={2} />
                 <h3 className="font-title" style={{ fontSize: '1.2rem', margin: 0 }}>Mock & Paper Scorecards</h3>
               </div>
               <button 
@@ -597,8 +610,9 @@ export default function SundayRevisionView({
                         {t.date} • Correct: {t.correctCount || '-'} • Wrong: {t.wrongCount || '-'}
                       </div>
                       {t.weakTopics && (
-                        <div style={{ fontSize: '0.75rem', color: '#DC2626', marginTop: '2px' }}>
-                          ⚠️ Weak: {t.weakTopics}
+                        <div style={{ fontSize: '0.75rem', color: '#DC2626', marginTop: '2px', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                          <AlertTriangle size={12} color="#000" strokeWidth={2} />
+                          <span>Weak: {t.weakTopics}</span>
                         </div>
                       )}
                     </div>

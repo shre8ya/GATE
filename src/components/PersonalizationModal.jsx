@@ -42,7 +42,7 @@ export default function PersonalizationModal({
   
   // Profile Fields
   const [name, setName] = useState(userProfile.name || 'Shreya');
-  const [avatar, setAvatar] = useState(userProfile.avatar || '🦉');
+  const [avatar, setAvatar] = useState(userProfile.avatar || '⌘');
   const [targetRank, setTargetRank] = useState(userProfile.targetRank || 'AIR < 100');
   const [targetScore, setTargetScore] = useState(userProfile.targetScore || '80+ Marks');
   const [college, setCollege] = useState(userProfile.college || 'GGSIPU (5th Sem CSE)');
@@ -52,7 +52,7 @@ export default function PersonalizationModal({
   // New Profile Creation Inline State
   const [showCreateForm, setShowCreateForm] = useState(false);
   const [newProfileName, setNewProfileName] = useState('');
-  const [newProfileAvatar, setNewProfileAvatar] = useState('⚡');
+  const [newProfileAvatar, setNewProfileAvatar] = useState('⌘');
   const [newProfileCollege, setNewProfileCollege] = useState('');
   const [newProfileTargetRank, setNewProfileTargetRank] = useState('AIR < 200');
   const [newProfileTargetScore, setNewProfileTargetScore] = useState('75+ Marks');
@@ -60,16 +60,16 @@ export default function PersonalizationModal({
   const [newProfileWeakSubjects, setNewProfileWeakSubjects] = useState('');
 
   const avatars = [
-    { emoji: '🦉', label: 'The Architect' },
+    { emoji: '⌘', label: 'The Architect' },
     { emoji: '⚡', label: 'The Sprinter' },
-    { emoji: '🎯', label: 'The Precisionist' },
-    { emoji: '🧠', label: 'The Math Wizard' },
-    { emoji: '🚀', label: 'The Visionary' },
-    { emoji: '💻', label: 'The Hacker' },
-    { emoji: '☕', label: 'The Night Owl' },
-    { emoji: '🌅', label: 'The Early Bird' },
-    { emoji: '🥇', label: 'The Topper' },
-    { emoji: '🔬', label: 'The Researcher' }
+    { emoji: '◎', label: 'The Precisionist' },
+    { emoji: '⬡', label: 'The Analyst' },
+    { emoji: '⌨', label: 'The Hacker' },
+    { emoji: '☕', label: 'Focus Mode' },
+    { emoji: '★', label: 'The Topper' },
+    { emoji: '⌬', label: 'The Researcher' },
+    { emoji: '⚑', label: 'The Strategist' },
+    { emoji: '◈', label: 'The Scholar' }
   ];
 
   const handleSave = (e) => {
@@ -191,25 +191,25 @@ export default function PersonalizationModal({
             type="button"
             className={`btn-sketch ${activeTab === 'profile' ? 'btn-sketch-primary' : ''}`}
             onClick={() => { playClick(); setActiveTab('profile'); }}
-            style={{ fontSize: '0.85rem' }}
+            style={{ fontSize: '0.85rem', display: 'flex', alignItems: 'center', gap: '6px' }}
           >
-            👤 Personalization
+            <User size={14} color="#000" strokeWidth={2} /> Personalization
           </button>
           <button 
             type="button"
             className={`btn-sketch ${activeTab === 'records' ? 'btn-sketch-primary' : ''}`}
             onClick={() => { playClick(); setActiveTab('records'); }}
-            style={{ fontSize: '0.85rem' }}
+            style={{ fontSize: '0.85rem', display: 'flex', alignItems: 'center', gap: '6px' }}
           >
-            📊 Maintained Records ({studySessions.length})
+            <BarChart2 size={14} color="#000" strokeWidth={2} /> Maintained Records ({studySessions.length})
           </button>
           <button 
             type="button"
             className={`btn-sketch ${activeTab === 'switch' ? 'btn-sketch-primary' : ''}`}
             onClick={() => { playClick(); setActiveTab('switch'); }}
-            style={{ fontSize: '0.85rem' }}
+            style={{ fontSize: '0.85rem', display: 'flex', alignItems: 'center', gap: '6px' }}
           >
-            👥 Switch Profile ({profilesList.length})
+            <UserCheck size={14} color="#000" strokeWidth={2} /> Switch Profile ({profilesList.length})
           </button>
         </div>
 
@@ -398,8 +398,8 @@ export default function PersonalizationModal({
               </div>
             </div>
 
-            <h3 className="font-title" style={{ fontSize: '1.15rem', marginBottom: '8px' }}>
-              📜 Chronological Focus Sessions History for {name}:
+            <h3 className="font-title" style={{ fontSize: '1.15rem', marginBottom: '8px', display: 'flex', alignItems: 'center', gap: '6px' }}>
+              <Clock size={16} color="#000" strokeWidth={2} /> Chronological Focus Sessions History for {name}:
             </h3>
 
             {studySessions.length === 0 ? (
@@ -426,8 +426,8 @@ export default function PersonalizationModal({
                       <strong>{s.subject}</strong> — {s.topic}
                       <div style={{ fontSize: '0.75rem', color: 'var(--ink-muted)' }}>{s.date || 'Today'}</div>
                     </div>
-                    <span className="badge-sketch badge-sketch-green">
-                      ⏱️ {s.durationMinutes} min
+                    <span className="badge-sketch badge-sketch-green" style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                      <Clock size={11} color="#000" strokeWidth={2} /> {s.durationMinutes} min
                     </span>
                   </div>
                 ))}
@@ -471,8 +471,8 @@ export default function PersonalizationModal({
                   marginBottom: '16px' 
                 }}
               >
-                <h4 className="font-title" style={{ margin: '0 0 10px 0', fontSize: '1.1rem' }}>
-                  ✨ Setup New Student Profile:
+                <h4 className="font-title" style={{ margin: '0 0 10px 0', fontSize: '1.1rem', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                  <Plus size={16} color="#000" strokeWidth={2} /> Setup New Student Profile:
                 </h4>
 
                 {/* Avatar Picker for New Profile */}
@@ -597,7 +597,7 @@ export default function PersonalizationModal({
                     }}
                   >
                     <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                      <span style={{ fontSize: '1.8rem' }}>{p.avatar || '🦉'}</span>
+                      <span style={{ fontSize: '1.8rem' }}>{p.avatar || '⌘'}</span>
                       <div>
                         <div style={{ fontWeight: 700, fontSize: '1.05rem', display: 'flex', alignItems: 'center', gap: '8px' }}>
                           <span>{p.name}</span>

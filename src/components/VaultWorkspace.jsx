@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { AlertTriangle, Zap, CheckCircle, FileText, Sparkles } from 'lucide-react';
+import { AlertTriangle, Zap, CheckCircle, FileText, Sparkles, Shield } from 'lucide-react';
 import ErrorLogView from './ErrorLogView';
 import FormulaVaultView from './FormulaVaultView';
 import SundayRevisionView from './SundayRevisionView';
@@ -59,8 +59,8 @@ export default function VaultWorkspace({
                 Your Weakness Eraser Suite
               </span>
             </div>
-            <h1 className="font-title" style={{ fontSize: '1.75rem', margin: '4px 0 0' }}>
-              🛡️ Weapon Vault & Diagnostic Center
+            <h1 className="font-title" style={{ fontSize: '1.75rem', margin: '4px 0 0', display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <Shield size={22} color="#000" strokeWidth={2.2} /> Weapon Vault & Diagnostic Center
             </h1>
           </div>
 

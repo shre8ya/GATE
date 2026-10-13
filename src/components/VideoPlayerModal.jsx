@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { X, ExternalLink, FileEdit, Check, Sparkles, BookOpen, Clock } from 'lucide-react';
+import { X, ExternalLink, FileEdit, Check, Sparkles, BookOpen, Clock, Search, Shield } from 'lucide-react';
 import { playClick, playSuccessChime } from '../utils/audio';
 
 export default function VideoPlayerModal({ 
@@ -241,17 +241,17 @@ export default function VideoPlayerModal({
                       target="_blank"
                       rel="noreferrer"
                       className="btn-sketch"
-                      style={{ padding: '8px 18px', fontSize: '0.9rem' }}
+                      style={{ padding: '8px 18px', fontSize: '0.9rem', display: 'flex', alignItems: 'center', gap: '6px' }}
                     >
-                      🔎 Search Specific Topic
+                      <Search size={14} color="#000" strokeWidth={2} /> Search Specific Topic
                     </a>
                   )}
                 </div>
               </div>
             )}
 
-            <div style={{ fontSize: '0.75rem', color: 'var(--ink-muted)', marginTop: '8px', textAlign: 'center' }}>
-              🛡️ Privacy-enhanced mode active. Recommendations, social feeds, and comments are blocked to preserve focus.
+            <div style={{ fontSize: '0.75rem', color: 'var(--ink-muted)', marginTop: '8px', textAlign: 'center', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px' }}>
+              <Shield size={13} color="#000" strokeWidth={2} /> Privacy-enhanced mode active. Recommendations, social feeds, and comments are blocked to preserve focus.
             </div>
           </div>
 

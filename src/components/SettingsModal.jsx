@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Settings, User, Target, Key, AlertOctagon, Check } from 'lucide-react';
+import { Settings, User, Target, Key, AlertOctagon, Check, Zap } from 'lucide-react';
 import { playClick, playSuccessChime } from '../utils/audio';
 
 export default function SettingsModal({ 
@@ -39,7 +39,7 @@ export default function SettingsModal({
         
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '20px' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-            <span style={{ fontSize: '1.6rem' }}>⚙️</span>
+            <Settings size={26} color="#000" strokeWidth={2.2} />
             <div>
               <h2 className="font-title" style={{ fontSize: '1.4rem', margin: 0 }}>
                 Personal Profile & Settings
@@ -109,7 +109,7 @@ export default function SettingsModal({
             alignItems: 'center',
             gap: '10px'
           }}>
-            <span style={{ fontSize: '1.2rem' }}>⚡</span>
+            <Zap size={18} color="#000" strokeWidth={2} />
             <div style={{ fontSize: '0.82rem', color: 'var(--text-secondary)' }}>
               <strong style={{ color: 'var(--text-primary)' }}>Built-in Gemini AI Active:</strong> Automatic AI catch-up planning, smart rescheduling, and resource recommendations are ready out of the box.
             </div>

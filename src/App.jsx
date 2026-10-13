@@ -573,6 +573,7 @@ export default function App() {
           dayStatus={dayStatus}
           onApplyRescheduledSchedule={handleApplyRescheduledSchedule}
           onClose={() => setShowReschedule(false)}
+          userProfile={userProfile}
         />
       )}
 
@@ -595,6 +596,7 @@ export default function App() {
         masterSchedule={masterSchedule}
         customResources={customResources}
         onApplyCustomResource={handleApplyCustomResource}
+        userProfile={userProfile}
       />
 
       {/* Footer */}

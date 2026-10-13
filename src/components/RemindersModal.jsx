@@ -24,7 +24,7 @@ export default function RemindersModal({
 
   const handleTestNotification = () => {
     playClick();
-    sendNotification("🎯 GATE Matrix Alert Test", {
+    sendNotification("GATE Matrix Alert Test", {
       body: "Reminders are working! Time for today's Engineering Maths lecture.",
       playSound: soundEnabled
     });
@@ -50,7 +50,7 @@ export default function RemindersModal({
         
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-            <span style={{ fontSize: '1.6rem' }}>🔔</span>
+            <Bell size={26} color="#000" strokeWidth={2.2} />
             <div>
               <h2 className="font-title" style={{ fontSize: '1.4rem', margin: 0 }}>
                 Study Reminders & Timetable Alerts
@@ -96,8 +96,8 @@ export default function RemindersModal({
               Enable Alerts
             </button>
           ) : (
-            <button type="button" className="btn-sketch" onClick={handleTestNotification} style={{ fontSize: '0.8rem', padding: '6px 12px' }}>
-              🔔 Test Alert
+            <button type="button" className="btn-sketch" onClick={handleTestNotification} style={{ fontSize: '0.8rem', padding: '6px 12px', display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+              <Bell size={13} color="#000" strokeWidth={2} /> Test Alert
             </button>
           )}
         </div>

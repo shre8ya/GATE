@@ -1,7 +1,10 @@
 import React, { useState } from 'react';
 import { 
   ChevronDown, 
-  ChevronUp 
+  ChevronUp,
+  Map,
+  Terminal,
+  Layers
 } from 'lucide-react';
 import { playClick, playSuccessChime } from '../utils/audio';
 import { fireTaskConfetti } from '../utils/confetti';
@@ -51,8 +54,8 @@ export default function SyllabusMatrixView({
               <span className="badge-sketch badge-sketch-blue">IIT MADRAS OFFICIAL</span>
               <span style={{ fontSize: '0.85rem', color: 'var(--ink-secondary)' }}>Parsed from CS_GATE2027_Syllabus.pdf</span>
             </div>
-            <h1 className="font-title" style={{ fontSize: '1.9rem', margin: '6px 0 0' }}>
-              🗺️ GATE 2027 Official Syllabus Matrix
+            <h1 className="font-title" style={{ fontSize: '1.9rem', margin: '6px 0 0', display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <Map size={22} color="#000" strokeWidth={2.2} /> GATE 2027 Official Syllabus Matrix
             </h1>
             <p style={{ color: 'var(--ink-secondary)', fontSize: '0.95rem', marginTop: '4px' }}>
               Track comprehensive coverage: Lectures → Short Notes → PYQ Mastery for every syllabus topic.
@@ -63,14 +66,16 @@ export default function SyllabusMatrixView({
             <button
               className={`btn-sketch ${activeTab === 'cs' ? 'btn-sketch-primary' : ''}`}
               onClick={() => { playClick(); setActiveTab('cs'); }}
+              style={{ display: 'flex', alignItems: 'center', gap: '6px' }}
             >
-              💻 Computer Science (10 Sections)
+              <Terminal size={14} color="#000" strokeWidth={2} /> Computer Science (10 Sections)
             </button>
             <button
               className={`btn-sketch ${activeTab === 'ga' ? 'btn-sketch-primary' : ''}`}
               onClick={() => { playClick(); setActiveTab('ga'); }}
+              style={{ display: 'flex', alignItems: 'center', gap: '6px' }}
             >
-              🧩 General Aptitude (4 Sections)
+              <Layers size={14} color="#000" strokeWidth={2} /> General Aptitude (4 Sections)
             </button>
           </div>
         </div>

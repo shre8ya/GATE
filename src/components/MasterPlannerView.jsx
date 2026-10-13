@@ -6,7 +6,9 @@ import {
   Clock, 
   ArrowUpRight,
   BookOpen,
-  Sparkles
+  Sparkles,
+  ArrowRight,
+  Zap
 } from 'lucide-react';
 import { playClick, playSuccessChime } from '../utils/audio';
 
@@ -91,7 +93,7 @@ export default function MasterPlannerView({
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '16px' }}>
           <div>
             <h1 className="font-title" style={{ fontSize: '1.9rem', margin: 0, display: 'flex', alignItems: 'center', gap: '10px' }}>
-              <span>📅</span> Master 80-Day Calendar & Planner
+              <Calendar size={22} color="#000" strokeWidth={2.2} /> Master 80-Day Calendar & Planner
             </h1>
             <p style={{ color: 'var(--ink-secondary)', fontSize: '0.95rem', marginTop: '4px' }}>
               Every day scheduled with minute allocations, daily Maths lectures, and core blocks.
@@ -100,11 +102,11 @@ export default function MasterPlannerView({
 
           <div style={{ display: 'flex', gap: '14px', alignItems: 'center', flexWrap: 'wrap' }}>
             <button 
-              className="btn-sketch btn-sketch-pink"
+              className="btn-sketch"
               onClick={onOpenReschedule}
-              style={{ fontSize: '0.85rem' }}
+              style={{ fontSize: '0.85rem', display: 'flex', alignItems: 'center', gap: '6px' }}
             >
-              <Sparkles size={15} /> AI Dynamic Reschedule
+              <Sparkles size={15} color="#000" strokeWidth={2} /> AI Dynamic Reschedule
             </button>
 
             <div style={{ textAlign: 'right' }}>
@@ -226,8 +228,18 @@ export default function MasterPlannerView({
                       <span className="badge-sketch badge-sketch-yellow">{item.subject}</span>
                       <span className="badge-sketch badge-sketch-blue">{item.type}</span>
                       <span className="badge-sketch" style={{ background: 'var(--paper-card-subtle)' }}>
-                        <Clock size={12} /> {item.totalHrs}h
+                        <Clock size={12} color="#000" /> {item.totalHrs}h
                       </span>
+                      {item.shiftStatus?.type === 'shifted_out' && (
+                        <span className="badge-sketch" style={{ background: '#FEF3C7', border: '1.5px solid #000', fontWeight: 700, display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                          <ArrowRight size={11} color="#000" strokeWidth={2.5} /> Shifted → {item.shiftStatus.targetDate} ({item.shiftStatus.targetDay || 'Target'})
+                        </span>
+                      )}
+                      {item.shiftStatus?.type === 'shifted_in' && (
+                        <span className="badge-sketch" style={{ background: '#D1FAE5', border: '1.5px solid #000', fontWeight: 700, display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                          <Zap size={11} color="#000" strokeWidth={2.5} /> Catch-Up ← {item.shiftStatus.originDate}
+                        </span>
+                      )}
                     </div>
 
                     <h3 className="font-title" style={{ 
@@ -239,9 +251,40 @@ export default function MasterPlannerView({
                       {item.mainFocus}
                     </h3>
 
+                    {/* Explicit Task Shift Destination & Origin Card */}
+                    {item.shiftStatus && (
+                      <div style={{ 
+                        margin: '8px 0', 
+                        padding: '8px 12px', 
+                        background: item.shiftStatus.type === 'shifted_out' ? '#FFFBEB' : '#ECFDF5', 
+                        border: '1.5px solid #000', 
+                        borderRadius: '4px',
+                        fontSize: '0.82rem',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '8px'
+                      }}>
+                        {item.shiftStatus.type === 'shifted_out' ? (
+                          <>
+                            <ArrowRight size={14} color="#000" strokeWidth={2.5} style={{ flexShrink: 0 }} />
+                            <span>
+                              <strong>TASK SHIFTED TO ANOTHER SLOT:</strong> <em>"{item.shiftStatus.movedTopic || item.mainFocus}"</em> was shifted to <strong>{item.shiftStatus.targetDate} ({item.shiftStatus.targetDay || 'Target'})</strong> via {item.shiftStatus.strategy || 'AI Shift'}.
+                            </span>
+                          </>
+                        ) : (
+                          <>
+                            <Zap size={14} color="#000" strokeWidth={2.5} style={{ flexShrink: 0 }} />
+                            <span>
+                              <strong>ABSORBED CATCH-UP WORKLOAD:</strong> Slot absorbed shifted task from <strong>{item.shiftStatus.originDate}</strong> ({item.shiftStatus.originSubject ? `${item.shiftStatus.originSubject}: ` : ''}<em>"{item.shiftStatus.originTopic}"</em>) via {item.shiftStatus.strategy || 'AI Catch-Up'}.
+                            </span>
+                          </>
+                        )}
+                      </div>
+                    )}
+
                     {item.mathsLecture && (
                       <div style={{ fontSize: '0.85rem', color: 'var(--ink-blue)', marginTop: '4px', display: 'flex', alignItems: 'center', gap: '6px' }}>
-                        <BookOpen size={14} />
+                        <BookOpen size={14} color="#000" />
                         <span>Maths: {item.mathsLecture}</span>
                       </div>
                     )}
@@ -263,8 +306,9 @@ export default function MasterPlannerView({
                     </div>
 
                     {item.note && (
-                      <div style={{ fontSize: '0.8rem', color: 'var(--ink-amber)', marginTop: '4px', fontWeight: 600 }}>
-                        💡 {item.note}
+                      <div style={{ fontSize: '0.8rem', color: 'var(--ink-amber)', marginTop: '4px', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '5px' }}>
+                        <Zap size={13} color="#000" strokeWidth={2} />
+                        <span>Note: {item.note}</span>
                       </div>
                     )}
                   </div>

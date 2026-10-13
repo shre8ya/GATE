@@ -4,7 +4,33 @@ All notable changes to this project are documented in this file using Semantic V
 
 ---
 
-## [v1.6.0] — 2026-10-13 (Current Release)
+## [v1.6.1] — 2026-10-14
+### ↪ Explicit Task Shift Routing & Destination Visibility
+- **Complete Origin-to-Destination Transparency**: When the AI reschedules or cascades tasks (Sunday Buffer Absorption, 72-Hour Micro-Sprint, or Smart Shift):
+  - **Reschedule Modal**: Displays the exact **EXACT TASK SHIFT ROUTE** box showing `Origin slot (Date, Day, Subject, Topic, Duration) → Destination slot (Target Date, Day, Slot Type, Details)`.
+  - **Today's Mission**: Prominent **Shifted Task Origin & Destination Banner** displayed directly below Today's Focus:
+    - Shifted Out: `[↪ TASK SHIFTED TO ANOTHER SLOT: {topic} moved to {targetDate} ({targetDay}) via {strategy}]`.
+    - Absorbed: `[⚡ ABSORBED CATCH-UP TASK: Workload from {originDate} ({originSubject}: {originTopic}) absorbed via {strategy}]`.
+  - **Desk Calendar**: Calendar cells tagged with `[↪ Moved]` and `[⚡ Catch-Up]` badges; Day Inspector shows the exact full route record.
+  - **80-Day Master Planner**: Every row displays dedicated status badges (`Shifted → {targetDate}` / `Catch-Up ← {originDate}`) and an explicit destination details card.
+
+### 🖤 Outliner Black Emojis & Monochrome Outline Icons Only
+- **Zero Colored OS Emojis**: Replaced all colored OS emoji glyphs across every modal and workspace with:
+  - Clean black outline Unicode symbols: `⌘`, `⚡`, `◎`, `⬡`, `⌨`, `☕`, `★`, `⌬`, `⚑`, `◈`, `↻`, `⚯`.
+  - Black SVG Lucide outline icons (`color="#000"`, `strokeWidth={2}`, `fill="none"`).
+  - Global CSS monochrome filters ensuring clean typewriter and stationery aesthetics on all devices.
+
+### 🤖 Personalized AI for Task & Resource Management
+- **Profile-Aware Rescheduler**:
+  - Incorporates the active user's `name`, `targetRank`, `targetScore`, `dailyGoalHours`, `weakSubjects`, and `college`.
+  - Prioritizes conceptual protection on Sunday buffers for weak areas.
+- **Personalized AI Resource Recommendations Tab**:
+  - Automatically analyzes `userProfile.weakSubjects` and target score benchmarks to tailor educator playlists across all 8 GATE CSE subjects.
+  - One-click **Apply All AI Recommendations** batch action that instantly synchronizes the master planner and video directory.
+
+---
+
+## [v1.6.0] — 2026-10-13
 ### 🔒 100% Strict User Data Isolation
 - **Complete Profile Sandboxing**: Audited and scoped every persistent state across the application under `GATE_MATRIX_2027_${profileId}_${key}`:
   - Custom Pomodoro focus minutes (`pomodoro_custom_mins`) now strictly isolated per user profile.

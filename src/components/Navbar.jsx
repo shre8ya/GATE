@@ -13,7 +13,8 @@ import {
   ChevronDown,
   User,
   Sliders,
-  Settings
+  Settings,
+  BookOpen
 } from 'lucide-react';
 import { playClick } from '../utils/audio';
 
@@ -107,10 +108,10 @@ export default function Navbar({
             width: '36px', 
             height: '36px', 
             borderRadius: '6px',
-            background: 'var(--highlight-yellow, #FEF08A)',
+            background: 'var(--paper-card-subtle)',
             border: '2px solid var(--ink-border)'
           }}>
-            <span style={{ fontSize: '1.2rem' }}>📓</span>
+            <BookOpen size={18} color="#000" strokeWidth={2.2} />
           </div>
           <div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
@@ -181,11 +182,11 @@ export default function Navbar({
           
           {/* Subtle Streak Pill */}
           <div 
-            className="badge-sketch badge-sketch-orange" 
+            className="badge-sketch" 
             title="Daily Study Streak"
-            style={{ fontSize: '0.8rem', padding: '4px 8px' }}
+            style={{ fontSize: '0.8rem', padding: '4px 8px', display: 'flex', alignItems: 'center', gap: '4px' }}
           >
-            <Flame size={14} color="#D97706" fill="#D97706" />
+            <Flame size={14} color="#000" strokeWidth={2} fill="none" />
             <span>{streak}d</span>
           </div>
 
@@ -204,7 +205,7 @@ export default function Navbar({
               }}
               title="Assistant Tools & Utilities"
             >
-              <Zap size={14} color="#D97706" />
+              <Zap size={14} color="#000" strokeWidth={2} fill="none" />
               <span>Tools</span>
               <ChevronDown size={13} style={{ opacity: 0.6 }} />
             </button>
@@ -234,7 +235,7 @@ export default function Navbar({
                   }}
                   style={{ justifyContent: 'flex-start', padding: '7px 10px', fontSize: '0.82rem', width: '100%' }}
                 >
-                  <Sparkles size={14} color="#2563EB" />
+                  <Sparkles size={14} color="#000" strokeWidth={2} />
                   <span>AI Catch-Up Rescheduler</span>
                 </button>
 
@@ -246,7 +247,7 @@ export default function Navbar({
                   }}
                   style={{ justifyContent: 'flex-start', padding: '7px 10px', fontSize: '0.82rem', width: '100%' }}
                 >
-                  <Zap size={14} color="#D97706" />
+                  <Zap size={14} color="#000" strokeWidth={2} fill="none" />
                   <span>Swap Video Playlists</span>
                 </button>
 
@@ -258,7 +259,7 @@ export default function Navbar({
                   }}
                   style={{ justifyContent: 'flex-start', padding: '7px 10px', fontSize: '0.82rem', width: '100%' }}
                 >
-                  <Upload size={14} />
+                  <Upload size={14} color="#000" strokeWidth={2} />
                   <span>Import File (Excel / PDF / TXT)</span>
                 </button>
 
@@ -270,7 +271,7 @@ export default function Navbar({
                   }}
                   style={{ justifyContent: 'flex-start', padding: '7px 10px', fontSize: '0.82rem', width: '100%' }}
                 >
-                  <Bell size={14} color={notifPermission === 'granted' ? '#15803D' : 'currentColor'} />
+                  <Bell size={14} color="#000" strokeWidth={2} fill="none" />
                   <span>Study Reminders</span>
                 </button>
 
@@ -282,7 +283,7 @@ export default function Navbar({
                   }}
                   style={{ justifyContent: 'flex-start', padding: '7px 10px', fontSize: '0.82rem', width: '100%' }}
                 >
-                  <Download size={14} />
+                  <Download size={14} color="#000" strokeWidth={2} />
                   <span>Backup & Restore Data</span>
                 </button>
 
@@ -298,7 +299,7 @@ export default function Navbar({
                   paddingRight: '6px'
                 }}>
                   <span style={{ fontSize: '0.78rem', color: 'var(--ink-secondary)', display: 'flex', alignItems: 'center', gap: '4px' }}>
-                    <Palette size={13} /> Theme:
+                    <Palette size={13} color="#000" strokeWidth={2} /> Theme:
                   </span>
                   <select
                     value={paperTheme}
@@ -315,11 +316,11 @@ export default function Navbar({
                       padding: '2px 4px'
                     }}
                   >
-                    <option value="parchment">📜 Parchment</option>
-                    <option value="ivory">📓 Ivory Moleskine</option>
-                    <option value="sage">🌿 Sage Mint</option>
-                    <option value="rose">🌸 Rose Coral</option>
-                    <option value="blueprint">🩵 Blueprint Grid</option>
+                    <option value="parchment">Parchment</option>
+                    <option value="ivory">Ivory Moleskine</option>
+                    <option value="sage">Sage Mint</option>
+                    <option value="rose">Rose Coral</option>
+                    <option value="blueprint">Blueprint Grid</option>
                   </select>
                 </div>
               </div>
@@ -340,7 +341,7 @@ export default function Navbar({
                 gap: '6px' 
               }}
             >
-              <span>{userProfile?.avatar || '🦉'}</span>
+              <span>{userProfile?.avatar || '⌘'}</span>
               <span style={{ fontWeight: 700, maxWidth: '85px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                 {userProfile?.name || 'Shreya'}
               </span>
@@ -387,7 +388,7 @@ export default function Navbar({
                     }}
                   >
                     <span style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                      <span>{p.avatar || '👤'}</span>
+                      <span>{p.avatar || '⌘'}</span>
                       <strong style={{ fontWeight: p.id === activeProfileId ? 800 : 600 }}>{p.name}</strong>
                     </span>
                     {p.id === activeProfileId && <span style={{ fontSize: '0.7rem', color: '#2563EB' }}>Active</span>}

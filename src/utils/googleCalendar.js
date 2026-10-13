@@ -54,7 +54,7 @@ export function getTodayGoogleCalendarUrl(masterItem, mathsItem, aptItem) {
 
   const title = `GATE 2027 Study: ${subject} & Maths`;
 
-  let description = `🎯 GATE 2027 DAILY MISSION\n`;
+  let description = `◎ GATE 2027 DAILY MISSION\n`;
   description += `━━━━━━━━━━━━━━━━━━━━━\n\n`;
   description += `[Phase 1 • Aptitude] ${aptTopic} (${masterItem.easyStartMin || 15}m)\n`;
   if (aptItem?.sourceUrl) description += `• Course: ${aptItem.sourceUrl}\n`;
@@ -152,7 +152,7 @@ export function downloadIcsSchedule(masterSchedule = [], customEvents = {}) {
   icsContent.push(`DTSTAMP:20261013T000000Z`);
   icsContent.push('DTSTART;VALUE=DATE:20270213');
   icsContent.push('DTEND;VALUE=DATE:20270214');
-  icsContent.push('SUMMARY:🎯 GATE 2027 D-DAY (IIT Madras CSE Exam)');
+  icsContent.push('SUMMARY:★ GATE 2027 D-DAY (IIT Madras CSE Exam)');
   icsContent.push('DESCRIPTION:Official GATE 2027 Exam Day organized by IIT Madras. Go conquer your dream rank!');
   icsContent.push('STATUS:CONFIRMED');
   icsContent.push('END:VEVENT');

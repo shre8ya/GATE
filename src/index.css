@@ -431,3 +431,19 @@ h1, h2, h3, h4, .font-title {
   box-shadow: -2px 2px 3px rgba(0,0,0,0.1);
 }
 
+/* Outliner Black Emojis & Monochrome Icons */
+.emoji-outline-black, .outline-emoji, [data-outline-emoji] {
+  filter: grayscale(100%) brightness(0);
+  display: inline-block;
+  vertical-align: -0.1em;
+  color: #000000 !important;
+}
+
+/* Hand-drawn Outline Badge */
+.badge-outline-black {
+  border: 1.5px solid #000000 !important;
+  color: #000000 !important;
+  background: var(--paper-card) !important;
+  font-weight: 700;
+}
+

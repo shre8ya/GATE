@@ -52,8 +52,8 @@ export default function RadarWorkspace({
                 Strategic Overview & Long-Term Roadmap
               </span>
             </div>
-            <h1 className="font-title" style={{ fontSize: '1.75rem', margin: '4px 0 0' }}>
-              🗺️ Radar: Calendar, Planner & Syllabus
+            <h1 className="font-title" style={{ fontSize: '1.75rem', margin: '4px 0 0', display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <Compass size={22} color="#000" strokeWidth={2.2} /> Radar: Calendar, Planner & Syllabus
             </h1>
           </div>
 
@@ -107,6 +107,8 @@ export default function RadarWorkspace({
           dayStatus={dayStatus}
           onUpdateDayStatus={onUpdateDayStatus}
           onSelectDate={onSelectDate}
+          onOpenReschedule={onOpenReschedule}
+          activeProfileId={activeProfileId}
         />
       )}
 

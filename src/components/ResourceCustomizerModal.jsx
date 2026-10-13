@@ -13,7 +13,9 @@ import {
   Sliders, 
   CheckCheck,
   AlertCircle,
-  HelpCircle
+  HelpCircle,
+  User,
+  Target
 } from 'lucide-react';
 import { playClick, playSuccessChime } from '../utils/audio';
 import { fireTaskConfetti } from '../utils/confetti';
@@ -23,7 +25,7 @@ export const CURATED_RESOURCE_CATALOG = {
   c_programming: {
     key: 'c_programming',
     subjectName: 'C Programming',
-    icon: '💻',
+    icon: '⌨',
     curatedOptions: [
       {
         id: 'cp-gate-smashers',
@@ -76,7 +78,7 @@ export const CURATED_RESOURCE_CATALOG = {
   data_structures: {
     key: 'data_structures',
     subjectName: 'Data Structures',
-    icon: '🌲',
+    icon: '⬡',
     curatedOptions: [
       {
         id: 'ds-abdul-bari',
@@ -164,7 +166,7 @@ export const CURATED_RESOURCE_CATALOG = {
   compiler_design: {
     key: 'compiler_design',
     subjectName: 'Compiler Design',
-    icon: '⚙️',
+    icon: '⚙',
     curatedOptions: [
       {
         id: 'cd-gate-smashers',
@@ -208,7 +210,7 @@ export const CURATED_RESOURCE_CATALOG = {
   operating_systems: {
     key: 'operating_systems',
     subjectName: 'Operating Systems',
-    icon: '🖥️',
+    icon: '⌘',
     curatedOptions: [
       {
         id: 'os-gate-smashers',
@@ -252,7 +254,7 @@ export const CURATED_RESOURCE_CATALOG = {
   computer_networks: {
     key: 'computer_networks',
     subjectName: 'Computer Networks',
-    icon: '🌐',
+    icon: '◎',
     curatedOptions: [
       {
         id: 'cn-gate-smashers',
@@ -296,7 +298,7 @@ export const CURATED_RESOURCE_CATALOG = {
   engineering_maths: {
     key: 'engineering_maths',
     subjectName: 'Engineering Mathematics',
-    icon: '📐',
+    icon: '⌬',
     curatedOptions: [
       {
         id: 'em-go-classes',
@@ -340,7 +342,7 @@ export const CURATED_RESOURCE_CATALOG = {
   general_aptitude: {
     key: 'general_aptitude',
     subjectName: 'General Aptitude',
-    icon: '🧩',
+    icon: '★',
     curatedOptions: [
       {
         id: 'ga-gate-wallah',
@@ -379,11 +381,64 @@ export default function ResourceCustomizerModal({
   masterSchedule = [],
   customResources = {},
   onApplyCustomResource,
-  onBatchApplyResources
+  onBatchApplyResources,
+  userProfile = {}
 }) {
   if (!isOpen) return null;
 
-  const [activeTab, setActiveTab] = useState('ai'); // 'ai' | 'matrix'
+  const userName = userProfile?.name || 'Warrior';
+  const targetRank = userProfile?.targetRank || 'AIR < 100';
+  const dailyGoalHours = userProfile?.dailyGoalHours || 5;
+  const userWeakSubjects = Array.isArray(userProfile?.weakSubjects) && userProfile.weakSubjects.length > 0
+    ? userProfile.weakSubjects
+    : ['Operating Systems', 'Computer Networks'];
+
+  // Map weak subject names to catalog keys
+  const getSubjectKeyFromName = (name) => {
+    const lower = (name || '').toLowerCase();
+    if (lower.includes('os') || lower.includes('operating')) return 'operating_systems';
+    if (lower.includes('cn') || lower.includes('network')) return 'computer_networks';
+    if (lower.includes('algo')) return 'algorithms';
+    if (lower.includes('ds') || lower.includes('structure')) return 'data_structures';
+    if (lower.includes('cd') || lower.includes('compiler')) return 'compiler_design';
+    if (lower.includes('c prog') || lower.includes('programming in c')) return 'c_programming';
+    if (lower.includes('math') || lower.includes('discrete')) return 'engineering_maths';
+    if (lower.includes('apti')) return 'general_aptitude';
+    return null;
+  };
+
+  // Best recommended options for weak areas
+  const getPersonalizedRecommendation = (subjectKey) => {
+    const catalog = CURATED_RESOURCE_CATALOG[subjectKey];
+    if (!catalog) return null;
+    
+    let rec = catalog.curatedOptions[0];
+    if (subjectKey === 'operating_systems') {
+      rec = catalog.curatedOptions.find(o => o.id === 'os-gate-smashers') || catalog.curatedOptions[0];
+    } else if (subjectKey === 'computer_networks') {
+      rec = catalog.curatedOptions.find(o => o.id === 'cn-amit-khurana') || catalog.curatedOptions[0];
+    } else if (subjectKey === 'algorithms') {
+      rec = catalog.curatedOptions.find(o => o.id === 'algo-abdul-bari') || catalog.curatedOptions[0];
+    } else if (subjectKey === 'engineering_maths') {
+      rec = catalog.curatedOptions.find(o => o.id === 'em-go-classes') || catalog.curatedOptions[0];
+    } else if (subjectKey === 'compiler_design') {
+      rec = catalog.curatedOptions.find(o => o.id === 'cd-gate-smashers') || catalog.curatedOptions[0];
+    }
+    return {
+      catalog,
+      option: rec,
+      reason: `Optimized for ${targetRank} target and ${dailyGoalHours}h daily pace. Focuses on high-yield marks and deep conceptual retention.`
+    };
+  };
+
+  const personalizedList = userWeakSubjects
+    .map(name => {
+      const key = getSubjectKeyFromName(name);
+      return key ? { rawName: name, key, ...getPersonalizedRecommendation(key) } : null;
+    })
+    .filter(Boolean);
+
+  const [activeTab, setActiveTab] = useState(() => personalizedList.length > 0 ? 'personalized' : 'ai'); // 'personalized' | 'ai' | 'matrix'
   const [selectedSubjectKey, setSelectedSubjectKey] = useState('operating_systems');
 
   // AI Prompt State
@@ -529,7 +584,24 @@ export default function ResourceCustomizerModal({
     playSuccessChime();
     fireTaskConfetti();
 
-    setApplySuccessMsg(`✨ Successfully applied ${targetTeacher} for ${subjectName}! All corresponding schedule days and explorer links have been updated.`);
+    setApplySuccessMsg(`✓ Successfully applied ${targetTeacher} for ${subjectName}! All corresponding schedule days and explorer links have been updated.`);
+  };
+
+  const handleApplyAllPersonalized = () => {
+    playClick();
+    personalizedList.forEach(item => {
+      onApplyCustomResource(item.key, {
+        subjectKey: item.key,
+        subjectName: item.catalog.subjectName,
+        teacher: item.option.teacher,
+        title: item.option.title,
+        url: item.option.url,
+        updatedAt: new Date().toISOString()
+      });
+    });
+    playSuccessChime();
+    fireTaskConfetti();
+    setApplySuccessMsg(`All ${personalizedList.length} personalized resources applied for ${userName}!`);
   };
 
   const handleSelectCuratedOption = (subjectKey, option) => {
@@ -547,7 +619,7 @@ export default function ResourceCustomizerModal({
     onApplyCustomResource(subjectKey, resourcePayload);
     playSuccessChime();
     fireTaskConfetti();
-    setApplySuccessMsg(`✨ Switched ${subjectInfo.subjectName} to ${option.teacher}!`);
+    setApplySuccessMsg(`Switched ${subjectInfo.subjectName} to ${option.teacher}!`);
   };
 
   const handleSaveCustomManualUrl = (e) => {
@@ -568,7 +640,7 @@ export default function ResourceCustomizerModal({
     onApplyCustomResource(selectedSubjectKey, resourcePayload);
     playSuccessChime();
     fireTaskConfetti();
-    setApplySuccessMsg(`✨ Custom playlist saved for ${subjectInfo.subjectName}!`);
+    setApplySuccessMsg(`Custom playlist saved for ${subjectInfo.subjectName}!`);
     setCustomTitleInput('');
     setCustomTeacherInput('');
     setCustomUrlInput('');
@@ -597,13 +669,24 @@ export default function ResourceCustomizerModal({
         {/* Modal Header */}
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-            <span style={{ fontSize: '2rem' }}>⚡</span>
+            <div style={{
+              width: '38px',
+              height: '38px',
+              borderRadius: '8px',
+              border: '2px solid #000',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              background: 'var(--paper-card-subtle)'
+            }}>
+              <Zap size={20} color="#000" strokeWidth={2} fill="none" />
+            </div>
             <div>
               <h2 className="font-title" style={{ fontSize: '1.45rem', margin: 0 }}>
                 AI Resource & Playlist Customizer
               </h2>
               <div style={{ fontSize: '0.85rem', color: 'var(--ink-secondary)' }}>
-                Personalize your study channels, swap playlists across all 8 subjects, or prompt in natural language!
+                Personalized AI resource management for <strong>{userName}</strong> ({targetRank} target)
               </div>
             </div>
           </div>
@@ -612,25 +695,177 @@ export default function ResourceCustomizerModal({
           </button>
         </div>
 
-        {/* Tab Switcher */}
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px', marginBottom: '18px' }}>
+        {/* 3-Tab Segmented Switcher */}
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '8px', marginBottom: '18px' }}>
+          <button 
+            type="button"
+            className={`btn-sketch ${activeTab === 'personalized' ? 'btn-sketch-primary' : ''}`}
+            onClick={() => { playClick(); setActiveTab('personalized'); }}
+            style={{ fontSize: '0.86rem', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px' }}
+          >
+            <User size={15} color="#000" strokeWidth={2} />
+            <span>Personalized AI ({userName})</span>
+          </button>
           <button 
             type="button"
             className={`btn-sketch ${activeTab === 'ai' ? 'btn-sketch-primary' : ''}`}
             onClick={() => { playClick(); setActiveTab('ai'); }}
-            style={{ fontSize: '0.9rem', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}
+            style={{ fontSize: '0.86rem', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px' }}
           >
-            <Sparkles size={16} /> AI Natural Language Swapper
+            <Sparkles size={15} color="#000" strokeWidth={2} />
+            <span>AI Natural Language</span>
           </button>
           <button 
             type="button"
             className={`btn-sketch ${activeTab === 'matrix' ? 'btn-sketch-primary' : ''}`}
             onClick={() => { playClick(); setActiveTab('matrix'); }}
-            style={{ fontSize: '0.9rem', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}
+            style={{ fontSize: '0.86rem', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px' }}
           >
-            <Layers size={16} /> All 8 Subjects Resource Matrix
+            <Layers size={15} color="#000" strokeWidth={2} />
+            <span>All 8 Subjects Matrix</span>
           </button>
         </div>
+
+        {/* Success Alert Banner */}
+        {applySuccessMsg && (
+          <div className="sketch-card" style={{ 
+            padding: '10px 14px', 
+            background: 'var(--highlight-green)', 
+            marginBottom: '16px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between'
+          }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#166534', fontWeight: 700, fontSize: '0.9rem' }}>
+              <CheckCheck size={18} />
+              <span>{applySuccessMsg}</span>
+            </div>
+            <button 
+              className="btn-sketch" 
+              onClick={() => setApplySuccessMsg('')} 
+              style={{ padding: '2px 6px', fontSize: '0.75rem' }}
+            >
+              ✕
+            </button>
+          </div>
+        )}
+
+        {/* TAB 0: Personalized AI Recommendations for userProfile */}
+        {activeTab === 'personalized' && (
+          <div>
+            <div className="sketch-card" style={{ padding: '16px 20px', background: 'var(--paper-card-subtle)', marginBottom: '16px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '12px' }}>
+                <div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
+                    <span className="badge-sketch" style={{ fontSize: '0.75rem', fontWeight: 800 }}>
+                      STUDENT PROFILE: {userName}
+                    </span>
+                    <span className="badge-sketch badge-sketch-blue" style={{ fontSize: '0.75rem', fontWeight: 700 }}>
+                      TARGET: {targetRank}
+                    </span>
+                    <span className="badge-sketch badge-sketch-orange" style={{ fontSize: '0.75rem', fontWeight: 700 }}>
+                      PACE: {dailyGoalHours}h/day
+                    </span>
+                  </div>
+                  <h3 className="font-title" style={{ fontSize: '1.2rem', margin: 0 }}>
+                    AI Curriculum Diagnosis & Weak Subject Playlists
+                  </h3>
+                  <p style={{ fontSize: '0.84rem', color: 'var(--ink-secondary)', margin: '4px 0 0' }}>
+                    Based on your profile, AI has audited your identified focus subjects and matched the highest-yield educators to maximize score efficiency before GATE 2027.
+                  </p>
+                </div>
+
+                {personalizedList.length > 0 && (
+                  <button
+                    type="button"
+                    className="btn-sketch btn-sketch-primary"
+                    onClick={handleApplyAllPersonalized}
+                    style={{ padding: '8px 16px', fontSize: '0.85rem', fontWeight: 800, display: 'flex', alignItems: 'center', gap: '6px' }}
+                  >
+                    <CheckCheck size={16} color="#000" strokeWidth={2} /> Apply All AI Recommendations ({personalizedList.length})
+                  </button>
+                )}
+              </div>
+            </div>
+
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', marginBottom: '18px' }}>
+              {personalizedList.map((item, idx) => {
+                const currentCustom = customResources[item.key];
+                const isActive = currentCustom ? currentCustom.url === item.option.url : false;
+
+                return (
+                  <div 
+                    key={idx}
+                    className="sketch-card"
+                    style={{
+                      padding: '16px',
+                      background: 'var(--paper-card)',
+                      border: isActive ? '2px solid var(--ink-border)' : '1.5px solid var(--border-subtle)',
+                      boxShadow: isActive ? '3px 3px 0px var(--ink-border)' : 'none'
+                    }}
+                  >
+                    <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: '12px', flexWrap: 'wrap' }}>
+                      <div style={{ flex: '1 1 300px' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
+                          <span style={{ fontSize: '1.1rem' }}>{item.catalog.icon}</span>
+                          <span className="font-title" style={{ fontSize: '1.1rem', fontWeight: 800 }}>
+                            {item.catalog.subjectName}
+                          </span>
+                          <span className="badge-sketch badge-sketch-pink" style={{ fontSize: '0.7rem' }}>
+                            Weak Area Focus
+                          </span>
+                        </div>
+
+                        <div style={{ fontSize: '0.85rem', color: 'var(--ink-primary)', marginTop: '6px' }}>
+                          Recommended: <strong>{item.option.teacher}</strong> — <em>{item.option.title}</em>
+                        </div>
+
+                        <div style={{ fontSize: '0.8rem', color: 'var(--ink-secondary)', marginTop: '4px', fontStyle: 'italic' }}>
+                          Reasoning: {item.reason}
+                        </div>
+
+                        <div style={{ display: 'flex', gap: '4px', flexWrap: 'wrap', marginTop: '8px' }}>
+                          {item.option.tags.map((tag, tIdx) => (
+                            <span key={tIdx} className="badge-sketch" style={{ fontSize: '0.68rem', padding: '1px 5px' }}>
+                              {tag}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+
+                      <div style={{ display: 'flex', gap: '8px', alignItems: 'center', flexShrink: 0 }}>
+                        <a
+                          href={item.option.url}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="btn-sketch"
+                          style={{ padding: '6px 10px', fontSize: '0.8rem' }}
+                        >
+                          <ExternalLink size={13} /> Preview
+                        </a>
+
+                        {isActive ? (
+                          <span style={{ fontSize: '0.82rem', fontWeight: 800, color: '#166534', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                            <Check size={16} /> Applied in Schedule
+                          </span>
+                        ) : (
+                          <button
+                            type="button"
+                            className="btn-sketch btn-sketch-primary"
+                            onClick={() => handleSelectCuratedOption(item.key, item.option)}
+                            style={{ padding: '6px 14px', fontSize: '0.82rem', fontWeight: 800 }}
+                          >
+                            Apply Recommendation
+                          </button>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        )}
 
         {/* Success Alert Banner */}
         {applySuccessMsg && (
@@ -660,8 +895,8 @@ export default function ResourceCustomizerModal({
         {activeTab === 'ai' && (
           <div>
             <div className="sketch-card" style={{ padding: '16px', background: 'var(--paper-card-subtle)', marginBottom: '16px' }}>
-              <label style={{ fontSize: '0.9rem', fontWeight: 700, display: 'block', marginBottom: '6px' }}>
-                💬 Tell AI what playlist or educator you want to study with:
+              <label style={{ fontSize: '0.9rem', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '6px' }}>
+                <Sparkles size={15} color="#000" strokeWidth={2} /> Tell AI what playlist or educator you want to study with:
               </label>
               <div style={{ display: 'flex', gap: '8px', alignItems: 'stretch' }}>
                 <textarea
@@ -686,8 +921,8 @@ export default function ResourceCustomizerModal({
 
               {/* Sample Prompt Chips */}
               <div style={{ marginTop: '12px' }}>
-                <div style={{ fontSize: '0.78rem', color: 'var(--ink-secondary)', marginBottom: '6px', fontWeight: 600 }}>
-                  💡 Click any sample prompt to test instant AI parsing:
+                <div style={{ fontSize: '0.78rem', color: 'var(--ink-secondary)', marginBottom: '6px', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '4px' }}>
+                  <BookOpen size={13} color="#000" strokeWidth={2} /> Click any sample prompt to test instant AI parsing:
                 </div>
                 <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
                   {samplePrompts.map((p, idx) => (
@@ -775,7 +1010,10 @@ export default function ResourceCustomizerModal({
                 color: 'var(--ink-muted)',
                 fontSize: '0.9rem'
               }}>
-                🤖 Enter what you'd like to change above, or click one of the quick suggestions!
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px' }}>
+                  <Zap size={18} color="#000" strokeWidth={2} fill="none" />
+                  <span>Enter what you'd like to change above, or click one of the quick suggestions!</span>
+                </div>
               </div>
             )}
           </div>
@@ -835,17 +1073,17 @@ export default function ResourceCustomizerModal({
                     type="button"
                     className="btn-sketch btn-sketch-pink"
                     onClick={() => handleResetSubjectToDefault(selectedSubjectKey)}
-                    style={{ fontSize: '0.78rem', padding: '4px 8px' }}
+                    style={{ fontSize: '0.78rem', padding: '4px 8px', display: 'flex', alignItems: 'center', gap: '4px' }}
                   >
-                    ↺ Reset to Default
+                    <RefreshCw size={12} color="#000" strokeWidth={2} /> Reset to Default
                   </button>
                 )}
               </div>
             </div>
 
             {/* Curated Alternatives List */}
-            <h4 className="font-title" style={{ fontSize: '1.05rem', marginBottom: '10px' }}>
-              🌟 1-Click Verified GATE CSE Playlists:
+            <h4 className="font-title" style={{ fontSize: '1.05rem', marginBottom: '10px', display: 'flex', alignItems: 'center', gap: '6px' }}>
+              <Sliders size={15} color="#000" strokeWidth={2} /> 1-Click Verified GATE CSE Playlists:
             </h4>
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginBottom: '18px' }}>
@@ -925,8 +1163,8 @@ export default function ResourceCustomizerModal({
 
             {/* Custom URL Input Section */}
             <div className="sketch-card" style={{ padding: '16px', background: 'var(--paper-card-subtle)' }}>
-              <h4 className="font-title" style={{ fontSize: '1rem', margin: '0 0 8px 0' }}>
-                🔗 Or Paste Any Custom YouTube Playlist URL for {activeCatalog.subjectName}:
+              <h4 className="font-title" style={{ fontSize: '1rem', margin: '0 0 8px 0', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                <ExternalLink size={15} color="#000" strokeWidth={2} /> Or Paste Any Custom YouTube Playlist URL for {activeCatalog.subjectName}:
               </h4>
               <form onSubmit={handleSaveCustomManualUrl} style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>

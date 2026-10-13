@@ -42,8 +42,8 @@ export default function UniversitySyncView({
               <span className="badge-sketch badge-sketch-orange">IPU 5TH SEM END-TERMS</span>
               <span style={{ fontSize: '0.85rem', color: 'var(--ink-secondary)' }}>Exam Slot: Evening 2:00 PM – 5:00 PM</span>
             </div>
-            <h1 className="font-title" style={{ fontSize: '1.9rem', margin: '6px 0 0' }}>
-              🏛️ University Exam & GATE Synergy Roadmap
+            <h1 className="font-title" style={{ fontSize: '1.9rem', margin: '6px 0 0', display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <GraduationCap size={22} color="#000" strokeWidth={2.2} /> University Exam & GATE Synergy Roadmap
             </h1>
             <p style={{ color: 'var(--ink-secondary)', fontSize: '0.95rem', marginTop: '4px' }}>
               Zero conflict schedule: Prepares you for IPU 5th Sem end-terms while simultaneously consolidating core GATE CSE subjects.
@@ -156,8 +156,9 @@ export default function UniversitySyncView({
                     </p>
 
                     {item.resources && (
-                      <div style={{ fontSize: '0.85rem', color: 'var(--ink-blue)', marginTop: '6px' }}>
-                        📚 Recommended Materials: {item.resources}
+                      <div style={{ fontSize: '0.85rem', color: 'var(--ink-blue)', marginTop: '6px', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                        <BookOpen size={13} color="#000" strokeWidth={2} />
+                        <span>Recommended Materials: {item.resources}</span>
                       </div>
                     )}
                   </div>

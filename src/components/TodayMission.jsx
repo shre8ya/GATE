@@ -28,7 +28,8 @@ import {
   Award,
   Layers,
   HelpCircle,
-  Check
+  Check,
+  Zap
 } from 'lucide-react';
 import { playBell, playSuccessChime, playClick, startAmbientSound, stopAmbientSound } from '../utils/audio';
 import { getDailyQuote, DAILY_MOTIVATIONAL_QUOTES } from '../data/quotes';
@@ -137,13 +138,13 @@ export default function TodayMission({
           date: currentDate
         });
         setSessionCompletedBanner({
-          title: `🎉 Focus Block Finished (${timerMode}m)!`,
+          title: `Focus Block Finished (${timerMode}m)!`,
           message: `Logged to your study record. Take a well-deserved breather!`,
           type: 'focus'
         });
       } else {
         setSessionCompletedBanner({
-          title: `☕ Break Time Over (${timerMode}m)!`,
+          title: `Break Time Over (${timerMode}m)!`,
           message: `Refreshed and ready for your next study streak?`,
           type: 'break'
         });
@@ -489,9 +490,83 @@ export default function TodayMission({
             <h1 className="font-title" style={{ fontSize: '1.9rem', margin: 0 }}>
               {currentMasterItem?.day}, {currentDate} — <span className="highlight-pen">{currentMasterItem?.subject}</span>
             </h1>
-            <p style={{ fontSize: '1rem', marginTop: '4px', color: 'var(--ink-secondary)' }}>
-              🎯 Today's Focus: <strong style={{ color: 'var(--ink-primary)' }}>{currentMasterItem?.mainFocus}</strong>
+            <p style={{ fontSize: '1rem', marginTop: '4px', color: 'var(--ink-secondary)', display: 'flex', alignItems: 'center', gap: '6px' }}>
+              <Target size={15} color="#000" strokeWidth={2} /> Today's Focus: <strong style={{ color: 'var(--ink-primary)' }}>{currentMasterItem?.mainFocus}</strong>
             </p>
+
+            {/* Visual Shifted Task Origin & Destination Banner */}
+            {currentMasterItem?.shiftStatus && (
+              <div 
+                className="sketch-card"
+                style={{ 
+                  marginTop: '12px', 
+                  padding: '10px 14px', 
+                  borderRadius: '6px',
+                  background: currentMasterItem.shiftStatus.type === 'shifted_out' 
+                    ? 'rgba(0, 0, 0, 0.04)' 
+                    : 'var(--paper-card-subtle)',
+                  border: currentMasterItem.shiftStatus.type === 'shifted_out'
+                    ? '2px dashed #000'
+                    : '2px solid #000',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '12px'
+                }}
+              >
+                {currentMasterItem.shiftStatus.type === 'shifted_out' ? (
+                  <>
+                    <div style={{
+                      width: '32px',
+                      height: '32px',
+                      borderRadius: '50%',
+                      border: '2px solid #000',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      fontSize: '1rem',
+                      fontWeight: 900,
+                      flexShrink: 0
+                    }}>
+                      ↪
+                    </div>
+                    <div>
+                      <div style={{ fontSize: '0.82rem', fontWeight: 900, letterSpacing: '0.04em', textTransform: 'uppercase', color: '#000' }}>
+                        Task Shifted to Another Slot
+                      </div>
+                      <div style={{ fontSize: '0.84rem', color: 'var(--ink-primary)', marginTop: '2px' }}>
+                        <strong>{currentMasterItem.shiftStatus.movedTopic || currentMasterItem.mainFocus}</strong> has been moved to{' '}
+                        <strong>{currentMasterItem.shiftStatus.targetDate} ({currentMasterItem.shiftStatus.targetDay})</strong> via <em>{currentMasterItem.shiftStatus.strategy}</em>.
+                      </div>
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    <div style={{
+                      width: '32px',
+                      height: '32px',
+                      borderRadius: '50%',
+                      border: '2px solid #000',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      fontSize: '1rem',
+                      fontWeight: 900,
+                      flexShrink: 0
+                    }}>
+                      ⚡
+                    </div>
+                    <div>
+                      <div style={{ fontSize: '0.82rem', fontWeight: 900, letterSpacing: '0.04em', textTransform: 'uppercase', color: '#000' }}>
+                        Absorbed Catch-Up Task
+                      </div>
+                      <div style={{ fontSize: '0.84rem', color: 'var(--ink-primary)', marginTop: '2px' }}>
+                        Catch-up slot for <strong>{currentMasterItem.shiftStatus.originSubject}: {currentMasterItem.shiftStatus.originTopic}</strong> (shifted here from <strong>{currentMasterItem.shiftStatus.originDate}</strong> via <em>{currentMasterItem.shiftStatus.strategy}</em>).
+                      </div>
+                    </div>
+                  </>
+                )}
+              </div>
+            )}
           </div>
 
           {/* Date Navigator Buttons & Catch-up Helper */}
@@ -524,7 +599,7 @@ export default function TodayMission({
               title="Missed today's topic? Re-schedule with AI"
               style={{ marginLeft: '4px' }}
             >
-              <Sparkles size={14} /> Missed? Reschedule
+              <Sparkles size={14} color="#000" strokeWidth={2} /> Missed? Reschedule
             </button>
           </div>
         </div>
@@ -543,8 +618,8 @@ export default function TodayMission({
             gap: '12px'
           }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '14px', flexWrap: 'wrap', fontSize: '0.85rem' }}>
-              <span style={{ fontWeight: 700, color: 'var(--ink-purple)' }}>
-                ⏳ GATE '27: ~{diffDays(gateExamDate)}d left
+              <span style={{ fontWeight: 700, color: 'var(--ink-primary)', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                <Clock size={13} color="#000" strokeWidth={2} /> GATE '27: ~{diffDays(gateExamDate)}d left
               </span>
               <span style={{ color: 'var(--ink-secondary)' }}>
                 • Practicals: ~{diffDays(practicalDate)}d
@@ -552,8 +627,8 @@ export default function TodayMission({
               <span style={{ color: 'var(--ink-secondary)' }}>
                 • Theory: ~{diffDays(uniTheoryDate)}d
               </span>
-              <span style={{ fontWeight: 700, color: '#15803D' }}>
-                🎯 Marks: {totalMarksUnlocked}/100m unlocked
+              <span style={{ fontWeight: 700, color: 'var(--ink-primary)', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                <Target size={13} color="#000" strokeWidth={2} /> Marks: {totalMarksUnlocked}/100m unlocked
               </span>
             </div>
 
@@ -618,8 +693,8 @@ export default function TodayMission({
               }}>
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '8px', marginBottom: '8px' }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                    <span className="badge-sketch badge-sketch-green" style={{ fontWeight: 800, fontSize: '0.75rem' }}>
-                      🎯 MARKS REALITY
+                    <span className="badge-sketch badge-sketch-green" style={{ fontWeight: 800, fontSize: '0.75rem', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                      <Target size={12} color="#000" strokeWidth={2} /> MARKS REALITY
                     </span>
                     <span className="font-title" style={{ fontSize: '1.15rem', fontWeight: 700 }}>
                       {totalMarksUnlocked} / 100 Marks Conquered
@@ -686,7 +761,9 @@ export default function TodayMission({
             <div className="tape-strip"></div>
             <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: '12px' }}>
               <div style={{ display: 'flex', alignItems: 'flex-start', gap: '10px' }}>
-                <span style={{ fontSize: '1.5rem' }}>📌</span>
+                <div style={{ width: '28px', height: '28px', borderRadius: '4px', border: '1.5px solid #000', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                  <BookOpen size={16} color="#000" strokeWidth={2} />
+                </div>
                 <div>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                     <span className="badge-sketch" style={{ fontSize: '0.75rem', fontWeight: 700 }}>
@@ -713,16 +790,16 @@ export default function TodayMission({
                 className="btn-sketch"
                 onClick={handleShuffleQuote}
                 title="Shuffle Daily Motivation"
-                style={{ padding: '4px 8px', fontSize: '0.78rem', flexShrink: 0 }}
+                style={{ padding: '4px 8px', fontSize: '0.78rem', flexShrink: 0, display: 'flex', alignItems: 'center', gap: '4px' }}
               >
-                🔄 Shuffle
+                <RotateCcw size={12} color="#000" strokeWidth={2} /> Shuffle
               </button>
             </div>
           </div>
 
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '10px' }}>
             <h2 className="font-title" style={{ fontSize: '1.35rem', margin: 0 }}>
-              ✏️ Today's 4-Phase Study Mission
+              Today's 4-Phase Study Mission
             </h2>
             <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
               <a
@@ -771,7 +848,7 @@ export default function TodayMission({
                   </p>
                   {currentAptItem?.source && (
                     <div style={{ fontSize: '0.8rem', color: 'var(--ink-blue)', marginTop: '4px', fontStyle: 'italic' }}>
-                      📖 Planner Source: {currentAptItem.source}
+                      Planner Source: {currentAptItem.source}
                     </div>
                   )}
                 </div>
@@ -846,12 +923,12 @@ export default function TodayMission({
                   </p>
                   {currentMathsItem?.playlist && (
                     <div style={{ fontSize: '0.8rem', color: 'var(--ink-purple)', marginTop: '4px', fontStyle: 'italic' }}>
-                      🎥 Planner Source: {currentMathsItem.playlist}
+                      Planner Source: {currentMathsItem.playlist}
                     </div>
                   )}
                   {currentMathsItem?.quickPractice && (
-                    <div style={{ fontSize: '0.85rem', color: 'var(--ink-blue)', marginTop: '6px', fontWeight: 700 }}>
-                      ⚡ Practice goal: {currentMathsItem.quickPractice}
+                    <div style={{ fontSize: '0.85rem', color: 'var(--ink-blue)', marginTop: '6px', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '4px' }}>
+                      <Zap size={14} color="#000" strokeWidth={2} /> Practice goal: {currentMathsItem.quickPractice}
                     </div>
                   )}
                 </div>
@@ -926,7 +1003,7 @@ export default function TodayMission({
                   </p>
                   {currentMasterItem?.note && (
                     <div style={{ fontSize: '0.85rem', color: 'var(--ink-amber)', marginTop: '6px' }}>
-                      💡 Planner Tip: {currentMasterItem.note}
+                      Planner Tip: {currentMasterItem.note}
                     </div>
                   )}
                 </div>
@@ -1236,7 +1313,7 @@ export default function TodayMission({
                   borderColor: sessionType === 'focus' ? 'var(--ink-primary)' : 'var(--ink-border)'
                 }}
               >
-                🎯 Focus ({customFocusMins}m)
+                <Target size={13} color="#000" strokeWidth={2} style={{ display: 'inline', verticalAlign: 'middle', marginRight: '4px' }} /> Focus ({customFocusMins}m)
               </button>
               <button
                 className="btn-sketch"
@@ -1261,7 +1338,8 @@ export default function TodayMission({
                   borderColor: sessionType === 'long_break' ? 'var(--ink-primary)' : 'var(--ink-border)'
                 }}
               >
-                🧘 Long Break (15m)
+                <Coffee size={14} style={{ verticalAlign: 'text-bottom', marginRight: '4px' }} />
+                Long Break (15m)
               </button>
             </div>
 
@@ -1293,7 +1371,7 @@ export default function TodayMission({
                   <X size={16} />
                 </button>
                 <div style={{ fontWeight: 700, fontSize: '0.95rem', display: 'flex', alignItems: 'center', gap: '6px' }}>
-                  <Sparkles size={16} /> {sessionCompletedBanner.title}
+                  <Sparkles size={16} color="#000" strokeWidth={2} /> {sessionCompletedBanner.title}
                 </div>
                 <div style={{ fontSize: '0.82rem', marginTop: '2px', color: 'var(--ink-secondary)' }}>
                   {sessionCompletedBanner.message}
@@ -1308,7 +1386,7 @@ export default function TodayMission({
                       }}
                       style={{ padding: '4px 10px', fontSize: '0.78rem' }}
                     >
-                      ☕ Take 5m Break
+                      Take 5m Break
                     </button>
                   ) : (
                     <button
@@ -1319,7 +1397,7 @@ export default function TodayMission({
                       }}
                       style={{ padding: '4px 10px', fontSize: '0.78rem' }}
                     >
-                      🎯 Start Next Focus ({customFocusMins}m)
+                      Start Next Focus ({customFocusMins}m)
                     </button>
                   )}
                 </div>
@@ -1367,7 +1445,7 @@ export default function TodayMission({
                     color: 'var(--ink-muted)', 
                     marginTop: '4px' 
                   }}>
-                    <span>{sessionType === 'focus' ? '🎯 Study Block' : '☕ Rest Period'}</span>
+                    <span>{sessionType === 'focus' ? 'Study Block' : 'Rest Period'}</span>
                     <span>{progressPct}% elapsed</span>
                   </div>
                 </div>
@@ -1432,8 +1510,8 @@ export default function TodayMission({
               textAlign: 'left'
             }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
-                <span className="font-title" style={{ fontSize: '0.92rem', fontWeight: 700 }}>
-                  ⏱️ Study Time (Your Option):
+                <span className="font-title" style={{ fontSize: '0.92rem', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '4px' }}>
+                  <Clock size={15} color="#000" strokeWidth={2} /> Study Time (Your Option):
                 </span>
                 <span style={{ fontSize: '0.72rem', color: 'var(--ink-muted)' }}>
                   Current: <strong>{customFocusMins}m</strong>
@@ -1498,7 +1576,7 @@ export default function TodayMission({
                 </button>
               </div>
               <div style={{ fontSize: '0.72rem', color: 'var(--ink-muted)', marginTop: '6px' }}>
-                💡 Type any minutes (1-240) or pick a preset. Automatically saved for your future study sessions!
+                Note: Type any minutes (1-240) or pick a preset. Automatically saved for your future study sessions!
               </div>
             </div>
 
@@ -1525,7 +1603,7 @@ export default function TodayMission({
                     background: ambientType === 'white_noise' ? 'var(--highlight-blue)' : 'var(--paper-card)'
                   }}
                 >
-                  🌧️ Rain
+                  Rain
                 </button>
                 <button
                   className="btn-sketch"
@@ -1536,7 +1614,7 @@ export default function TodayMission({
                     background: ambientType === 'binaural_40hz' ? 'var(--highlight-purple)' : 'var(--paper-card)'
                   }}
                 >
-                  🧠 40Hz
+                  40Hz Synth
                 </button>
                 <button
                   className="btn-sketch"
@@ -1547,7 +1625,7 @@ export default function TodayMission({
                     background: ambientType === 'drone' ? 'var(--highlight-yellow)' : 'var(--paper-card)'
                   }}
                 >
-                  🌌 Drone
+                  Ambient Drone
                 </button>
               </div>
 
@@ -1581,8 +1659,8 @@ export default function TodayMission({
 
           {/* Sticky Note Golden Rule */}
           <div className="sticky-paper">
-            <h3 className="font-title" style={{ fontSize: '1.05rem', margin: '0 0 6px', fontWeight: 700 }}>
-              📌 Non-Negotiable Study Rule:
+            <h3 className="font-title" style={{ fontSize: '1.05rem', margin: '0 0 6px', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '6px' }}>
+              <AlertTriangle size={15} color="#000" strokeWidth={2} /> Non-Negotiable Study Rule:
             </h3>
             <p style={{ fontSize: '0.9rem', lineHeight: 1.5, color: '#1E293B' }}>
               Every single day requires <strong>exactly ONE Engineering Maths lecture (~30 min)</strong>. By 29 Dec, you will have completed all 52 Discrete, Linear Algebra, Probability, and Calculus lectures!
