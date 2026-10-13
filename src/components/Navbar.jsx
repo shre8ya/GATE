@@ -16,8 +16,12 @@ import {
   Sparkles,
   Sun,
   Moon,
-  Palette
+  Palette,
+  Upload,
+  Layers,
+  Users
 } from 'lucide-react';
+import { playClick } from '../utils/audio';
 
 export default function Navbar({ 
   activeTab, 
@@ -29,6 +33,11 @@ export default function Navbar({
   onOpenBackup, 
   onOpenReminders,
   onOpenReschedule,
+  onOpenImport,
+  onOpenCustomizer,
+  profilesList = [],
+  activeProfileId,
+  onSwitchProfile,
   theme,
   onToggleTheme,
   paperTheme = 'parchment',
@@ -101,7 +110,7 @@ export default function Navbar({
         </div>
 
         {/* Center: Hand-Drawn Stats Badges */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
           
           <div className="badge-sketch badge-sketch-orange" title="Daily Study Streak">
             <Flame size={15} color="#D97706" fill="#D97706" />
@@ -122,14 +131,34 @@ export default function Navbar({
           <button 
             className="btn-sketch btn-sketch-primary"
             onClick={onOpenReschedule}
-            style={{ padding: '4px 10px', fontSize: '0.85rem' }}
+            style={{ padding: '4px 10px', fontSize: '0.82rem' }}
             title="Missed a topic or day? Reorganize with AI"
           >
             <Sparkles size={14} /> AI Reschedule
           </button>
+
+          {/* Custom Resources Button */}
+          <button
+            className="btn-sketch"
+            onClick={onOpenCustomizer}
+            style={{ padding: '4px 10px', fontSize: '0.82rem', background: 'var(--paper-card-subtle)' }}
+            title="Personalize & Swap Playlists with AI (e.g. Gate Smashers, Abdul Bari, Amit Khurana)"
+          >
+            <Zap size={14} color="#D97706" /> Swap Resources
+          </button>
+
+          {/* Universal File Import Studio Button */}
+          <button
+            className="btn-sketch"
+            onClick={onOpenImport}
+            style={{ padding: '4px 10px', fontSize: '0.82rem', background: 'var(--highlight-yellow)' }}
+            title="Import Excel (.xlsx/.csv), PDF, TXT or JSON directly into dashboard"
+          >
+            <Upload size={14} /> Import File
+          </button>
         </div>
 
-        {/* Right: Paper Themes, Notifications, Backup, Settings */}
+        {/* Right: Paper Themes, Notifications, Backup, Settings & Profile Switcher */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
           
           {/* Paper Color Palette Selector */}
@@ -186,15 +215,46 @@ export default function Navbar({
             <Download size={16} />
           </button>
 
-          <button 
-            className="btn-sketch btn-sketch-primary" 
-            onClick={onOpenSettings}
-            title="Personalization & Study Records"
-            style={{ padding: '6px 12px', fontSize: '0.85rem', display: 'flex', alignItems: 'center', gap: '6px' }}
-          >
-            <span>{userProfile?.avatar || '🦉'}</span>
-            <span style={{ fontWeight: 700 }}>{userProfile?.name || 'Shreya'}</span>
-          </button>
+          {/* Profile Switcher Quick Dropdown / Settings Pill */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+            {profilesList.length > 1 && (
+              <select
+                value={activeProfileId}
+                onChange={e => {
+                  playClick();
+                  onSwitchProfile && onSwitchProfile(e.target.value);
+                }}
+                style={{
+                  background: 'var(--paper-card-subtle)',
+                  border: '1.5px solid var(--ink-border)',
+                  borderRadius: '6px',
+                  padding: '4px 6px',
+                  fontFamily: 'inherit',
+                  fontSize: '0.8rem',
+                  fontWeight: 700,
+                  cursor: 'pointer',
+                  color: 'var(--ink-primary)'
+                }}
+                title="Switch active user profile"
+              >
+                {profilesList.map(p => (
+                  <option key={p.id} value={p.id}>
+                    {p.avatar || '👤'} {p.name}
+                  </option>
+                ))}
+              </select>
+            )}
+
+            <button 
+              className="btn-sketch btn-sketch-primary" 
+              onClick={() => onOpenSettings && onOpenSettings('profile')}
+              title="Personalization, Records & Multi-User Manager"
+              style={{ padding: '6px 12px', fontSize: '0.85rem', display: 'flex', alignItems: 'center', gap: '6px' }}
+            >
+              <span>{userProfile?.avatar || '🦉'}</span>
+              <span style={{ fontWeight: 700 }}>{userProfile?.name || 'Shreya'}</span>
+            </button>
+          </div>
         </div>
 
       </div>

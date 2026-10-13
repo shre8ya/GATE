@@ -14,9 +14,12 @@ import {
   Calendar,
   Flame,
   Zap,
-  FolderDown
+  FolderDown,
+  AlertTriangle,
+  UserCheck
 } from 'lucide-react';
 import { playClick, playSuccessChime } from '../utils/audio';
+import { fireTaskConfetti } from '../utils/confetti';
 
 export default function PersonalizationModal({ 
   userProfile, 
@@ -27,9 +30,15 @@ export default function PersonalizationModal({
   errorLog = [], 
   customFormulas = [], 
   onResetAll, 
-  onClose 
+  onClose,
+  activeProfileId = 'profile_default',
+  profilesList = [],
+  onSwitchProfile,
+  onCreateProfile,
+  onDeleteProfile,
+  initialTab = 'profile'
 }) {
-  const [activeTab, setActiveTab] = useState('profile'); // 'profile' | 'records' | 'switch'
+  const [activeTab, setActiveTab] = useState(initialTab); // 'profile' | 'records' | 'switch'
   
   // Profile Fields
   const [name, setName] = useState(userProfile.name || 'Shreya');
@@ -41,15 +50,15 @@ export default function PersonalizationModal({
   const [weakSubjects, setWeakSubjects] = useState(userProfile.weakSubjects || 'Operating Systems, COA');
   const [geminiApiKey, setGeminiApiKey] = useState(userProfile.geminiApiKey || '');
 
-  // Profiles list
-  const [profilesList, setProfilesList] = useState(() => {
-    try {
-      const stored = localStorage.getItem('GATE_MATRIX_2027_profiles_list');
-      return stored ? JSON.parse(stored) : [{ id: 'p-1', name: userProfile.name || 'Shreya', avatar: userProfile.avatar || '🦉' }];
-    } catch (e) {
-      return [{ id: 'p-1', name: 'Shreya', avatar: '🦉' }];
-    }
-  });
+  // New Profile Creation Inline State
+  const [showCreateForm, setShowCreateForm] = useState(false);
+  const [newProfileName, setNewProfileName] = useState('');
+  const [newProfileAvatar, setNewProfileAvatar] = useState('⚡');
+  const [newProfileCollege, setNewProfileCollege] = useState('');
+  const [newProfileTargetRank, setNewProfileTargetRank] = useState('AIR < 200');
+  const [newProfileTargetScore, setNewProfileTargetScore] = useState('75+ Marks');
+  const [newProfileDailyHours, setNewProfileDailyHours] = useState(3.0);
+  const [newProfileWeakSubjects, setNewProfileWeakSubjects] = useState('');
 
   const avatars = [
     { emoji: '🦉', label: 'The Architect' },
@@ -83,41 +92,71 @@ export default function PersonalizationModal({
     onClose();
   };
 
-  const handleCreateNewProfile = () => {
-    const newName = prompt("Enter Name for new Student Profile:");
-    if (!newName) return;
+  const handleCreateNewProfileSubmit = (e) => {
+    e.preventDefault();
+    if (!newProfileName.trim()) return;
+
     playClick();
-    const newP = {
-      id: 'p-' + Date.now(),
-      name: newName,
-      avatar: '🚀'
+    const newProfileData = {
+      name: newProfileName.trim(),
+      avatar: newProfileAvatar,
+      college: newProfileCollege.trim() || 'Engineering College',
+      targetRank: newProfileTargetRank || 'AIR < 100',
+      targetScore: newProfileTargetScore || '80+ Marks',
+      dailyGoalHours: parseFloat(newProfileDailyHours) || 3.5,
+      weakSubjects: newProfileWeakSubjects || 'Operating Systems, COA',
+      geminiApiKey: ''
     };
-    const updatedList = [...profilesList, newP];
-    setProfilesList(updatedList);
-    localStorage.setItem('GATE_MATRIX_2027_profiles_list', JSON.stringify(updatedList));
-    setName(newName);
-    setAvatar('🚀');
-    alert(`Switched to new profile: ${newName}! Click "Save Profile" to apply.`);
+
+    if (onCreateProfile) {
+      onCreateProfile(newProfileData);
+    }
+
+    playSuccessChime();
+    fireTaskConfetti();
+    setShowCreateForm(false);
+    setNewProfileName('');
+    setActiveTab('profile');
   };
 
-  const handleSwitchProfile = (p) => {
+  const handleSwitchToProfile = (pId) => {
     playClick();
-    setName(p.name);
-    setAvatar(p.avatar || '🦉');
-    alert(`Active profile set to ${p.name}. Save changes to update session.`);
+    if (onSwitchProfile) {
+      onSwitchProfile(pId);
+      playSuccessChime();
+      fireTaskConfetti();
+    }
+  };
+
+  const handleDeleteProfileClick = (p) => {
+    if (profilesList.length <= 1) {
+      alert("⚠️ Cannot delete the only profile. At least one user profile must remain.");
+      return;
+    }
+
+    playClick();
+    const confirmDelete = window.confirm(
+      `🗑️ Are you sure you want to permanently delete ${p.name}'s profile?\n\nAll isolated study sessions, error logs, and personalized calendar progress will be erased.`
+    );
+
+    if (confirmDelete) {
+      if (onDeleteProfile) {
+        onDeleteProfile(p.id);
+        playSuccessChime();
+      }
+    }
   };
 
   const handleResetConfirm = () => {
-    if (window.confirm("⚠️ Are you sure you want to reset all planner progress, study history, and error logs? This cannot be undone.")) {
+    if (window.confirm("⚠️ Are you sure you want to reset all planner progress, study history, and error logs for this profile? This cannot be undone.")) {
       playClick();
       onResetAll();
       onClose();
     }
   };
 
-  // Compute Record Analytics
-  const completedDaysCount = Object.values(dayStatus).filter(s => s.status === 'Done').length;
-  const inProgressDaysCount = Object.values(dayStatus).filter(s => s.status === 'In Progress').length;
+  // Compute Record Analytics for current active profile
+  const completedDaysCount = Object.values(dayStatus).filter(s => s?.status === 'Done').length;
   const totalStudyMinutes = studySessions.reduce((acc, curr) => acc + (curr.durationMinutes || 0), 0);
   const totalStudyHours = (totalStudyMinutes / 60).toFixed(1);
   const avgAccuracy = mockTests.length > 0 
@@ -126,8 +165,8 @@ export default function PersonalizationModal({
   const resolvedErrorsCount = errorLog.filter(e => e.resolved).length;
 
   return (
-    <div className="modal-overlay" onClick={onClose}>
-      <div className="modal-sketch" onClick={e => e.stopPropagation()} style={{ padding: '26px', maxWidth: '720px' }}>
+    <div className="modal-overlay" onClick={onClose} style={{ zIndex: 1100 }}>
+      <div className="modal-sketch" onClick={e => e.stopPropagation()} style={{ padding: '26px', maxWidth: '750px', maxHeight: '90vh', overflowY: 'auto' }}>
         <div className="tape-strip"></div>
         <div className="tape-strip tape-strip-right"></div>
 
@@ -137,7 +176,7 @@ export default function PersonalizationModal({
             <span style={{ fontSize: '2rem' }}>{avatar}</span>
             <div>
               <h2 className="font-title" style={{ fontSize: '1.45rem', margin: 0 }}>
-                {name}'s Personal Study Command & Records
+                {name}'s Personal Study Command
               </h2>
               <div style={{ fontSize: '0.85rem', color: 'var(--ink-secondary)' }}>
                 Target: <strong>{targetRank}</strong> ({targetScore}) • {college}
@@ -154,7 +193,7 @@ export default function PersonalizationModal({
           <button 
             type="button"
             className={`btn-sketch ${activeTab === 'profile' ? 'btn-sketch-primary' : ''}`}
-            onClick={() => setActiveTab('profile')}
+            onClick={() => { playClick(); setActiveTab('profile'); }}
             style={{ fontSize: '0.85rem' }}
           >
             👤 Personalization
@@ -162,15 +201,15 @@ export default function PersonalizationModal({
           <button 
             type="button"
             className={`btn-sketch ${activeTab === 'records' ? 'btn-sketch-primary' : ''}`}
-            onClick={() => setActiveTab('records')}
+            onClick={() => { playClick(); setActiveTab('records'); }}
             style={{ fontSize: '0.85rem' }}
           >
-            📊 Maintained Records ({studySessions.length} logs)
+            📊 Maintained Records ({studySessions.length})
           </button>
           <button 
             type="button"
             className={`btn-sketch ${activeTab === 'switch' ? 'btn-sketch-primary' : ''}`}
-            onClick={() => setActiveTab('switch')}
+            onClick={() => { playClick(); setActiveTab('switch'); }}
             style={{ fontSize: '0.85rem' }}
           >
             👥 Switch Profile ({profilesList.length})
@@ -292,7 +331,7 @@ export default function PersonalizationModal({
             <div>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '4px' }}>
                 <label style={{ fontSize: '0.85rem', fontWeight: 700 }}>
-                  Gemini API Key (Optional for AI Dynamic Rescheduling):
+                  Gemini API Key (Optional for AI Rescheduling & Resources):
                 </label>
                 <a 
                   href="https://aistudio.google.com/app/apikey" 
@@ -319,7 +358,7 @@ export default function PersonalizationModal({
                 onClick={handleResetConfirm}
                 style={{ fontSize: '0.8rem', padding: '6px 12px' }}
               >
-                Reset All Progress
+                Reset Progress for {name}
               </button>
 
               <div style={{ display: 'flex', gap: '8px' }}>
@@ -371,7 +410,7 @@ export default function PersonalizationModal({
             </div>
 
             <h3 className="font-title" style={{ fontSize: '1.15rem', marginBottom: '8px' }}>
-              📜 Chronological Focus Sessions History:
+              📜 Chronological Focus Sessions History for {name}:
             </h3>
 
             {studySessions.length === 0 ? (
@@ -414,26 +453,144 @@ export default function PersonalizationModal({
           </div>
         )}
 
-        {/* Tab 3: Multiple Profile Switcher */}
+        {/* Tab 3: Multiple Profile Switcher & Isolated Storage Manager */}
         {activeTab === 'switch' && (
           <div>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px', flexWrap: 'wrap', gap: '8px' }}>
               <p style={{ margin: 0, fontSize: '0.9rem', color: 'var(--ink-secondary)' }}>
-                Maintain separate personalized study records and goals for multiple students or preparation tracks:
+                Each student profile has a completely isolated database sandbox (progress, error log, formulas, custom resources & streaks):
               </p>
               <button 
                 type="button" 
                 className="btn-sketch btn-sketch-primary" 
-                onClick={handleCreateNewProfile}
-                style={{ fontSize: '0.8rem', padding: '6px 10px', flexShrink: 0 }}
+                onClick={() => { playClick(); setShowCreateForm(!showCreateForm); }}
+                style={{ fontSize: '0.82rem', padding: '6px 12px', flexShrink: 0, display: 'flex', alignItems: 'center', gap: '6px' }}
               >
-                <Plus size={14} /> New Profile
+                <Plus size={14} /> {showCreateForm ? 'Cancel Form' : 'New Student Profile'}
               </button>
             </div>
 
+            {/* Create New Profile Form */}
+            {showCreateForm && (
+              <form 
+                onSubmit={handleCreateNewProfileSubmit}
+                className="sketch-card"
+                style={{ 
+                  padding: '16px', 
+                  background: 'var(--highlight-yellow)', 
+                  border: '2px solid var(--ink-border)',
+                  marginBottom: '16px' 
+                }}
+              >
+                <h4 className="font-title" style={{ margin: '0 0 10px 0', fontSize: '1.1rem' }}>
+                  ✨ Setup New Student Profile:
+                </h4>
+
+                {/* Avatar Picker for New Profile */}
+                <div style={{ marginBottom: '10px' }}>
+                  <label style={{ fontSize: '0.8rem', fontWeight: 700, display: 'block', marginBottom: '4px' }}>Avatar Persona:</label>
+                  <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
+                    {avatars.map(a => (
+                      <button
+                        key={a.emoji}
+                        type="button"
+                        onClick={() => { playClick(); setNewProfileAvatar(a.emoji); }}
+                        style={{
+                          fontSize: '1.2rem',
+                          padding: '4px 8px',
+                          borderRadius: '6px',
+                          background: newProfileAvatar === a.emoji ? 'var(--highlight-pink)' : 'var(--paper-card)',
+                          border: newProfileAvatar === a.emoji ? '2px solid var(--ink-border)' : '1px solid var(--border-subtle)',
+                          cursor: 'pointer'
+                        }}
+                      >
+                        {a.emoji}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', marginBottom: '10px' }}>
+                  <div>
+                    <label style={{ fontSize: '0.8rem', fontWeight: 700, display: 'block', marginBottom: '2px' }}>Student Name:</label>
+                    <input 
+                      type="text" 
+                      className="input-sketch" 
+                      placeholder="e.g. Aryan / Priyanshu / Rhea"
+                      value={newProfileName}
+                      onChange={e => setNewProfileName(e.target.value)}
+                      required
+                    />
+                  </div>
+                  <div>
+                    <label style={{ fontSize: '0.8rem', fontWeight: 700, display: 'block', marginBottom: '2px' }}>College / Sem:</label>
+                    <input 
+                      type="text" 
+                      className="input-sketch" 
+                      placeholder="e.g. DTU / NSUT / MAIT 5th Sem"
+                      value={newProfileCollege}
+                      onChange={e => setNewProfileCollege(e.target.value)}
+                    />
+                  </div>
+                </div>
+
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '10px', marginBottom: '12px' }}>
+                  <div>
+                    <label style={{ fontSize: '0.8rem', fontWeight: 700, display: 'block', marginBottom: '2px' }}>Target Rank:</label>
+                    <input 
+                      type="text" 
+                      className="input-sketch" 
+                      placeholder="AIR < 100"
+                      value={newProfileTargetRank}
+                      onChange={e => setNewProfileTargetRank(e.target.value)}
+                    />
+                  </div>
+                  <div>
+                    <label style={{ fontSize: '0.8rem', fontWeight: 700, display: 'block', marginBottom: '2px' }}>Target Score:</label>
+                    <input 
+                      type="text" 
+                      className="input-sketch" 
+                      placeholder="80+ Marks"
+                      value={newProfileTargetScore}
+                      onChange={e => setNewProfileTargetScore(e.target.value)}
+                    />
+                  </div>
+                  <div>
+                    <label style={{ fontSize: '0.8rem', fontWeight: 700, display: 'block', marginBottom: '2px' }}>Daily Goal:</label>
+                    <input 
+                      type="number" 
+                      step="0.5"
+                      className="input-sketch" 
+                      value={newProfileDailyHours}
+                      onChange={e => setNewProfileDailyHours(e.target.value)}
+                    />
+                  </div>
+                </div>
+
+                <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '8px' }}>
+                  <button 
+                    type="button" 
+                    className="btn-sketch" 
+                    onClick={() => setShowCreateForm(false)}
+                    style={{ fontSize: '0.8rem' }}
+                  >
+                    Cancel
+                  </button>
+                  <button 
+                    type="submit" 
+                    className="btn-sketch btn-sketch-primary"
+                    style={{ fontSize: '0.8rem', fontWeight: 700 }}
+                  >
+                    ✓ Create & Activate Profile
+                  </button>
+                </div>
+              </form>
+            )}
+
+            {/* List of Profiles */}
             <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
               {profilesList.map(p => {
-                const isActive = p.name === name;
+                const isActive = p.id === activeProfileId;
 
                 return (
                   <div 
@@ -442,36 +599,63 @@ export default function PersonalizationModal({
                     style={{ 
                       padding: '14px 18px',
                       background: isActive ? 'var(--highlight-yellow)' : 'var(--paper-card)',
+                      border: isActive ? '2px solid var(--ink-border)' : '1px solid var(--border-subtle)',
                       display: 'flex',
                       alignItems: 'center',
-                      justifyContent: 'space-between'
+                      justifyContent: 'space-between',
+                      flexWrap: 'wrap',
+                      gap: '10px'
                     }}
                   >
                     <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                      <span style={{ fontSize: '1.6rem' }}>{p.avatar || '🦉'}</span>
+                      <span style={{ fontSize: '1.8rem' }}>{p.avatar || '🦉'}</span>
                       <div>
-                        <div style={{ fontWeight: 700, fontSize: '1rem' }}>
-                          {p.name} {isActive && <span className="badge-sketch badge-sketch-green">Active</span>}
+                        <div style={{ fontWeight: 700, fontSize: '1.05rem', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                          <span>{p.name}</span>
+                          {isActive && (
+                            <span className="badge-sketch badge-sketch-green" style={{ fontSize: '0.72rem' }}>
+                              ✓ Active Profile
+                            </span>
+                          )}
                         </div>
                         <div style={{ fontSize: '0.8rem', color: 'var(--ink-secondary)' }}>
-                          Personalized GATE 2027 Workspace
+                          Target: {p.targetRank || 'AIR < 100'} • Goal: {p.dailyGoalHours || 3.5}h/day • {p.college || 'Engineering'}
                         </div>
                       </div>
                     </div>
 
-                    {!isActive ? (
-                      <button 
-                        className="btn-sketch"
-                        onClick={() => handleSwitchProfile(p)}
-                        style={{ fontSize: '0.8rem', padding: '6px 12px' }}
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                      {!isActive ? (
+                        <button 
+                          type="button"
+                          className="btn-sketch btn-sketch-primary"
+                          onClick={() => handleSwitchToProfile(p.id)}
+                          style={{ fontSize: '0.82rem', padding: '6px 14px', fontWeight: 700 }}
+                        >
+                          Switch to {p.name}
+                        </button>
+                      ) : (
+                        <span style={{ fontSize: '0.85rem', color: '#166534', fontWeight: 700, padding: '4px 8px' }}>
+                          Currently Active
+                        </span>
+                      )}
+
+                      {/* Delete Profile Button (Disabled if only 1 profile remaining) */}
+                      <button
+                        type="button"
+                        className="btn-sketch btn-sketch-pink"
+                        onClick={() => handleDeleteProfileClick(p)}
+                        disabled={profilesList.length <= 1}
+                        title={profilesList.length <= 1 ? "Cannot delete the only profile" : `Delete ${p.name}'s profile and data`}
+                        style={{ 
+                          padding: '6px 8px', 
+                          opacity: profilesList.length <= 1 ? 0.35 : 1,
+                          cursor: profilesList.length <= 1 ? 'not-allowed' : 'pointer'
+                        }}
                       >
-                        Select Profile
+                        <Trash2 size={15} />
                       </button>
-                    ) : (
-                      <span style={{ fontSize: '0.85rem', color: '#166534', fontWeight: 700 }}>
-                        ✓ Current User
-                      </span>
-                    )}
+                    </div>
                   </div>
                 );
               })}

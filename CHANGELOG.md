@@ -4,7 +4,37 @@ All notable changes to this project are documented in this file using Semantic V
 
 ---
 
-## [v1.4.1] — 2026-10-13 (Current Release)
+## [v1.5.0] — 2026-10-13 (Current Release)
+### 👥 Multi-User Profile Isolation & Seamless Profile Switcher
+- **Independent Data Sandboxes**: Complete data isolation across every user profile (`user_profile`, `day_status`, `subject_day_status`, `sunday_status`, `uni_status`, `syllabus_progress`, `error_log`, `mock_tests`, `custom_formulas`, `study_sessions`, `master_schedule`, `custom_resources`).
+- **Instant Profile Switching**: Switch between aspirants via the top navbar dropdown or Personalization Modal tab with 1-click; all study records, streaks, and schedules swap instantly with zero state leaks.
+- **Full Profile Lifecycle (Create & Delete)**:
+  - Add new profiles with custom avatars, colleges, daily targets, and score benchmarks.
+  - Delete unused profiles and erase their isolated storage data with confirmation safeguards.
+  - Built-in protection prevents accidental deletion of the last remaining profile.
+  - Automatic migration from legacy unscoped storage keys preserves all existing records under `profile_default`.
+
+### 📂 Universal File Import Studio (`FileImportModal`)
+- **Multi-Format Ingestion**: Drag-and-drop or select any `.xlsx`, `.xls`, `.csv`, `.pdf`, `.txt`, `.md`, or `.json` file to import into the dashboard entirely client-side without servers or external uploads.
+- **Excel & CSV Sheet Parser**: Powered by SheetJS, previews multi-sheet workbooks with row counts, headers, and cell grids.
+- **PDF Text Extractor**: Powered by PDF.js, extracts structured text and section headings from syllabus sheets or revision notes.
+- **1-Click Smart Destinations**:
+  - 📅 **Add to Today's Tasks**: Import rows directly as time-blocked checklist items.
+  - ⚠️ **Import into Mistake Vault**: Turn error lists into spaced-repetition flashcards.
+  - 🧠 **Import Formulas**: Auto-add equation rows into the Formula Vault.
+  - 📝 **Append to Today's Margin Notes**: Embed lecture summaries directly into today's mission journal.
+  - 💾 **Restore JSON Backup**: Detects backup files and restores full database snapshots seamlessly.
+
+### ⚡ AI Resource & Playlist Customizer (`ResourceCustomizerModal`)
+- **Natural Language AI Swapper**: Type or paste any custom request (e.g., *"I want to use Gate Smashers for Operating Systems instead of the one which is using rn"* or paste custom YouTube URLs) and the integrated NLP engine automatically resolves the subject, educator, and channel.
+- **Schedule-Wide Synchronization**: Updates video URLs, titles, and topic search queries across all days in `masterSchedule` for that subject, persisting it directly into the active user's profile.
+- **8-Subject Resource Matrix**: Browse verified alternatives for all 8 GATE subjects (C Programming, Data Structures, Algorithms, Compiler Design, Operating Systems, Computer Networks, Engineering Maths, General Aptitude) with 1-click selection from educators like Gate Smashers, Abdul Bari, Amit Khurana, Knowledge Gate, GO Classes, Neso Academy, and GATE Wallah.
+- **Custom YouTube URL Support**: Paste arbitrary playlist links with custom titles and educator names.
+- **1-Click Reset to Default**: Restore any subject or all subjects to the standard curriculum at any time.
+
+---
+
+## [v1.4.1] — 2026-10-13
 ### 📺 Unacademy Removed & Replaced with 100% Free YouTube Hinglish Alternatives
 - **GATE General Aptitude**: Replaced all Unacademy references and paywalled course links across daily warmups, round plans, and resource directories with **GATE Wallah's Complete General Aptitude Course (Hinglish)** (`https://www.youtube.com/playlist?list=PLvTTv60o7qj-PgF3DhvvTK6_-g_FU8wCT`).
 - **Data Structures PYQ Revision**: Replaced Unacademy CS links with **Gate Smashers Data Structures Complete Series (Hinglish)** by Varun Singla (`https://www.youtube.com/playlist?list=PLxCzCOWd7aiEwaANNt3wBGKR4t9lvwKzs`).
