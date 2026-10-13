@@ -23,6 +23,7 @@ import {
 import { playClick, playSuccessChime } from '../utils/audio';
 import { fireTaskConfetti } from '../utils/confetti';
 import { createGoogleCalendarUrl, downloadIcsSchedule } from '../utils/googleCalendar';
+import { loadProfileItem, saveProfileItem } from '../utils/storage';
 
 export default function CalendarView({ 
   masterSchedule, 
@@ -30,7 +31,8 @@ export default function CalendarView({
   currentDate, 
   onSelectDate, 
   onOpenReschedule,
-  onUpdateDayStatus
+  onUpdateDayStatus,
+  activeProfileId = 'profile_default'
 }) {
   // Available months across the study campaign: Oct 2026 to Feb 2027
   const months = [

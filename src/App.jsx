@@ -477,6 +477,7 @@ export default function App() {
             onAddErrorItem={handleAddErrorItem}
             onUpdateErrorItem={handleUpdateErrorItem}
             onAddFormula={handleAddCustomFormula}
+            activeProfileId={activeProfileId}
           />
         )}
 
@@ -522,6 +523,7 @@ export default function App() {
             syllabusData={OFFICIAL_SYLLABUS_DATA}
             syllabusProgress={syllabusProgress}
             onUpdateSyllabusProgress={handleUpdateSyllabusProgress}
+            activeProfileId={activeProfileId}
           />
         )}
       </main>
@@ -569,7 +571,6 @@ export default function App() {
           currentDate={currentDate}
           masterSchedule={masterSchedule}
           dayStatus={dayStatus}
-          geminiApiKey={userProfile.geminiApiKey}
           onApplyRescheduledSchedule={handleApplyRescheduledSchedule}
           onClose={() => setShowReschedule(false)}
         />
@@ -594,7 +595,6 @@ export default function App() {
         masterSchedule={masterSchedule}
         customResources={customResources}
         onApplyCustomResource={handleApplyCustomResource}
-        geminiApiKey={userProfile.geminiApiKey}
       />
 
       {/* Footer */}

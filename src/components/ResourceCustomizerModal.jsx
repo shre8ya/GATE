@@ -379,8 +379,7 @@ export default function ResourceCustomizerModal({
   masterSchedule = [],
   customResources = {},
   onApplyCustomResource,
-  onBatchApplyResources,
-  geminiApiKey = ''
+  onBatchApplyResources
 }) {
   if (!isOpen) return null;
 

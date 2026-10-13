@@ -1,12 +1,12 @@
 // AI Dynamic Rescheduling Engine for GATE CSE 2027 Study Planner
 // Recovers missed topics, redistributes hours, and preserves hard exam deadlines.
+import { executeAiCompletion } from './aiClient.js';
 
 export function calculateAiReschedulePlan({
   missedDate,
   masterSchedule,
   dayStatus,
-  strategy = 'SUNDAY_BUFFER', // 'SUNDAY_BUFFER' | 'MICRO_SPRINT' | 'SMART_SHIFT'
-  geminiApiKey = ''
+  strategy = 'SUNDAY_BUFFER' // 'SUNDAY_BUFFER' | 'MICRO_SPRINT' | 'SMART_SHIFT'
 }) {
   const missedIndex = masterSchedule.findIndex(m => m.date === missedDate);
   if (missedIndex === -1) return null;
@@ -24,17 +24,23 @@ export function calculateAiReschedulePlan({
   };
 
   if (strategy === 'SUNDAY_BUFFER') {
-    // Find next Sunday revision slot
-    const nextSunday = remainingSchedule.find(m => m.day === 'Sun' || m.type.includes('Sunday'));
+    // Find next Sunday revision slot safely
+    const nextSunday = remainingSchedule.find(m => 
+      m.day === 'Sun' || 
+      (m.day && typeof m.day === 'string' && m.day.includes('Sun')) || 
+      (m.type && typeof m.type === 'string' && m.type.includes('Sunday'))
+    );
     const targetSundayDate = nextSunday ? nextSunday.date : remainingSchedule[Math.min(5, remainingSchedule.length - 1)].date;
 
     const sunIndex = newSchedule.findIndex(m => m.date === targetSundayDate);
     if (sunIndex !== -1) {
-      newSchedule[sunIndex].note = `[AI Rescheduled] + Catch-up: ${missedItem.subject} (${missedItem.mainFocus}) + Maths (${missedItem.mathsLecture})`;
+      const mathsNote = missedItem.mathsLecture ? ` + Maths (${missedItem.mathsLecture})` : '';
+      newSchedule[sunIndex].note = `[AI Rescheduled] + Catch-up: ${missedItem.subject || 'Missed Topic'} (${missedItem.mainFocus || 'Review'})${mathsNote}`;
       newSchedule[sunIndex].totalHrs = (newSchedule[sunIndex].totalHrs || 3.0) + (missedItem.totalHrs || 2.0) * 0.7; // compact review
     }
 
-    explanation = `The missed session "${missedItem.mainFocus}" and Maths lecture "${missedItem.mathsLecture}" have been merged into the upcoming Sunday Revision buffer (${targetSundayDate}). Your weekday calendar remains 100% on track, avoiding any cascading delays for University practicals (Nov 26) and theory exams (Dec 11).`;
+    const mathsPart = missedItem.mathsLecture ? ` and Maths lecture "${missedItem.mathsLecture}"` : '';
+    explanation = `The missed session "${missedItem.mainFocus || 'Topic'}"${mathsPart} has been merged into the upcoming Sunday Revision buffer (${targetSundayDate}). Your weekday calendar remains 100% on track, avoiding any cascading delays for University practicals (Nov 26) and theory exams (Dec 11).`;
     impactSummary = {
       strategyName: 'Sunday Buffer Absorption (Recommended)',
       hoursShifted: missedItem.totalHrs || 2.0,
@@ -98,30 +104,20 @@ export function calculateAiReschedulePlan({
   };
 }
 
-// Optional Gemini Live Rescheduling Prompt
+// Internal Background AI Rescheduling Advice (No frontend key exposure)
 export async function fetchGeminiRescheduleAdvice({
   missedDate,
-  missedTopic,
-  geminiApiKey
+  missedTopic
 }) {
-  if (!geminiApiKey || !geminiApiKey.trim()) return null;
-
   try {
     const prompt = `I am preparing for GATE CSE 2027 and IPU 5th Sem exams. Today is ${missedDate} and I missed topic: "${missedTopic}".
 My practical exams are Nov 26 - Dec 6, end-terms are Dec 11 - Dec 31 (DAA 15 Dec, CD 17 Dec, OS 19 Dec, CN 22 Dec), and syllabus ends Dec 31.
 Give me a 3-bullet action plan on how to absorb this missed topic without panicking or postponing my January mock test phase.`;
 
-    const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${geminiApiKey.trim()}`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        contents: [{ role: 'user', parts: [{ text: prompt }] }]
-      })
-    });
-    const data = await res.json();
-    return data.candidates?.[0]?.content?.parts?.[0]?.text || null;
+    const res = await executeAiCompletion(prompt);
+    return res.text || null;
   } catch (err) {
-    console.warn("Gemini reschedule advice error:", err);
+    console.warn("AI reschedule advice note:", err);
     return null;
   }
 }

@@ -17,7 +17,6 @@ export default function RescheduleModal({
   currentDate, 
   masterSchedule, 
   dayStatus, 
-  geminiApiKey,
   onApplyRescheduledSchedule, 
   onClose 
 }) {
@@ -30,23 +29,17 @@ export default function RescheduleModal({
     missedDate: selectedDate,
     masterSchedule,
     dayStatus,
-    strategy: selectedStrategy,
-    geminiApiKey
+    strategy: selectedStrategy
   });
 
   const handleFetchAiAdvice = async () => {
-    if (!geminiApiKey) {
-      alert("Please add your Gemini API Key in Settings to get live generative advice. Using built-in smart algorithm!");
-      return;
-    }
     playClick();
     setIsLoadingGemini(true);
     const advice = await fetchGeminiRescheduleAdvice({
       missedDate: selectedDate,
-      missedTopic: planResult?.missedItem?.mainFocus || 'Missed lecture',
-      geminiApiKey
+      missedTopic: planResult?.missedItem?.mainFocus || 'Missed lecture'
     });
-    setGeminiAdvice(advice);
+    setGeminiAdvice(advice || "Review the high-yield core sub-topics during your Sunday buffer session.");
     setIsLoadingGemini(false);
   };
 
@@ -228,28 +221,26 @@ export default function RescheduleModal({
           </div>
         )}
 
-        {/* Gemini Live Advice if available */}
-        {geminiApiKey && (
-          <div style={{ marginBottom: '18px' }}>
-            {!geminiAdvice ? (
-              <button 
-                type="button" 
-                className="btn-sketch btn-sketch-blue" 
-                onClick={handleFetchAiAdvice}
-                disabled={isLoadingGemini}
-                style={{ fontSize: '0.85rem' }}
-              >
-                <Bot size={16} />
-                {isLoadingGemini ? "Asking Gemini 1.5..." : "Ask Gemini Live for Study Rationale"}
-              </button>
-            ) : (
-              <div className="sketch-card" style={{ padding: '14px', background: '#F5F3FF', border: '2px solid #7C3AED' }}>
-                <div style={{ fontWeight: 700, fontSize: '0.85rem', color: '#6D28D9' }}>GEMINI 1.5 LIVE ADVICE:</div>
-                <div style={{ fontSize: '0.85rem', marginTop: '4px', whiteSpace: 'pre-line' }}>{geminiAdvice}</div>
-              </div>
-            )}
-          </div>
-        )}
+        {/* Gemini Live Advice */}
+        <div style={{ marginBottom: '18px' }}>
+          {!geminiAdvice ? (
+            <button 
+              type="button" 
+              className="btn-sketch btn-sketch-blue" 
+              onClick={handleFetchAiAdvice}
+              disabled={isLoadingGemini}
+              style={{ fontSize: '0.85rem' }}
+            >
+              <Bot size={16} />
+              {isLoadingGemini ? "Asking Gemini Assistant..." : "⚡ Ask AI for Catch-Up Strategy Rationale"}
+            </button>
+          ) : (
+            <div className="sketch-card" style={{ padding: '14px', background: '#F5F3FF', border: '2px solid #7C3AED' }}>
+              <div style={{ fontWeight: 700, fontSize: '0.85rem', color: '#6D28D9' }}>AI CATCH-UP RATIONALE:</div>
+              <div style={{ fontSize: '0.85rem', marginTop: '4px', whiteSpace: 'pre-line' }}>{geminiAdvice}</div>
+            </div>
+          )}
+        </div>
 
         {/* Bottom Actions */}
         <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px', paddingTop: '12px', borderTop: '2px solid var(--ink-border)' }}>

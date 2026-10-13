@@ -11,7 +11,6 @@ export default function SettingsModal({
   const [name, setName] = useState(userProfile.name || 'GATE Aspirant');
   const [targetRank, setTargetRank] = useState(userProfile.targetRank || 'AIR < 100');
   const [dailyGoalHours, setDailyGoalHours] = useState(userProfile.dailyGoalHours || 3.0);
-  const [geminiApiKey, setGeminiApiKey] = useState(userProfile.geminiApiKey || '');
 
   const handleSave = (e) => {
     e.preventDefault();
@@ -19,8 +18,7 @@ export default function SettingsModal({
     onSaveProfile({
       name,
       targetRank,
-      dailyGoalHours: parseFloat(dailyGoalHours) || 3.0,
-      geminiApiKey
+      dailyGoalHours: parseFloat(dailyGoalHours) || 3.0
     });
     playSuccessChime();
     onClose();
@@ -102,29 +100,18 @@ export default function SettingsModal({
             </div>
           </div>
 
-          <div>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '4px' }}>
-              <label style={{ fontSize: '0.85rem', fontWeight: 700 }}>
-                Gemini API Key (Optional):
-              </label>
-              <a 
-                href="https://aistudio.google.com/app/apikey" 
-                target="_blank" 
-                rel="noreferrer" 
-                style={{ fontSize: '0.8rem', color: 'var(--pen-blue)', textDecoration: 'underline', fontStyle: 'italic' }}
-              >
-                Get free key ↗
-              </a>
-            </div>
-            <input 
-              type="password" 
-              className="input-sketch" 
-              placeholder="AIzaSy..." 
-              value={geminiApiKey} 
-              onChange={e => setGeminiApiKey(e.target.value)} 
-            />
-            <div style={{ fontSize: '0.8rem', color: 'var(--ink-muted)', marginTop: '4px', fontStyle: 'italic' }}>
-              🔒 Stored strictly in your local browser. Powers live AI doubt explanations & deep rescheduling prompts.
+          <div style={{
+            padding: '10px 14px',
+            borderRadius: '8px',
+            backgroundColor: 'var(--bg-card-alt, rgba(74, 144, 226, 0.08))',
+            border: '1px solid var(--border-color)',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '10px'
+          }}>
+            <span style={{ fontSize: '1.2rem' }}>⚡</span>
+            <div style={{ fontSize: '0.82rem', color: 'var(--text-secondary)' }}>
+              <strong style={{ color: 'var(--text-primary)' }}>Built-in Gemini AI Active:</strong> Automatic AI catch-up planning, smart rescheduling, and resource recommendations are ready out of the box.
             </div>
           </div>
 

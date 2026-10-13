@@ -48,7 +48,6 @@ export default function PersonalizationModal({
   const [college, setCollege] = useState(userProfile.college || 'GGSIPU (5th Sem CSE)');
   const [dailyGoalHours, setDailyGoalHours] = useState(userProfile.dailyGoalHours || 3.5);
   const [weakSubjects, setWeakSubjects] = useState(userProfile.weakSubjects || 'Operating Systems, COA');
-  const [geminiApiKey, setGeminiApiKey] = useState(userProfile.geminiApiKey || '');
 
   // New Profile Creation Inline State
   const [showCreateForm, setShowCreateForm] = useState(false);
@@ -84,8 +83,7 @@ export default function PersonalizationModal({
       targetScore,
       college,
       dailyGoalHours: parseFloat(dailyGoalHours) || 3.5,
-      weakSubjects,
-      geminiApiKey
+      weakSubjects
     };
     onSaveProfile(updated);
     playSuccessChime();
@@ -104,8 +102,7 @@ export default function PersonalizationModal({
       targetRank: newProfileTargetRank || 'AIR < 100',
       targetScore: newProfileTargetScore || '80+ Marks',
       dailyGoalHours: parseFloat(newProfileDailyHours) || 3.5,
-      weakSubjects: newProfileWeakSubjects || 'Operating Systems, COA',
-      geminiApiKey: ''
+      weakSubjects: newProfileWeakSubjects || 'Operating Systems, COA'
     };
 
     if (onCreateProfile) {
@@ -328,27 +325,19 @@ export default function PersonalizationModal({
               />
             </div>
 
-            <div>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '4px' }}>
-                <label style={{ fontSize: '0.85rem', fontWeight: 700 }}>
-                  Gemini API Key (Optional for AI Rescheduling & Resources):
-                </label>
-                <a 
-                  href="https://aistudio.google.com/app/apikey" 
-                  target="_blank" 
-                  rel="noreferrer" 
-                  style={{ fontSize: '0.8rem', color: 'var(--pen-blue)', textDecoration: 'underline' }}
-                >
-                  Get free key ↗
-                </a>
+            <div style={{
+              padding: '10px 14px',
+              borderRadius: '8px',
+              backgroundColor: 'var(--bg-card-alt, rgba(74, 144, 226, 0.08))',
+              border: '1px solid var(--border-color)',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '10px'
+            }}>
+              <span style={{ fontSize: '1.2rem' }}>⚡</span>
+              <div style={{ fontSize: '0.82rem', color: 'var(--text-secondary)' }}>
+                <strong style={{ color: 'var(--text-primary)' }}>Built-in AI Assistant Ready:</strong> Automated smart rescheduling, playlist adjustments, and syllabus guidance are active by default for all profiles.
               </div>
-              <input 
-                type="password" 
-                className="input-sketch" 
-                placeholder="AIzaSy..." 
-                value={geminiApiKey} 
-                onChange={e => setGeminiApiKey(e.target.value)} 
-              />
             </div>
 
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '10px' }}>

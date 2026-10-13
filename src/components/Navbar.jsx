@@ -1,25 +1,19 @@
-import React from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { 
   Flame, 
-  Clock, 
   Calendar, 
-  BookOpen, 
-  CheckCircle, 
   AlertTriangle, 
-  GraduationCap, 
   Compass, 
+  Sparkles, 
   Zap, 
-  Bot, 
+  Upload, 
+  Palette, 
   Bell, 
   Download, 
-  Settings,
-  Sparkles,
-  Sun,
-  Moon,
-  Palette,
-  Upload,
-  Layers,
-  Users
+  ChevronDown,
+  User,
+  Sliders,
+  Settings
 } from 'lucide-react';
 import { playClick } from '../utils/audio';
 
@@ -44,270 +38,383 @@ export default function Navbar({
   onSelectPaperTheme,
   notifPermission
 }) {
+  const [showToolsMenu, setShowToolsMenu] = useState(false);
+  const [showProfileMenu, setShowProfileMenu] = useState(false);
+  const toolsMenuRef = useRef(null);
+  const profileMenuRef = useRef(null);
+
+  // Close dropdowns on outside click
+  useEffect(() => {
+    function handleClickOutside(e) {
+      if (toolsMenuRef.current && !toolsMenuRef.current.contains(e.target)) {
+        setShowToolsMenu(false);
+      }
+      if (profileMenuRef.current && !profileMenuRef.current.contains(e.target)) {
+        setShowProfileMenu(false);
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
   const tabs = [
     { 
       id: 'today', 
-      label: "War Room (Today)", 
+      label: "War Room", 
       icon: Compass, 
-      badge: 'Live' 
+      desc: "Today's Mission" 
     },
     { 
       id: 'vault', 
-      label: 'Weapon Vault (Errors & Formulas)', 
+      label: 'Weapon Vault', 
       icon: AlertTriangle, 
       count: todayStats?.errorsDue || 0 
     },
     { 
       id: 'radar', 
-      label: 'Radar (Calendar & Planner)', 
+      label: 'Radar', 
       icon: Calendar, 
-      badge: 'Roadmap' 
+      desc: 'Calendar & Roadmap' 
     },
   ];
 
   return (
     <header className="sketch-card" style={{ 
-      margin: '14px 18px', 
-      padding: '12px 18px', 
+      margin: '12px 18px 16px', 
+      padding: '10px 18px', 
       position: 'sticky', 
       top: '10px', 
       zIndex: 100,
-      background: 'var(--paper-card)'
+      background: 'var(--paper-card)',
+      boxShadow: 'var(--shadow-sm, 0 2px 8px rgba(0,0,0,0.06))'
     }}>
-      <div className="tape-strip"></div>
+      <div className="tape-strip" style={{ opacity: 0.85 }}></div>
       
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '16px', flexWrap: 'wrap' }}>
+      <div style={{ 
+        display: 'flex', 
+        alignItems: 'center', 
+        justifyContent: 'space-between', 
+        gap: '16px',
+        flexWrap: 'wrap'
+      }}>
         
-        {/* Brand & Handwriting Title */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+        {/* Left: Brand Identity */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
           <div style={{ 
             display: 'flex', 
             alignItems: 'center', 
             justifyContent: 'center',
-            width: '42px', 
-            height: '42px', 
-            borderRadius: 'var(--sketch-radius-sm)',
-            background: 'var(--highlight-yellow)',
-            border: '2px solid var(--ink-border)',
-            boxShadow: '2px 2px 0px var(--ink-border)'
+            width: '36px', 
+            height: '36px', 
+            borderRadius: '6px',
+            background: 'var(--highlight-yellow, #FEF08A)',
+            border: '2px solid var(--ink-border)'
           }}>
-            <span style={{ fontSize: '1.4rem' }}>📓</span>
+            <span style={{ fontSize: '1.2rem' }}>📓</span>
           </div>
           <div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <span className="font-title" style={{ fontSize: '1.4rem', fontWeight: 700 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+              <span className="font-title" style={{ fontSize: '1.3rem', fontWeight: 800, letterSpacing: '-0.02em' }}>
                 GATE <span className="highlight-pen">MATRIX</span>
               </span>
-              <span className="badge-sketch badge-sketch-yellow">CSE 2027</span>
-              <span style={{ fontSize: '0.85rem', color: 'var(--ink-muted)', fontStyle: 'italic' }}>
-                IIT Madras Organizer
+              <span className="badge-sketch badge-sketch-yellow" style={{ fontSize: '0.72rem', padding: '1px 6px' }}>
+                CSE 2027
               </span>
             </div>
-            <div style={{ fontSize: '0.85rem', color: 'var(--ink-secondary)', display: 'flex', alignItems: 'center', gap: '6px' }}>
-              <span>✏️ Personal Study Journal & 12-Week Roadmap</span>
-            </div>
           </div>
         </div>
 
-        {/* Center: Hand-Drawn Stats Badges */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
-          
-          <div className="badge-sketch badge-sketch-orange" title="Daily Study Streak">
-            <Flame size={15} color="#D97706" fill="#D97706" />
-            <span>Streak: {streak}d 🔥</span>
-          </div>
-
-          <div className="badge-sketch badge-sketch-blue" title="Today's Target Hours">
-            <Clock size={15} color="#2563EB" />
-            <span>Target: {todayStats?.hoursToday || 2.5}h / day</span>
-          </div>
-
-          <div className="badge-sketch badge-sketch-pink" title="Days to GATE 2027">
-            <GraduationCap size={15} color="#DB2777" />
-            <span>GATE '27: ~114d</span>
-          </div>
-
-          {/* AI Rescheduler Button */}
-          <button 
-            className="btn-sketch btn-sketch-primary"
-            onClick={onOpenReschedule}
-            style={{ padding: '4px 10px', fontSize: '0.82rem' }}
-            title="Missed a topic or day? Reorganize with AI"
-          >
-            <Sparkles size={14} /> AI Reschedule
-          </button>
-
-          {/* Custom Resources Button */}
-          <button
-            className="btn-sketch"
-            onClick={onOpenCustomizer}
-            style={{ padding: '4px 10px', fontSize: '0.82rem', background: 'var(--paper-card-subtle)' }}
-            title="Personalize & Swap Playlists with AI (e.g. Gate Smashers, Abdul Bari, Amit Khurana)"
-          >
-            <Zap size={14} color="#D97706" /> Swap Resources
-          </button>
-
-          {/* Universal File Import Studio Button */}
-          <button
-            className="btn-sketch"
-            onClick={onOpenImport}
-            style={{ padding: '4px 10px', fontSize: '0.82rem', background: 'var(--highlight-yellow)' }}
-            title="Import Excel (.xlsx/.csv), PDF, TXT or JSON directly into dashboard"
-          >
-            <Upload size={14} /> Import File
-          </button>
-        </div>
-
-        {/* Right: Paper Themes, Notifications, Backup, Settings & Profile Switcher */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
-          
-          {/* Paper Color Palette Selector */}
-          <div 
-            style={{ 
-              display: 'flex', 
-              alignItems: 'center', 
-              gap: '4px', 
-              background: 'var(--paper-card-subtle)', 
-              padding: '4px 8px', 
-              borderRadius: '6px', 
-              border: '1.5px solid var(--ink-border)' 
-            }} 
-            title="Choose Hand-Drawn Paper Stationery Style"
-          >
-            <Palette size={14} color="var(--ink-secondary)" />
-            <select
-              value={paperTheme}
-              onChange={e => onSelectPaperTheme && onSelectPaperTheme(e.target.value)}
-              style={{
-                border: 'none',
-                background: 'transparent',
-                fontFamily: 'inherit',
-                fontSize: '0.82rem',
-                fontWeight: 700,
-                color: 'var(--ink-primary)',
-                cursor: 'pointer',
-                outline: 'none'
-              }}
-            >
-              <option value="parchment">📜 Parchment</option>
-              <option value="ivory">📓 Ivory Moleskine</option>
-              <option value="sage">🌿 Sage Mint</option>
-              <option value="rose">🌸 Rose Coral</option>
-              <option value="blueprint">🩵 Blueprint Grid</option>
-            </select>
-          </div>
-
-          <button 
-            className="btn-sketch" 
-            onClick={onOpenReminders}
-            title={notifPermission === 'granted' ? "Reminders (Active)" : "Enable Alerts"}
-            style={{ padding: '6px 10px' }}
-          >
-            <Bell size={16} color={notifPermission === 'granted' ? "#15803D" : "currentColor"} />
-          </button>
-
-          <button 
-            className="btn-sketch" 
-            onClick={onOpenBackup}
-            title="Backup & Restore Data (Export JSON)"
-            style={{ padding: '6px 10px' }}
-          >
-            <Download size={16} />
-          </button>
-
-          {/* Profile Switcher Quick Dropdown / Settings Pill */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-            {profilesList.length > 1 && (
-              <select
-                value={activeProfileId}
-                onChange={e => {
+        {/* Center: Sleek 3-Workspace Segmented Tabs */}
+        <nav style={{ 
+          display: 'flex', 
+          alignItems: 'center', 
+          gap: '6px',
+          background: 'var(--paper-card-subtle, rgba(0,0,0,0.03))',
+          padding: '4px 6px',
+          borderRadius: '8px',
+          border: '1.5px solid var(--ink-border)'
+        }}>
+          {tabs.map((tab) => {
+            const Icon = tab.icon;
+            const isActive = activeTab === tab.id;
+            return (
+              <button
+                key={tab.id}
+                onClick={() => {
                   playClick();
-                  onSwitchProfile && onSwitchProfile(e.target.value);
+                  setActiveTab(tab.id);
                 }}
+                className={`btn-sketch ${isActive ? 'btn-sketch-primary' : ''}`}
                 style={{
-                  background: 'var(--paper-card-subtle)',
-                  border: '1.5px solid var(--ink-border)',
-                  borderRadius: '6px',
-                  padding: '4px 6px',
-                  fontFamily: 'inherit',
-                  fontSize: '0.8rem',
-                  fontWeight: 700,
-                  cursor: 'pointer',
-                  color: 'var(--ink-primary)'
+                  padding: '5px 12px',
+                  fontSize: '0.85rem',
+                  fontWeight: isActive ? 800 : 600,
+                  border: isActive ? '2px solid var(--ink-border)' : '1px solid transparent',
+                  background: isActive ? undefined : 'transparent',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '6px',
+                  boxShadow: isActive ? '2px 2px 0px var(--ink-border)' : 'none'
                 }}
-                title="Switch active user profile"
               >
-                {profilesList.map(p => (
-                  <option key={p.id} value={p.id}>
-                    {p.avatar || '👤'} {p.name}
-                  </option>
-                ))}
-              </select>
-            )}
+                <Icon size={15} />
+                <span>{tab.label}</span>
+                {tab.count > 0 && (
+                  <span style={{
+                    fontSize: '0.68rem',
+                    background: '#E11D48',
+                    color: '#fff',
+                    borderRadius: '10px',
+                    padding: '0 5px',
+                    marginLeft: '2px'
+                  }}>
+                    {tab.count}
+                  </span>
+                )}
+              </button>
+            );
+          })}
+        </nav>
 
+        {/* Right: Streak, Tools Dropdown, & Profile */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+          
+          {/* Subtle Streak Pill */}
+          <div 
+            className="badge-sketch badge-sketch-orange" 
+            title="Daily Study Streak"
+            style={{ fontSize: '0.8rem', padding: '4px 8px' }}
+          >
+            <Flame size={14} color="#D97706" fill="#D97706" />
+            <span>{streak}d</span>
+          </div>
+
+          {/* Unified Tools Popover Menu */}
+          <div style={{ position: 'relative' }} ref={toolsMenuRef}>
+            <button
+              className="btn-sketch"
+              onClick={() => setShowToolsMenu(prev => !prev)}
+              style={{ 
+                padding: '5px 10px', 
+                fontSize: '0.82rem', 
+                display: 'flex', 
+                alignItems: 'center', 
+                gap: '5px',
+                background: showToolsMenu ? 'var(--paper-card-subtle)' : undefined
+              }}
+              title="Assistant Tools & Utilities"
+            >
+              <Zap size={14} color="#D97706" />
+              <span>Tools</span>
+              <ChevronDown size={13} style={{ opacity: 0.6 }} />
+            </button>
+
+            {showToolsMenu && (
+              <div 
+                className="sketch-card"
+                style={{
+                  position: 'absolute',
+                  top: '110%',
+                  right: 0,
+                  width: '240px',
+                  padding: '8px',
+                  zIndex: 200,
+                  background: 'var(--paper-card)',
+                  boxShadow: '0 8px 24px rgba(0,0,0,0.12)',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: '4px'
+                }}
+              >
+                <button
+                  className="btn-sketch"
+                  onClick={() => {
+                    setShowToolsMenu(false);
+                    onOpenReschedule();
+                  }}
+                  style={{ justifyContent: 'flex-start', padding: '7px 10px', fontSize: '0.82rem', width: '100%' }}
+                >
+                  <Sparkles size={14} color="#2563EB" />
+                  <span>AI Catch-Up Rescheduler</span>
+                </button>
+
+                <button
+                  className="btn-sketch"
+                  onClick={() => {
+                    setShowToolsMenu(false);
+                    onOpenCustomizer();
+                  }}
+                  style={{ justifyContent: 'flex-start', padding: '7px 10px', fontSize: '0.82rem', width: '100%' }}
+                >
+                  <Zap size={14} color="#D97706" />
+                  <span>Swap Video Playlists</span>
+                </button>
+
+                <button
+                  className="btn-sketch"
+                  onClick={() => {
+                    setShowToolsMenu(false);
+                    onOpenImport();
+                  }}
+                  style={{ justifyContent: 'flex-start', padding: '7px 10px', fontSize: '0.82rem', width: '100%' }}
+                >
+                  <Upload size={14} />
+                  <span>Import File (Excel / PDF / TXT)</span>
+                </button>
+
+                <button
+                  className="btn-sketch"
+                  onClick={() => {
+                    setShowToolsMenu(false);
+                    onOpenReminders();
+                  }}
+                  style={{ justifyContent: 'flex-start', padding: '7px 10px', fontSize: '0.82rem', width: '100%' }}
+                >
+                  <Bell size={14} color={notifPermission === 'granted' ? '#15803D' : 'currentColor'} />
+                  <span>Study Reminders</span>
+                </button>
+
+                <button
+                  className="btn-sketch"
+                  onClick={() => {
+                    setShowToolsMenu(false);
+                    onOpenBackup();
+                  }}
+                  style={{ justifyContent: 'flex-start', padding: '7px 10px', fontSize: '0.82rem', width: '100%' }}
+                >
+                  <Download size={14} />
+                  <span>Backup & Restore Data</span>
+                </button>
+
+                {/* Paper Color Palette Picker */}
+                <div style={{ 
+                  marginTop: '4px', 
+                  paddingTop: '6px', 
+                  borderTop: '1px dashed var(--ink-border)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  paddingLeft: '6px',
+                  paddingRight: '6px'
+                }}>
+                  <span style={{ fontSize: '0.78rem', color: 'var(--ink-secondary)', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                    <Palette size={13} /> Theme:
+                  </span>
+                  <select
+                    value={paperTheme}
+                    onChange={e => onSelectPaperTheme && onSelectPaperTheme(e.target.value)}
+                    style={{
+                      border: '1px solid var(--ink-border)',
+                      borderRadius: '4px',
+                      background: 'var(--paper-card-subtle)',
+                      fontFamily: 'inherit',
+                      fontSize: '0.78rem',
+                      fontWeight: 700,
+                      color: 'var(--ink-primary)',
+                      cursor: 'pointer',
+                      padding: '2px 4px'
+                    }}
+                  >
+                    <option value="parchment">📜 Parchment</option>
+                    <option value="ivory">📓 Ivory Moleskine</option>
+                    <option value="sage">🌿 Sage Mint</option>
+                    <option value="rose">🌸 Rose Coral</option>
+                    <option value="blueprint">🩵 Blueprint Grid</option>
+                  </select>
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* Profile Switcher & Settings Dropdown */}
+          <div style={{ position: 'relative' }} ref={profileMenuRef}>
             <button 
               className="btn-sketch btn-sketch-primary" 
-              onClick={() => onOpenSettings && onOpenSettings('profile')}
-              title="Personalization, Records & Multi-User Manager"
-              style={{ padding: '6px 12px', fontSize: '0.85rem', display: 'flex', alignItems: 'center', gap: '6px' }}
+              onClick={() => setShowProfileMenu(prev => !prev)}
+              title="User Profiles & Personalization"
+              style={{ 
+                padding: '5px 10px', 
+                fontSize: '0.82rem', 
+                display: 'flex', 
+                alignItems: 'center', 
+                gap: '6px' 
+              }}
             >
               <span>{userProfile?.avatar || '🦉'}</span>
-              <span style={{ fontWeight: 700 }}>{userProfile?.name || 'Shreya'}</span>
+              <span style={{ fontWeight: 700, maxWidth: '85px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                {userProfile?.name || 'Shreya'}
+              </span>
+              <ChevronDown size={13} style={{ opacity: 0.7 }} />
             </button>
+
+            {showProfileMenu && (
+              <div 
+                className="sketch-card"
+                style={{
+                  position: 'absolute',
+                  top: '110%',
+                  right: 0,
+                  width: '210px',
+                  padding: '8px',
+                  zIndex: 200,
+                  background: 'var(--paper-card)',
+                  boxShadow: '0 8px 24px rgba(0,0,0,0.12)',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: '4px'
+                }}
+              >
+                {/* Profiles List */}
+                <div style={{ fontSize: '0.75rem', fontWeight: 800, color: 'var(--ink-muted)', padding: '4px 6px' }}>
+                  PROFILES ({profilesList.length})
+                </div>
+
+                {profilesList.map(p => (
+                  <button
+                    key={p.id}
+                    className="btn-sketch"
+                    onClick={() => {
+                      playClick();
+                      setShowProfileMenu(false);
+                      onSwitchProfile && onSwitchProfile(p.id);
+                    }}
+                    style={{
+                      justifyContent: 'space-between',
+                      padding: '6px 8px',
+                      fontSize: '0.8rem',
+                      background: p.id === activeProfileId ? 'var(--highlight-blue, rgba(37,99,235,0.08))' : 'transparent',
+                      border: p.id === activeProfileId ? '1.5px solid var(--ink-blue, #2563EB)' : '1px solid transparent'
+                    }}
+                  >
+                    <span style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                      <span>{p.avatar || '👤'}</span>
+                      <strong style={{ fontWeight: p.id === activeProfileId ? 800 : 600 }}>{p.name}</strong>
+                    </span>
+                    {p.id === activeProfileId && <span style={{ fontSize: '0.7rem', color: '#2563EB' }}>Active</span>}
+                  </button>
+                ))}
+
+                <div style={{ borderTop: '1px dashed var(--ink-border)', marginTop: '4px', paddingTop: '4px' }}>
+                  <button
+                    className="btn-sketch"
+                    onClick={() => {
+                      setShowProfileMenu(false);
+                      onOpenSettings && onOpenSettings('profile');
+                    }}
+                    style={{ justifyContent: 'flex-start', padding: '6px 8px', fontSize: '0.8rem', width: '100%' }}
+                  >
+                    <Settings size={14} />
+                    <span>Manage Profiles & Settings</span>
+                  </button>
+                </div>
+              </div>
+            )}
           </div>
+
         </div>
 
       </div>
 
-      {/* Tabs Menu Strip */}
-      <nav style={{ 
-        display: 'flex', 
-        alignItems: 'center', 
-        gap: '8px', 
-        marginTop: '12px', 
-        paddingTop: '10px', 
-        borderTop: '2px dashed var(--ink-border)',
-        overflowX: 'auto',
-        whiteSpace: 'nowrap',
-        scrollbarWidth: 'none'
-      }}>
-        {tabs.map((tab) => {
-          const Icon = tab.icon;
-          const isActive = activeTab === tab.id;
-          return (
-            <button
-              key={tab.id}
-              onClick={() => setActiveTab(tab.id)}
-              className="btn-sketch"
-              style={{
-                background: isActive 
-                  ? 'var(--highlight-yellow)' 
-                  : tab.highlight 
-                  ? 'var(--highlight-purple)' 
-                  : 'var(--paper-card)',
-                boxShadow: isActive ? '3px 3px 0px var(--ink-border)' : '1px 1px 0px var(--ink-border)',
-                transform: isActive ? 'translate(-1px, -1px)' : 'none',
-                fontWeight: 700,
-                fontSize: '0.9rem',
-                padding: '6px 12px'
-              }}
-            >
-              <Icon size={16} />
-              <span>{tab.label}</span>
-              {tab.badge && (
-                <span className="badge-sketch badge-sketch-pink" style={{ padding: '1px 5px', fontSize: '0.7rem' }}>
-                  {tab.badge}
-                </span>
-              )}
-              {tab.count > 0 && (
-                <span className="badge-sketch badge-sketch-orange" style={{ padding: '1px 5px', fontSize: '0.7rem' }}>
-                  {tab.count}
-                </span>
-              )}
-            </button>
-          );
-        })}
-      </nav>
     </header>
   );
 }

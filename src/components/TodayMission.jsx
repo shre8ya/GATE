@@ -34,6 +34,7 @@ import { playBell, playSuccessChime, playClick, startAmbientSound, stopAmbientSo
 import { getDailyQuote, DAILY_MOTIVATIONAL_QUOTES } from '../data/quotes';
 import { fireTaskConfetti, fireFullDayConfetti } from '../utils/confetti';
 import { getTodayGoogleCalendarUrl } from '../utils/googleCalendar';
+import { loadProfileItem, saveProfileItem } from '../utils/storage';
 import VideoPlayerModal from './VideoPlayerModal';
 import ActiveRecallModal from './ActiveRecallModal';
 
@@ -50,7 +51,8 @@ export default function TodayMission({
   errorLog = [],
   onAddErrorItem,
   onUpdateErrorItem,
-  onAddFormula
+  onAddFormula,
+  activeProfileId = 'profile_default'
 }) {
   const currentMasterItem = masterSchedule.find(m => m.date === currentDate) || masterSchedule[0];
   const currentMathsItem = mathsSchedule.find(m => m.date === currentDate) || null;
@@ -80,47 +82,38 @@ export default function TodayMission({
     setCurrentQuote(DAILY_MOTIVATIONAL_QUOTES[nextIdx]);
   };
 
-  // Pomodoro State — Fully Customizable by User
+  // Pomodoro State — Profile Scoped & Fully Customizable
   const [sessionType, setSessionType] = useState('focus'); // 'focus' | 'short_break' | 'long_break'
-  const [customFocusMins, setCustomFocusMins] = useState(() => {
-    try {
-      const saved = localStorage.getItem('gate_pomodoro_custom_mins_v1');
-      return saved ? parseInt(saved, 10) || 25 : 25;
-    } catch {
-      return 25;
-    }
-  });
-  const [customInputVal, setCustomInputVal] = useState(() => {
-    try {
-      const saved = localStorage.getItem('gate_pomodoro_custom_mins_v1');
-      return saved || '25';
-    } catch {
-      return '25';
-    }
-  });
-  const [timerMode, setTimerMode] = useState(() => {
-    try {
-      const saved = localStorage.getItem('gate_pomodoro_custom_mins_v1');
-      return saved ? parseInt(saved, 10) || 25 : 25;
-    } catch {
-      return 25;
-    }
-  });
+  const [customFocusMins, setCustomFocusMins] = useState(() => 
+    loadProfileItem(activeProfileId, 'pomodoro_custom_mins', 25)
+  );
+  const [customInputVal, setCustomInputVal] = useState(() => 
+    String(loadProfileItem(activeProfileId, 'pomodoro_custom_mins', 25))
+  );
+  const [timerMode, setTimerMode] = useState(() => 
+    loadProfileItem(activeProfileId, 'pomodoro_custom_mins', 25)
+  );
   const [timeLeft, setTimeLeft] = useState(() => {
-    try {
-      const saved = localStorage.getItem('gate_pomodoro_custom_mins_v1');
-      const mins = saved ? parseInt(saved, 10) || 25 : 25;
-      return mins * 60;
-    } catch {
-      return 25 * 60;
-    }
+    const mins = loadProfileItem(activeProfileId, 'pomodoro_custom_mins', 25);
+    return (mins || 25) * 60;
   });
+
+  useEffect(() => {
+    const mins = loadProfileItem(activeProfileId, 'pomodoro_custom_mins', 25);
+    setCustomFocusMins(mins);
+    setCustomInputVal(String(mins));
+    setTimerMode(mins);
+    setTimeLeft(mins * 60);
+    setIsRunning(false);
+  }, [activeProfileId]);
+
   const [isRunning, setIsRunning] = useState(false);
   const [ambientType, setAmbientType] = useState('none');
   const [ambientVolume, setAmbientVolume] = useState(0.3);
   const [sessionCompletedBanner, setSessionCompletedBanner] = useState(null);
 
   const [noteText, setNoteText] = useState(currentStatus.note || '');
+  const [showExamDetails, setShowExamDetails] = useState(false);
 
   useEffect(() => {
     setNoteText(currentStatus.note || '');
@@ -189,9 +182,7 @@ export default function TodayMission({
     const validMins = isNaN(parsed) ? 25 : Math.max(1, Math.min(240, parsed));
     setCustomFocusMins(validMins);
     setCustomInputVal(String(validMins));
-    try {
-      localStorage.setItem('gate_pomodoro_custom_mins_v1', String(validMins));
-    } catch (e) {}
+    saveProfileItem(activeProfileId, 'pomodoro_custom_mins', validMins);
     setSessionType('focus');
     handleResetTimer(validMins);
   };
@@ -538,104 +529,144 @@ export default function TodayMission({
           </div>
         </div>
 
-        {/* Milestone Countdowns Strip */}
-        <div style={{ 
-          display: 'grid', 
-          gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', 
-          gap: '12px', 
-          marginTop: '18px', 
-          paddingTop: '16px', 
-          borderTop: '2px dashed var(--ink-border)' 
-        }}>
-          <div className="sketch-card" style={{ padding: '10px 14px', background: 'var(--paper-card-subtle)' }}>
-            <div style={{ fontSize: '0.8rem', color: 'var(--ink-muted)' }}>PRACTICAL EXAMS (5th Sem)</div>
-            <div className="font-title" style={{ fontSize: '1.25rem', color: 'var(--ink-blue)' }}>
-              {diffDays(practicalDate)} Days Left
-            </div>
-            <div style={{ fontSize: '0.78rem', color: 'var(--ink-secondary)' }}>Starts 26 Nov 2026 (2.5h/day)</div>
-          </div>
-
-          <div className="sketch-card" style={{ padding: '10px 14px', background: 'var(--paper-card-subtle)' }}>
-            <div style={{ fontSize: '0.8rem', color: 'var(--ink-muted)' }}>IPU THEORY EXAMS</div>
-            <div className="font-title" style={{ fontSize: '1.25rem', color: 'var(--ink-primary)' }}>
-              {diffDays(uniTheoryDate)} Days Left
-            </div>
-            <div style={{ fontSize: '0.78rem', color: 'var(--ink-secondary)' }}>11 Dec - 31 Dec (Evening 2-5 PM)</div>
-          </div>
-
-          <div className="sketch-card" style={{ padding: '10px 14px', background: 'var(--paper-card-subtle)' }}>
-            <div style={{ fontSize: '0.8rem', color: 'var(--ink-muted)' }}>CRASH SYLLABUS DEADLINE</div>
-            <div className="font-title" style={{ fontSize: '1.25rem', color: 'var(--ink-green)' }}>
-              {diffDays(crashDeadline)} Days Left
-            </div>
-            <div style={{ fontSize: '0.78rem', color: 'var(--ink-secondary)' }}>6 Core Sections + Daily Maths</div>
-          </div>
-
-          <div className="sketch-card" style={{ padding: '10px 14px', background: 'var(--paper-card-subtle)' }}>
-            <div style={{ fontSize: '0.8rem', color: 'var(--ink-muted)' }}>GATE 2027 EXAM DAY</div>
-            <div className="font-title" style={{ fontSize: '1.25rem', color: 'var(--ink-purple)' }}>
-              {diffDays(gateExamDate)} Days Left
-            </div>
-            <div style={{ fontSize: '0.78rem', color: 'var(--ink-secondary)' }}>IIT Madras (Feb 2027)</div>
-          </div>
-        </div>
-
-        {/* GATE 2027 Marks Weightage Reality Bar (15 Aptitude + 13 Maths + 72 Core CS = 100) */}
+        {/* Minimal Strategy & Exam Milestones Bar */}
         <div style={{
-          background: 'var(--paper-card-subtle)',
-          border: '2px solid var(--ink-border)',
-          borderRadius: '8px',
-          padding: '14px 18px',
-          marginTop: '16px'
+          marginTop: '16px',
+          paddingTop: '12px',
+          borderTop: '1px dashed var(--ink-border)'
         }}>
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '8px', marginBottom: '8px' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <span className="badge-sketch badge-sketch-green" style={{ fontWeight: 800 }}>
-                🎯 MARKS UNLOCKED
+          <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            flexWrap: 'wrap',
+            gap: '12px'
+          }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '14px', flexWrap: 'wrap', fontSize: '0.85rem' }}>
+              <span style={{ fontWeight: 700, color: 'var(--ink-purple)' }}>
+                ⏳ GATE '27: ~{diffDays(gateExamDate)}d left
               </span>
-              <span className="font-title" style={{ fontSize: '1.25rem', fontWeight: 700 }}>
-                {totalMarksUnlocked} / 100 Marks
+              <span style={{ color: 'var(--ink-secondary)' }}>
+                • Practicals: ~{diffDays(practicalDate)}d
               </span>
-              <span style={{ fontSize: '0.8rem', color: 'var(--ink-secondary)' }}>
-                ({completedMasterDays} of {totalMasterDays} syllabus days conquered)
+              <span style={{ color: 'var(--ink-secondary)' }}>
+                • Theory: ~{diffDays(uniTheoryDate)}d
+              </span>
+              <span style={{ fontWeight: 700, color: '#15803D' }}>
+                🎯 Marks: {totalMarksUnlocked}/100m unlocked
               </span>
             </div>
-            <div style={{ fontSize: '0.78rem', color: 'var(--ink-muted)' }}>
-              Target: AIR &lt; 100 (~75+ Marks)
-            </div>
+
+            <button
+              type="button"
+              className="btn-sketch"
+              onClick={() => setShowExamDetails(prev => !prev)}
+              style={{ padding: '3px 10px', fontSize: '0.78rem' }}
+            >
+              {showExamDetails ? '▲ Hide Milestones & Marks' : '▼ Expand Milestones & Marks (100m)'}
+            </button>
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '10px' }}>
-            <div style={{ background: 'var(--paper-card)', padding: '6px 10px', borderRadius: '6px', border: '1.5px solid var(--ink-border)' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.78rem', color: 'var(--ink-secondary)' }}>
-                <span>General Aptitude (15m)</span>
-                <strong>{aptMarks}m</strong>
-              </div>
-              <div style={{ width: '100%', height: '6px', background: 'var(--paper-card-subtle)', borderRadius: '3px', marginTop: '4px', overflow: 'hidden' }}>
-                <div style={{ width: `${(aptMarks / 15) * 100}%`, height: '100%', background: 'var(--ink-amber)', transition: 'width 0.3s' }} />
-              </div>
-            </div>
+          {/* Collapsible Details Drawer */}
+          {showExamDetails && (
+            <div style={{ marginTop: '14px', display: 'flex', flexDirection: 'column', gap: '14px' }}>
+              {/* Milestone Countdowns Strip */}
+              <div style={{ 
+                display: 'grid', 
+                gridTemplateColumns: 'repeat(auto-fit, minmax(190px, 1fr))', 
+                gap: '10px' 
+              }}>
+                <div className="sketch-card" style={{ padding: '10px 14px', background: 'var(--paper-card-subtle)' }}>
+                  <div style={{ fontSize: '0.75rem', color: 'var(--ink-muted)' }}>PRACTICAL EXAMS (5th Sem)</div>
+                  <div className="font-title" style={{ fontSize: '1.2rem', color: 'var(--ink-blue)' }}>
+                    {diffDays(practicalDate)} Days Left
+                  </div>
+                  <div style={{ fontSize: '0.75rem', color: 'var(--ink-secondary)' }}>Starts 26 Nov 2026 (2.5h/day)</div>
+                </div>
 
-            <div style={{ background: 'var(--paper-card)', padding: '6px 10px', borderRadius: '6px', border: '1.5px solid var(--ink-border)' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.78rem', color: 'var(--ink-secondary)' }}>
-                <span>Engg Maths & Discrete (13m)</span>
-                <strong>{mathsMarks}m</strong>
-              </div>
-              <div style={{ width: '100%', height: '6px', background: 'var(--paper-card-subtle)', borderRadius: '3px', marginTop: '4px', overflow: 'hidden' }}>
-                <div style={{ width: `${(mathsMarks / 13) * 100}%`, height: '100%', background: 'var(--ink-blue)', transition: 'width 0.3s' }} />
-              </div>
-            </div>
+                <div className="sketch-card" style={{ padding: '10px 14px', background: 'var(--paper-card-subtle)' }}>
+                  <div style={{ fontSize: '0.75rem', color: 'var(--ink-muted)' }}>IPU THEORY EXAMS</div>
+                  <div className="font-title" style={{ fontSize: '1.2rem', color: 'var(--ink-primary)' }}>
+                    {diffDays(uniTheoryDate)} Days Left
+                  </div>
+                  <div style={{ fontSize: '0.75rem', color: 'var(--ink-secondary)' }}>11 Dec - 31 Dec (Evening 2-5 PM)</div>
+                </div>
 
-            <div style={{ background: 'var(--paper-card)', padding: '6px 10px', borderRadius: '6px', border: '1.5px solid var(--ink-border)' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.78rem', color: 'var(--ink-secondary)' }}>
-                <span>Core CS Sections (72m)</span>
-                <strong>{coreMarks}m</strong>
+                <div className="sketch-card" style={{ padding: '10px 14px', background: 'var(--paper-card-subtle)' }}>
+                  <div style={{ fontSize: '0.75rem', color: 'var(--ink-muted)' }}>CRASH SYLLABUS DEADLINE</div>
+                  <div className="font-title" style={{ fontSize: '1.2rem', color: 'var(--ink-green)' }}>
+                    {diffDays(crashDeadline)} Days Left
+                  </div>
+                  <div style={{ fontSize: '0.75rem', color: 'var(--ink-secondary)' }}>6 Core Sections + Daily Maths</div>
+                </div>
+
+                <div className="sketch-card" style={{ padding: '10px 14px', background: 'var(--paper-card-subtle)' }}>
+                  <div style={{ fontSize: '0.75rem', color: 'var(--ink-muted)' }}>GATE 2027 EXAM DAY</div>
+                  <div className="font-title" style={{ fontSize: '1.2rem', color: 'var(--ink-purple)' }}>
+                    {diffDays(gateExamDate)} Days Left
+                  </div>
+                  <div style={{ fontSize: '0.75rem', color: 'var(--ink-secondary)' }}>IIT Madras (Feb 2027)</div>
+                </div>
               </div>
-              <div style={{ width: '100%', height: '6px', background: 'var(--paper-card-subtle)', borderRadius: '3px', marginTop: '4px', overflow: 'hidden' }}>
-                <div style={{ width: `${(coreMarks / 72) * 100}%`, height: '100%', background: 'var(--ink-green)', transition: 'width 0.3s' }} />
+
+              {/* Marks Weightage Reality Bar */}
+              <div style={{
+                background: 'var(--paper-card-subtle)',
+                border: '1.5px solid var(--ink-border)',
+                borderRadius: '8px',
+                padding: '12px 16px'
+              }}>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '8px', marginBottom: '8px' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <span className="badge-sketch badge-sketch-green" style={{ fontWeight: 800, fontSize: '0.75rem' }}>
+                      🎯 MARKS REALITY
+                    </span>
+                    <span className="font-title" style={{ fontSize: '1.15rem', fontWeight: 700 }}>
+                      {totalMarksUnlocked} / 100 Marks Conquered
+                    </span>
+                    <span style={{ fontSize: '0.78rem', color: 'var(--ink-secondary)' }}>
+                      ({completedMasterDays} of {totalMasterDays} syllabus days conquered)
+                    </span>
+                  </div>
+                  <div style={{ fontSize: '0.75rem', color: 'var(--ink-muted)' }}>
+                    Target: AIR &lt; 100 (~75+ Marks)
+                  </div>
+                </div>
+
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '10px' }}>
+                  <div style={{ background: 'var(--paper-card)', padding: '6px 10px', borderRadius: '6px', border: '1px solid var(--ink-border)' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.75rem', color: 'var(--ink-secondary)' }}>
+                      <span>General Aptitude (15m)</span>
+                      <strong>{aptMarks}m</strong>
+                    </div>
+                    <div style={{ width: '100%', height: '5px', background: 'var(--paper-card-subtle)', borderRadius: '3px', marginTop: '4px', overflow: 'hidden' }}>
+                      <div style={{ width: `${(aptMarks / 15) * 100}%`, height: '100%', background: 'var(--ink-amber)', transition: 'width 0.3s' }} />
+                    </div>
+                  </div>
+
+                  <div style={{ background: 'var(--paper-card)', padding: '6px 10px', borderRadius: '6px', border: '1px solid var(--ink-border)' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.75rem', color: 'var(--ink-secondary)' }}>
+                      <span>Engg Maths & Discrete (13m)</span>
+                      <strong>{mathsMarks}m</strong>
+                    </div>
+                    <div style={{ width: '100%', height: '5px', background: 'var(--paper-card-subtle)', borderRadius: '3px', marginTop: '4px', overflow: 'hidden' }}>
+                      <div style={{ width: `${(mathsMarks / 13) * 100}%`, height: '100%', background: 'var(--ink-blue)', transition: 'width 0.3s' }} />
+                    </div>
+                  </div>
+
+                  <div style={{ background: 'var(--paper-card)', padding: '6px 10px', borderRadius: '6px', border: '1px solid var(--ink-border)' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.75rem', color: 'var(--ink-secondary)' }}>
+                      <span>Core CS Sections (72m)</span>
+                      <strong>{coreMarks}m</strong>
+                    </div>
+                    <div style={{ width: '100%', height: '5px', background: 'var(--paper-card-subtle)', borderRadius: '3px', marginTop: '4px', overflow: 'hidden' }}>
+                      <div style={{ width: `${(coreMarks / 72) * 100}%`, height: '100%', background: 'var(--ink-green)', transition: 'width 0.3s' }} />
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
-          </div>
+          )}
         </div>
       </div>
 

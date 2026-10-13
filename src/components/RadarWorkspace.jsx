@@ -25,7 +25,8 @@ export default function RadarWorkspace({
   onUpdateUniStatus,
   syllabusData,
   syllabusProgress,
-  onUpdateSyllabusProgress
+  onUpdateSyllabusProgress,
+  activeProfileId = 'profile_default'
 }) {
   const [activeSubTab, setActiveSubTab] = useState('calendar'); // 'calendar' | 'planner' | 'subjects' | 'syllabus' | 'university'
 
@@ -96,6 +97,7 @@ export default function RadarWorkspace({
           onSelectDate={onSelectDate}
           onOpenReschedule={onOpenReschedule}
           onUpdateDayStatus={onUpdateDayStatus}
+          activeProfileId={activeProfileId}
         />
       )}
 

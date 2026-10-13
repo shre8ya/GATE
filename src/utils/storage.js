@@ -1,6 +1,7 @@
 // Comprehensive Local Storage & Isolated Multi-User Profile Persistence Manager
+// Guarantees 100% strict user profile data sandboxing with zero state leakage.
 
-const STORAGE_KEY_PREFIX = 'GATE_MATRIX_2027_';
+export const STORAGE_KEY_PREFIX = 'GATE_MATRIX_2027_';
 
 export const DEFAULT_PROFILE = {
   id: 'profile_default',
@@ -11,7 +12,6 @@ export const DEFAULT_PROFILE = {
   college: 'GGSIPU (5th Sem CSE)',
   dailyGoalHours: 3.5,
   weakSubjects: 'Operating Systems, COA',
-  geminiApiKey: '',
   createdAt: '2026-10-13'
 };
 
@@ -80,7 +80,7 @@ export function setActiveProfileId(profileId) {
   }
 }
 
-// Scoped Profile Data Storage
+// Scoped Profile Data Storage — Every user profile lives in its own strictly isolated namespace
 export function loadProfileItem(profileId, key, defaultValue) {
   const pId = profileId || getActiveProfileId();
   const scopedKey = `${STORAGE_KEY_PREFIX}${pId}_${key}`;
@@ -117,7 +117,23 @@ export function saveProfileItem(profileId, key, value) {
   const pId = profileId || getActiveProfileId();
   const scopedKey = `${STORAGE_KEY_PREFIX}${pId}_${key}`;
   try {
-    localStorage.setItem(scopedKey, JSON.stringify(value));
+    let sanitizedValue = value;
+    if (value && typeof value === 'object') {
+      if (Array.isArray(value)) {
+        sanitizedValue = value.map(item => {
+          if (item && typeof item === 'object' && 'geminiApiKey' in item) {
+            const copy = { ...item };
+            delete copy.geminiApiKey;
+            return copy;
+          }
+          return item;
+        });
+      } else if ('geminiApiKey' in value) {
+        sanitizedValue = { ...value };
+        delete sanitizedValue.geminiApiKey;
+      }
+    }
+    localStorage.setItem(scopedKey, JSON.stringify(sanitizedValue));
   } catch (err) {
     console.error(`Error saving ${scopedKey}:`, err);
   }
@@ -132,6 +148,7 @@ export function createNewProfile(newProfileData) {
     id: newId,
     createdAt: new Date().toISOString().split('T')[0]
   };
+  delete profile.geminiApiKey; // Strict protection: Never store API keys in user profile objects
   const updatedList = [...profiles, profile];
   saveProfilesList(updatedList);
   setActiveProfileId(newId);
@@ -144,7 +161,7 @@ export function deleteProfile(profileIdToDelete) {
     throw new Error('Cannot delete the last remaining profile.');
   }
 
-  // Remove all stored keys belonging to this profile
+  // Remove ALL stored keys strictly belonging to this profile
   const prefixToRemove = `${STORAGE_KEY_PREFIX}${profileIdToDelete}_`;
   const keysToRemove = [];
   for (let i = 0; i < localStorage.length; i++) {
@@ -170,7 +187,7 @@ export function deleteProfile(profileIdToDelete) {
   return { updatedList, nextActiveId };
 }
 
-// Legacy helpers for backwards compatibility
+// Helpers for backward compatibility
 export function loadItem(key, defaultValue) {
   return loadProfileItem(getActiveProfileId(), key, defaultValue);
 }
@@ -183,9 +200,13 @@ export function exportBackupData() {
   const activeId = getActiveProfileId();
   const backup = {
     exportedAt: new Date().toISOString(),
-    version: '1.4.1',
+    version: '1.5.0',
     activeProfileId: activeId,
-    profiles: getProfilesList(),
+    profiles: getProfilesList().map(p => {
+      const sanitized = { ...p };
+      delete sanitized.geminiApiKey;
+      return sanitized;
+    }),
     data: {}
   };
   
@@ -193,7 +214,8 @@ export function exportBackupData() {
     const key = localStorage.key(i);
     if (key && key.startsWith(STORAGE_KEY_PREFIX)) {
       try {
-        backup.data[key] = JSON.parse(localStorage.getItem(key));
+        const val = JSON.parse(localStorage.getItem(key));
+        backup.data[key] = val;
       } catch (e) {
         backup.data[key] = localStorage.getItem(key);
       }
