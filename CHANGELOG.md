@@ -4,6 +4,27 @@ All notable changes to this project are documented in this file using Semantic V
 
 ---
 
+## [v1.6.2] — 2026-10-14
+### 📖 How to Use This App Properly (Official User Playbook)
+- **Dedicated Interactive Playbook Modal (`HowToUseModal.jsx`)**:
+  - Full 6-section comprehensive guide:
+    1. **1. Daily Routine**: 4-Phase study protocol (Aptitude 15m → Maths 30m → Core CS 55m → PYQ Practice 20m), built-in distraction-free video player, and Pomodoro focus timer.
+    2. **2. AI Task Shifting**: Recovery strategies (Sunday Buffer Absorption, 72-Hour Micro-Sprint, Smart Shift) and complete origin & destination slot transparency.
+    3. **3. Custom Resources**: Personalized AI educator recommendations tailored to weak subjects and custom YouTube playlist URL swaps.
+    4. **4. User Profiles**: 100% isolated student sandboxes, clean profile deletion, and monochrome outline persona avatars.
+    5. **5. Error Log & Mocks**: Weapon Vault with SuperMemo SM-2 spaced repetition (1d → 3d → 7d → 14d → 30d), Formula Vault with LaTeX preview, and Sunday timed mock simulations.
+    6. **6. Tips & Shortcuts**: Keyboard shortcuts (`Space` for timer, `Esc` for modals), theme options, file import, and timestamped JSON backups.
+  - **Live Search Filter**: Instant keyword filtering across all topics, contents, and badges.
+  - **1-Click Quick Launch Shortcuts**: Direct launch action buttons to immediately open AI Rescheduler, Swap Playlists, Switch Profile, Import Notes, Study Reminders, and Export Backup.
+  - **Aesthetics & Access Points**:
+    - Strictly black outline icons & symbols (`◎`, `⌘`, `⚡`, Lucide SVG `stroke="#000"`, `fill="none"`).
+    - Top Navbar dedicated `Guide` button.
+    - Top Navbar `⚡ Tools` menu item (`How to Use Properly (Playbook)`).
+    - Today's Mission War Room header & 4-Phase study action bar buttons.
+    - Global app footer quick link (`[?] How to Use This App Properly (Playbook)`).
+
+---
+
 ## [v1.6.1] — 2026-10-14
 ### ↪ Explicit Task Shift Routing & Destination Visibility
 - **Complete Origin-to-Destination Transparency**: When the AI reschedules or cascades tasks (Sunday Buffer Absorption, 72-Hour Micro-Sprint, or Smart Shift):

@@ -17,6 +17,7 @@ import RemindersModal from './components/RemindersModal';
 import RescheduleModal from './components/RescheduleModal';
 import FileImportModal from './components/FileImportModal';
 import ResourceCustomizerModal from './components/ResourceCustomizerModal';
+import HowToUseModal from './components/HowToUseModal';
 
 import { 
   MASTER_PLANNER_DATA, 
@@ -66,6 +67,7 @@ export default function App() {
   const [showReschedule, setShowReschedule] = useState(false);
   const [showImport, setShowImport] = useState(false);
   const [showCustomizer, setShowCustomizer] = useState(false);
+  const [showGuide, setShowGuide] = useState(false);
 
   // Paper Stationery Theme State
   const [theme, setTheme] = useState(() => {
@@ -453,6 +455,7 @@ export default function App() {
         onOpenReschedule={() => setShowReschedule(true)}
         onOpenImport={() => setShowImport(true)}
         onOpenCustomizer={() => setShowCustomizer(true)}
+        onOpenGuide={() => setShowGuide(true)}
         theme={theme}
         onToggleTheme={() => {}}
         paperTheme={paperTheme}
@@ -473,6 +476,7 @@ export default function App() {
             onUpdateDayStatus={handleUpdateDayStatus}
             onLogStudySession={handleLogStudySession}
             onOpenReschedule={() => setShowReschedule(true)}
+            onOpenGuide={() => setShowGuide(true)}
             errorLog={errorLog}
             onAddErrorItem={handleAddErrorItem}
             onUpdateErrorItem={handleUpdateErrorItem}
@@ -599,15 +603,52 @@ export default function App() {
         userProfile={userProfile}
       />
 
+      {/* Official How to Use Playbook Modal */}
+      <HowToUseModal 
+        isOpen={showGuide}
+        onClose={() => setShowGuide(false)}
+        onOpenReschedule={() => setShowReschedule(true)}
+        onOpenCustomizer={() => setShowCustomizer(true)}
+        onOpenProfile={() => { setSettingsInitialTab('switch'); setShowSettings(true); }}
+        onOpenImport={() => setShowImport(true)}
+        onOpenReminders={() => setShowReminders(true)}
+        onOpenBackup={() => setShowBackup(true)}
+        userProfile={userProfile}
+      />
+
       {/* Footer */}
       <footer style={{ 
         textAlign: 'center', 
         padding: '24px 20px', 
         borderTop: '1px solid var(--border-subtle)', 
         color: 'var(--text-muted)', 
-        fontSize: '0.8rem' 
+        fontSize: '0.8rem',
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        gap: '8px'
       }}>
-        GATE Matrix AI • Personal Command Center for GATE CSE 2027 (IIT Madras) • Built for High Rank Mastery
+        <div>GATE Matrix AI • Personal Command Center for GATE CSE 2027 (IIT Madras) • Built for High Rank Mastery</div>
+        <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
+          <button 
+            type="button"
+            onClick={() => setShowGuide(true)}
+            style={{ 
+              background: 'transparent', 
+              border: 'none', 
+              textDecoration: 'underline', 
+              cursor: 'pointer', 
+              color: 'var(--ink-primary)', 
+              fontSize: '0.8rem',
+              fontWeight: 600,
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '4px'
+            }}
+          >
+            <span>[?] How to Use This App Properly (Playbook)</span>
+          </button>
+        </div>
       </footer>
 
     </div>

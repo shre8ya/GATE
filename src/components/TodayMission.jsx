@@ -49,6 +49,7 @@ export default function TodayMission({
   onUpdateDayStatus, 
   onLogStudySession, 
   onOpenReschedule,
+  onOpenGuide,
   errorLog = [],
   onAddErrorItem,
   onUpdateErrorItem,
@@ -601,6 +602,17 @@ export default function TodayMission({
             >
               <Sparkles size={14} color="#000" strokeWidth={2} /> Missed? Reschedule
             </button>
+            {onOpenGuide && (
+              <button 
+                type="button"
+                className="btn-sketch"
+                onClick={onOpenGuide}
+                title="How to Use This App Properly (Playbook)"
+                style={{ marginLeft: '4px' }}
+              >
+                <HelpCircle size={14} color="#000" strokeWidth={2} /> How to Use
+              </button>
+            )}
           </div>
         </div>
 
@@ -802,6 +814,17 @@ export default function TodayMission({
               Today's 4-Phase Study Mission
             </h2>
             <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+              {onOpenGuide && (
+                <button
+                  type="button"
+                  className="btn-sketch"
+                  onClick={onOpenGuide}
+                  title="How to Use This App Properly (Playbook)"
+                  style={{ fontSize: '0.82rem', padding: '6px 12px', background: 'var(--paper-card)' }}
+                >
+                  <HelpCircle size={15} color="#000" strokeWidth={2} /> Playbook & Guide
+                </button>
+              )}
               <a
                 href={getTodayGoogleCalendarUrl(currentMasterItem, currentMathsItem, currentAptItem)}
                 target="_blank"

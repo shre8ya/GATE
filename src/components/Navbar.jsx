@@ -14,7 +14,8 @@ import {
   User,
   Sliders,
   Settings,
-  BookOpen
+  BookOpen,
+  HelpCircle
 } from 'lucide-react';
 import { playClick } from '../utils/audio';
 
@@ -30,6 +31,7 @@ export default function Navbar({
   onOpenReschedule,
   onOpenImport,
   onOpenCustomizer,
+  onOpenGuide,
   profilesList = [],
   activeProfileId,
   onSwitchProfile,
@@ -177,7 +179,7 @@ export default function Navbar({
           })}
         </nav>
 
-        {/* Right: Streak, Tools Dropdown, & Profile */}
+        {/* Right: Streak, Guide Button, Tools Dropdown, & Profile */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
           
           {/* Subtle Streak Pill */}
@@ -189,6 +191,23 @@ export default function Navbar({
             <Flame size={14} color="#000" strokeWidth={2} fill="none" />
             <span>{streak}d</span>
           </div>
+
+          {/* Dedicated How to Use / Playbook Guide Button */}
+          <button
+            className="btn-sketch"
+            onClick={onOpenGuide}
+            style={{ 
+              padding: '5px 10px', 
+              fontSize: '0.82rem', 
+              display: 'flex', 
+              alignItems: 'center', 
+              gap: '5px' 
+            }}
+            title="How to Use This App Properly (Playbook)"
+          >
+            <HelpCircle size={14} color="#000" strokeWidth={2} />
+            <span>Guide</span>
+          </button>
 
           {/* Unified Tools Popover Menu */}
           <div style={{ position: 'relative' }} ref={toolsMenuRef}>
@@ -227,6 +246,17 @@ export default function Navbar({
                   gap: '4px'
                 }}
               >
+                <button
+                  className="btn-sketch"
+                  onClick={() => {
+                    setShowToolsMenu(false);
+                    onOpenGuide();
+                  }}
+                  style={{ justifyContent: 'flex-start', padding: '7px 10px', fontSize: '0.82rem', width: '100%', background: 'var(--paper-card-subtle)' }}
+                >
+                  <HelpCircle size={14} color="#000" strokeWidth={2} />
+                  <span>How to Use Properly (Playbook)</span>
+                </button>
                 <button
                   className="btn-sketch"
                   onClick={() => {
