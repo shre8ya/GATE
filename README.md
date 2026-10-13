@@ -132,3 +132,24 @@ npm run build
 - **Audio Chimes**: Native Web Audio Tibetan bell for study focus and break transitions.
 - **100% Local Privacy**: Everything saves directly in `localStorage`.
 - **1-Click JSON Backup & Restore**: Export and restore your complete progress anytime.
+
+---
+
+### 11. 🧠 AI Dynamic Rescheduling Engine (Missed Topic Recovery)
+- **Automatic Recovery When Behind**: If you miss a lecture or study day, the AI Reorganizer recalibrates your master planner without risking exam deadlines.
+- **3 Dynamic Strategies**:
+  1. **Sunday Buffer Allocation**: Absorbs missed hours into upcoming Sunday buffers without disturbing weekday consistency.
+  2. **Micro-Sprint Catch-Up (+25m/day)**: Spreads missed study load across the next 3 days by adding 25–30 minutes to your daily pomodoros.
+  3. **Smart Shift**: Shifts subsequent days forward while strictly protecting the **IPU University Exam Freeze period (Nov 24 – Dec 12, 2026)** and January Full Mock Test sprints.
+- **Gemini 1.5 Integration**: Generates encouraging, contextual advice and high-yield focus areas for the missed topic using your personal API key.
+
+---
+
+### 12. 🎨 Hand-Drawn Sketchbook Aesthetic
+- **Authentic Paper & Pencil Look**: Designed to look and feel like a tactile study journal rather than generic software.
+- **Handwritten Typography**: Google Fonts (`Kalam`, `Caveat`, `Patrick Hand`, `Architects Daughter`).
+- **Tactile UI Elements**: Ruled graph paper textures, wobbly sketched cards, washi tape strips, highlighter pen strokes, and tactile checkboxes.
+- **Dual Themes**: 
+  - **📝 Paper Notebook** (warm graph paper `#FDFBF7`)
+  - **🖍️ Chalkboard / Blackboard** (deep chalkboard green `#1B2421`)
+
