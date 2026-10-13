@@ -147,7 +147,7 @@ export default function SubjectExplorerView({
             alignItems: 'center'
           }}>
             <span style={{ fontSize: '0.85rem', fontWeight: 700, color: 'var(--ink-secondary)', display: 'flex', alignItems: 'center', gap: '4px' }}>
-              <PlayCircle size={15} /> Planner Source Playlists:
+              <PlayCircle size={15} /> Planner Source Courses & Playlists:
             </span>
             {currentSubject.playlists.map((pl, idx) => (
               <a
@@ -160,10 +160,40 @@ export default function SubjectExplorerView({
                 title={pl.description}
               >
                 <span>{pl.role}:</span> 
-                <span style={{ color: 'var(--ink-blue)', maxWidth: '260px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                  {pl.description.split('—')[0]}
+                <span style={{ color: 'var(--ink-blue)', maxWidth: '280px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                  {pl.description.split('·')[0].split('—')[0]}
                 </span>
                 <ExternalLink size={12} />
+              </a>
+            ))}
+          </div>
+        )}
+
+        {/* Free Quizzes Shelf (for General Aptitude) */}
+        {currentSubject?.quizzes && currentSubject.quizzes.length > 0 && (
+          <div style={{ 
+            marginTop: '12px', 
+            paddingTop: '10px', 
+            borderTop: '1px dashed var(--ink-border)', 
+            display: 'flex', 
+            flexWrap: 'wrap', 
+            gap: '8px',
+            alignItems: 'center'
+          }}>
+            <span style={{ fontSize: '0.82rem', fontWeight: 700, color: 'var(--ink-green)', display: 'flex', alignItems: 'center', gap: '4px' }}>
+              🎯 Free Practice Quizzes:
+            </span>
+            {currentSubject.quizzes.map((qz, idx) => (
+              <a
+                key={idx}
+                href={qz.url}
+                target="_blank"
+                rel="noreferrer"
+                className="btn-sketch"
+                style={{ fontSize: '0.78rem', padding: '3px 8px', background: 'var(--paper-card-subtle)' }}
+              >
+                <span>{qz.title}</span>
+                <ExternalLink size={11} />
               </a>
             ))}
           </div>
@@ -174,6 +204,8 @@ export default function SubjectExplorerView({
       <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
         {daysList.map((day) => {
           const isDone = subjectDayStatus[day.id]?.status === 'Done';
+          const primaryUrl = day.sourceUrl || day.mainPlaylistUrl || day.playlistUrl;
+          const searchUrl = day.searchUrl || day.topicSearchUrl;
 
           return (
             <div 
@@ -203,9 +235,19 @@ export default function SubjectExplorerView({
                       <span className="badge-sketch" style={{ background: 'var(--paper-card-subtle)' }}>
                         <Clock size={12} /> {day.plannedHrs ? `${day.plannedHrs}h` : `${day.plannedMin}m`}
                       </span>
+                      {day.round && (
+                        <span className="badge-sketch badge-sketch-orange" style={{ fontSize: '0.75rem' }}>
+                          🔄 {day.round}
+                        </span>
+                      )}
                       {day.bookRef && (
                         <span className="badge-sketch badge-sketch-blue" style={{ fontSize: '0.75rem' }}>
                           📖 {day.bookRef}
+                        </span>
+                      )}
+                      {day.sameDaySubject && (
+                        <span className="badge-sketch" style={{ fontSize: '0.75rem' }}>
+                          🔗 With: {day.sameDaySubject}
                         </span>
                       )}
                     </div>
@@ -223,16 +265,16 @@ export default function SubjectExplorerView({
                       {day.subtopics || day.whatsCovered || day.whatToDo}
                     </p>
 
-                    {/* Planner Video Details */}
-                    {day.mainPlaylist && (
+                    {/* Source details */}
+                    {(day.source || day.playlist || day.mainPlaylist) && (
                       <div style={{ fontSize: '0.8rem', color: 'var(--ink-purple)', marginTop: '4px' }}>
-                        🎥 Planner Playlist: <strong>{day.mainPlaylist}</strong>
+                        🎥 Source: <strong>{day.source || day.playlist || day.mainPlaylist}</strong>
                       </div>
                     )}
 
-                    {day.practicePyq && (
+                    {(day.practicePyq || day.quickPractice) && (
                       <div style={{ fontSize: '0.85rem', color: 'var(--ink-green)', marginTop: '6px', fontWeight: 700 }}>
-                        🎯 Practice Target: {day.practicePyq}
+                        🎯 Practice Target: {day.practicePyq || day.quickPractice}
                       </div>
                     )}
 
@@ -246,21 +288,21 @@ export default function SubjectExplorerView({
 
                 {/* Direct Action Links from Planner */}
                 <div style={{ display: 'flex', gap: '8px', alignSelf: 'center', flexWrap: 'wrap' }}>
-                  {(day.mainPlaylistUrl || day.playlistUrl) && (
+                  {primaryUrl && (
                     <a 
-                      href={day.mainPlaylistUrl || day.playlistUrl} 
+                      href={primaryUrl} 
                       target="_blank" 
                       rel="noreferrer" 
                       className="btn-sketch"
                       style={{ fontSize: '0.8rem', padding: '6px 12px' }}
-                      title="Open Playlist from Planner"
+                      title="Open Course / Playlist from Planner"
                     >
-                      <ExternalLink size={14} /> Open Playlist
+                      <ExternalLink size={14} /> {isAptitude ? 'Open Course' : 'Open Playlist'}
                     </a>
                   )}
-                  {(day.topicSearchUrl || day.searchUrl) ? (
+                  {searchUrl ? (
                     <a 
-                      href={day.topicSearchUrl || day.searchUrl} 
+                      href={searchUrl} 
                       target="_blank" 
                       rel="noreferrer" 
                       className="btn-sketch btn-sketch-primary"

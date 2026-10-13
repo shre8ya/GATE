@@ -16,11 +16,13 @@ import {
   CheckCheck,
   Sparkles,
   FileEdit,
-  AlertTriangle
+  AlertTriangle,
+  Calendar
 } from 'lucide-react';
 import { playBell, playSuccessChime, playClick, startAmbientSound, stopAmbientSound } from '../utils/audio';
 import { getDailyQuote, DAILY_MOTIVATIONAL_QUOTES } from '../data/quotes';
 import { fireTaskConfetti, fireFullDayConfetti } from '../utils/confetti';
+import { getTodayGoogleCalendarUrl } from '../utils/googleCalendar';
 
 export default function TodayMission({ 
   currentDate, 
@@ -358,17 +360,29 @@ export default function TodayMission({
             </div>
           </div>
 
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '10px' }}>
             <h2 className="font-title" style={{ fontSize: '1.35rem', margin: 0 }}>
               ✏️ Today's 4-Phase Study Mission
             </h2>
-            <button 
-              className={`btn-sketch ${currentStatus.status === 'Done' ? 'btn-sketch-green' : 'btn-sketch-primary'}`}
-              onClick={(e) => handleMarkDayDone(e)}
-            >
-              <CheckCheck size={18} />
-              {currentStatus.status === 'Done' ? 'Day Completed!' : 'Mark Day Completed'}
-            </button>
+            <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+              <a
+                href={getTodayGoogleCalendarUrl(currentMasterItem, currentMathsItem, currentAptItem)}
+                target="_blank"
+                rel="noreferrer"
+                className="btn-sketch"
+                style={{ fontSize: '0.82rem', padding: '6px 12px', background: 'var(--paper-card)' }}
+                title="Sync today's study schedule with Google Calendar"
+              >
+                <Calendar size={15} /> Add to Google Calendar
+              </a>
+              <button 
+                className={`btn-sketch ${currentStatus.status === 'Done' ? 'btn-sketch-green' : 'btn-sketch-primary'}`}
+                onClick={(e) => handleMarkDayDone(e)}
+              >
+                <CheckCheck size={18} />
+                {currentStatus.status === 'Done' ? 'Day Completed!' : 'Mark Day Completed'}
+              </button>
+            </div>
           </div>
 
           {/* Phase 1: General Aptitude Warm-up */}

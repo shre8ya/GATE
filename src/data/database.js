@@ -2878,6 +2878,70 @@ export const CORE_SUBJECTS_DATA = {
 export const ENGINEERING_MATHS_DATA = {
   "name": "Engineering Mathematics",
   "code": "EM",
+  "sheet": "7 Engineering Maths",
+  "totalHours": 29.5,
+  "playlists": [
+    {
+      "role": "Discrete – Logic",
+      "description": "Propositional Logic Summary & All GATE PYQs · GO Classes [17 videos]",
+      "url": "https://www.youtube.com/playlist?list=PLIPZ2_p3RNHillKxh1_iFeZhy9MftHeWW"
+    },
+    {
+      "role": "Discrete – Sets/Relations/Posets",
+      "description": "Set Theory GATE PYQs, Summary & Practice · GO Classes [25 videos]",
+      "url": "https://www.youtube.com/playlist?list=PLIPZ2_p3RNHjHnhdkPWFAlcizVQJ8w4TX"
+    },
+    {
+      "role": "Discrete – Group Theory",
+      "description": "Group Theory Complete Course (Monoid, Groupoid, Abelian, Cyclic) · GO Classes [59 videos]",
+      "url": "https://www.youtube.com/playlist?list=PLIPZ2_p3RNHhXves0XVa8d5O6F4rUi3KR"
+    },
+    {
+      "role": "Discrete – Graph Theory",
+      "description": "Graph Theory Complete Course · GO Classes [63 videos]",
+      "url": "https://www.youtube.com/playlist?list=PLIPZ2_p3RNHjQoj0k-BlI9zXE0QKdl-lI"
+    },
+    {
+      "role": "Discrete – Combinatorics & GF",
+      "description": "Combinatorics & Generating Functions Complete Course · GO Classes [72 videos]",
+      "url": "https://www.youtube.com/playlist?list=PLIPZ2_p3RNHgm_UqwqckMxM68HS4BkjYY"
+    },
+    {
+      "role": "Discrete – Recurrences",
+      "description": "Recurrence Relations in Discrete Mathematics · GO Classes [12 videos]",
+      "url": "https://www.youtube.com/playlist?list=PLIPZ2_p3RNHhhTH0o1JBMgscMUvxs4E_4"
+    },
+    {
+      "role": "Linear Algebra",
+      "description": "Linear Algebra GATE CSE Complete Course · GO Classes [45 videos]",
+      "url": "https://www.youtube.com/playlist?list=PLIPZ2_p3RNHhGLQ1ZT37KLpBMAD90CM4_"
+    },
+    {
+      "role": "Probability & Statistics",
+      "description": "Probability and Statistics for Engineering · Gradeup / Algorithm Unlocked [19 videos]",
+      "url": "https://www.youtube.com/playlist?list=PLhLZ_zxDsyOIKbQfKFM05BLYRhUZ7JP-M"
+    },
+    {
+      "role": "Statistics (NPTEL)",
+      "description": "Introduction to Probability and Statistics · NPTEL-NOC IITM [21 videos]",
+      "url": "https://www.youtube.com/playlist?list=PLyqSpQzTE6M_JcleDbrVyPnE0PixKs2JE"
+    },
+    {
+      "role": "Calculus (NPTEL)",
+      "description": "Calculus of One Variable - Joydeep Das · IIT Kanpur NPTEL",
+      "url": "https://www.youtube.com/playlist?list=PLEAYkSg4uSQ0q9CDkHkJGdUTQOgH1DLDj"
+    },
+    {
+      "role": "Calculus (GO Classes)",
+      "description": "Calculus Complete Playlist · GO Classes [5 videos]",
+      "url": "https://www.youtube.com/playlist?list=PLIPZ2_p3RNHi3R5H_NDKCB3aGvtLYlLrz"
+    },
+    {
+      "role": "Discrete – PYQ Revision",
+      "description": "Discrete Mathematics Revision & Video Solutions",
+      "url": "https://www.youtube.com/playlist?list=PL3eEXnCBViH-WZfR3PRFfYs7WjUgcBlAZ"
+    }
+  ],
   "days": [
     {
       "id": "em-d1",
@@ -3771,6 +3835,47 @@ export const ENGINEERING_MATHS_DATA = {
 export const GENERAL_APTITUDE_DATA = {
   "name": "General Aptitude",
   "code": "GA",
+  "sheet": "8 Aptitude",
+  "totalHours": 14.5,
+  "playlists": [
+    {
+      "role": "Quant & Reasoning (Main)",
+      "description": "Complete Course on General Aptitude for GATE & ESE 2025 & 2026 · Saurabh Thakur (Unacademy)",
+      "url": "https://unsat.unacademy.com/course/complete-course-on-general-aptitude-for-gate-&-ese-2025-&-2026/X2CSBPPD"
+    },
+    {
+      "role": "Verbal Aptitude",
+      "description": "GATE Overflow Verbal Aptitude Lessons · GATE Overflow YouTube Channel",
+      "url": "https://www.youtube.com/watch?v=Zf7hwQXwVuo&list=PL6aB9AKiIjgvKs4MepL6YC-l0EB8wN7gr"
+    },
+    {
+      "role": "Aptitude Strategy & Resources",
+      "description": "Aptitude Resources, Short Notes & List of Topics Video Guide",
+      "url": "https://youtu.be/IADuDzccEOI"
+    }
+  ],
+  "quizzes": [
+    {
+      "title": "GO Classes 2025 Monthly Quiz 1 – GA",
+      "url": "https://gateoverflow.in/exam/610/go-classes-2025-monthly-quiz-1-general-aptitude"
+    },
+    {
+      "title": "GO Classes Monthly Quiz 2 – GA",
+      "url": "https://gateoverflow.in/exam/631/go-classes-cs-da-2025-monthly-quiz-2-general-aptitude"
+    },
+    {
+      "title": "GO Classes Monthly Quiz 3 – GA",
+      "url": "https://gateoverflow.in/exam/660/go-classes-cs-da-2025-monthly-quiz-3-general-aptitude"
+    },
+    {
+      "title": "GO2017 Aptitude 1",
+      "url": "https://gateoverflow.in/exam/36/go2017-aptitude-1"
+    },
+    {
+      "title": "General Aptitude Set 2",
+      "url": "https://gateoverflow.in/exam/64/general-aptitude-set-2"
+    }
+  ],
   "days": [
     {
       "id": "ga-d1",

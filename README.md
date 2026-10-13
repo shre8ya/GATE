@@ -1,160 +1,173 @@
-# GATE Matrix AI — Personal Command Center for GATE CSE 2027
+# 📓 GATE MATRIX — The Story of a Focused Mind
 
-A personalized, state-of-the-art AI-driven study command center built exclusively for your GATE Computer Science & Information Technology 2027 preparation and 5th-Semester IPU University End-Term exams synergy.
+> *"I started preparing for GATE CSE 2027, but every single day, I struggled to concentrate. The playlists were scattered, the spreadsheet was overwhelming, and my attention kept fracturing. So I decided to build my own personalized, hand-drawn study command center."*
+
+[![GitHub Release](https://img.shields.io/badge/version-v1.2.0-blue.svg)](https://github.com/shre8ya/GATE/releases)
+[![Deploy](https://github.com/shre8ya/GATE/actions/workflows/deploy.yml/badge.svg)](https://github.com/shre8ya/GATE/actions)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 ---
 
-## 🚀 Live Access
+## 📖 The Genesis: Why This Dashboard Exists
 
-The app is currently running live on your local machine:
-- **Local URL**: [http://localhost:3000](http://localhost:3000)
-- **Local Network**: Accessible across your Wi-Fi network (mobile phone/tablet)
+It was October 2026. 
 
-To start the server anytime in the future:
+I was entering my 5th semester of Computer Science at GGSIPU. In front of me was a daunting double challenge: my college end-term university exams (DAA, Operating Systems, Compiler Design, Computer Networks) and the mother of all exams — **GATE CSE 2027**, organized by IIT Madras.
+
+Like every ambitious aspirant, I started with good intentions. I had:
+1. A 14-sheet master study planner spreadsheet with 80+ rows.
+2. Over 400 bookmarked YouTube videos across a dozen different channels.
+3. PDF notes scattered across Google Drive folders.
+
+**And yet, I couldn't concentrate.**
+
+Every morning sat at my desk, the same story repeated:
+- Opening YouTube to watch a lecture on *Recursion Trees* led me straight into the recommendation algorithm. One click later, 45 minutes were lost.
+- Looking at the dense, gray, 100-row Excel spreadsheet made my chest tighten with anxiety. I couldn't see my progress, couldn't feel any momentum, and had no idea how much I had truly conquered.
+- Juggling university internal vivas while keeping up with daily Discrete Mathematics felt impossible. If I fell behind by just one day, the entire spreadsheet broke, and guilt set in.
+
+Standard edtech apps felt cold, corporate, and full of upsells. They didn't feel like *my* study space.
+
+I realized what I needed wasn't another generic test series portal. **I needed an analog-feeling, hand-drawn sketchbook command center.** A place that felt like an authentic physical study diary — complete with washi tape, ruled notebook margins, fountain pen ink, satisfying checkmarks, celebratory confetti, and every single video link locked in so I never had to browse YouTube unprotected again.
+
+That was the day **GATE MATRIX** was born.
+
+---
+
+## 🧭 The Core Design Philosophy
+
+```
+  ┌──────────────────────────────────────────────────────────────┐
+  │                 GATE MATRIX COMMAND CENTER                   │
+  │   "Zero Cognitive Friction • Zero Distractions • Pure Focus"  │
+  └──────────────────────────────┬───────────────────────────────┘
+                                 │
+     ┌───────────────────────────┼───────────────────────────┐
+     ▼                           ▼                           ▼
+ 📜 Hand-Drawn Notebook      🎯 4-Phase Daily Mission    📅 Google Calendar Sync
+ Washi tape, wobbly ink,     Aptitude → Maths → Core    1-Click event creation &
+ paper themes, ruled lines   → Timed PYQ Practice        RFC 5545 .ICS export
+```
+
+1. **Anti-Distraction Highway**: Every lecture has a direct deep-link or clean search query. You click, watch, and come right back to check the box.
+2. **Tactile Gratification**: Checking a task fires micro-confetti and a soft success arpeggio. Finishing all 4 phases of a day unleashes a full-screen celebratory cannon barrage.
+3. **Synergy, Not Conflict**: Seamless integration between IPU 5th semester university exams and the GATE CSE syllabus so college study counts directly toward GATE.
+4. **Resilience Over Guilt**: Built-in AI Rescheduler that reorganizes your timeline if life happens and you miss a day.
+
+---
+
+## ✨ Features Tour
+
+### 1. 🗓️ Interactive Clickable Desk Calendar & Google Calendar Sync
+* **Interactive Day Inspection**: Click any date in the 5-month desk calendar (Oct 2026 – Feb 2027) to inspect scheduled topics, planned hours, and milestone tags.
+* **Add & Modify Custom Events**: Add college vivas, extra PYQ sessions, or personal milestones directly to any day. Mark tasks complete, delete, or reschedule.
+* **1-Click Google Calendar Sync**: Hit **"Add to Google Calendar"** on any day to open Google Calendar with the exact study syllabus, lecture links, and timings prefilled.
+* **Full Schedule Export (.ICS)**: Download a standard RFC 5545 `.ics` file containing all 80 days and import your entire GATE prep into Google Calendar or Apple Calendar in 10 seconds.
+
+### 2. 🎨 Authentic Paper Color Themes
+Tired of eye strain during late-night study sessions? Switch between 6 authentic hand-drawn paper stationery styles:
+* 📜 **Warm Parchment** — Classic sketchbook cream paper (Default)
+* 📓 **Moleskine Ivory** — Soft vanilla notebook tone
+* 🌿 **Sage Mint Study Pad** — Calming green tint scientifically proven to reduce eye fatigue
+* 🌸 **Rose Coral Sketch** — Warm pastel study aesthetic
+* 🩵 **Blueprint Grid** — Technical engineering graph paper
+* 🖍️ **Dark Chalkboard** — Deep slate for night-time study sessions
+
+### 3. 📸 Formula Vault with Photo Uploads & Canvas Compression
+* **LaTeX / Text Formulas**: Quick formula lookup across Discrete Maths, Graph Theory, Algorithms, OS, and CN.
+* **📸 Notebook Photo Upload**: Take a photo of handwritten formulas, diagrams, or tricky derivation proofs directly from your mobile camera or desktop.
+* **Client-side Image Optimization**: Built-in canvas compression automatically shrinks scans to under 150KB without losing formula sharpness, protecting local storage.
+* **Full-Screen Lightbox**: Click any card to inspect handwritten formulas in high resolution with instant zoom and download options.
+
+### 4. 🏆 Personal Achievement & Daily Reflections Journal
+* **Daily Reflection Diary**: Record today's focus rating (1 to 5 stars), study mood (⚡ Energetic, 🧘 Deep Flow, ☕ Grinding), breakthroughs, and tomorrow's top priority.
+* **Trophy Room**: Unlock badges as you study:
+  - 🚀 *Day One Initiator*
+  - 🔥 *3-Day Momentum*, *7-Day Warrior*, *14-Day Iron Machine*
+  - 📝 *Reflective Scholar*
+  - 📐 *Formula Alchemist*
+  - ⚡ *Algorithm Specialist*
+* **Live GATE 2027 Ticking Clock**: Real-time second-by-second countdown to exam day.
+* **Self-Contained Lo-Fi Ambient Synthesizer**: Calming Study Rain, 40Hz Gamma Focus, and Deep Space Drones synthesized in real-time via the Web Audio API — 100% offline, zero external streaming.
+
+### 5. 📚 Exact Engineering Maths & General Aptitude Alignment
+Directly aligned with the provided master planner spreadsheet:
+* **Engineering Maths (12 Verified Playlists)**:
+  - Logic, Sets/Relations/Posets, Group Theory, Graph Theory, Combinatorics, and Recurrences (*GO Classes*)
+  - Linear Algebra Complete Course (*GO Classes*)
+  - Probability & Statistics (*Algorithm Unlocked / Gradeup*)
+  - Introduction to Probability & Statistics (*NPTEL IIT Madras*)
+  - Calculus of One Variable (*Prof. Joydeep Das, IIT Kanpur NPTEL*)
+  - Calculus Playlist (*GO Classes*)
+  - Discrete Maths PYQs Revision
+* **General Aptitude (All 4 Rounds & Resources)**:
+  - Quant & Reasoning (*Complete Course by Saurabh Thakur Sir on Unacademy*)
+  - Verbal Aptitude (*GATE Overflow Verbal Lessons*)
+  - Aptitude Strategy & Resources Guide
+  - 5 Free Monthly Quizzes with direct links (*GO Classes Quizzes 1, 2, 3, GO2017, GA Set 2*)
+
+### 6. 📝 Official Question Papers Hub & Exam Simulator
+* GATE CSE 2024 (Set 1 & 2), 2023, 2022, 2021, 2020 official question papers.
+* IPU 5th Sem End-Term papers (DAA, OS, Compiler Design, Computer Networks).
+* Built-in 180-minute GATE and 90-minute IPU timed exam simulator clock.
+
+---
+
+## 📦 Version History
+
+See [CHANGELOG.md](file:///e:/GATE/Code/CHANGELOG.md) for full release notes.
+
+| Version | Highlights | Status |
+|:---:|:---|:---:|
+| **v1.2.0** | Cloud Deploy, Google Calendar Sync & .ICS, Clickable Day Editor, Paper Color Themes, Ambient Synthesizer, Reflections Journal | **Latest** |
+| **v1.1.0** | Desk Calendar Grid, Confetti Engine, 100+ Daily Quotes, Photo Formula Vault, Question Papers Hub, Multi-User Profiles | Released |
+| **v1.0.0** | Hand-Drawn Notebook Foundation, 80-Day Master Planner, 4-Phase Missions, AI Dynamic Rescheduler | Released |
+
+---
+
+## 🚀 Getting Started & Local Development
+
+### Prerequisites
+- Node.js (v18 or higher recommended)
+- npm or pnpm
+
+### Quick Start
 ```bash
+# 1. Clone the repository
+git clone https://github.com/shre8ya/GATE.git
+cd GATE/Code
+
+# 2. Install dependencies
+npm install
+
+# 3. Start local development server
 npm run dev
 ```
 
-To build an optimized production bundle:
+Visit `http://localhost:3000` in your browser.
+
+### Building for Production
 ```bash
 npm run build
 ```
 
 ---
 
-## 🎯 What Was Built For You
+## ☁️ Cloud Deployment
 
-### 1. 🧭 Mission Control (Today's Study Command)
-- **Dynamic Date Awareness**: Initialized right on **Tuesday, 13 Oct 2026 (Day 1)**! (Includes date navigation buttons to jump or preview any day).
-- **Structured 4-Phase Daily Mission**:
-  - **Phase 1: Easy Start (15 min)** — General Aptitude warm-up with direct lecture course and YouTube search links.
-  - **Phase 2: Daily Engineering Maths (30 min)** — Exactly 1 lecture per day covering Discrete Mathematics, Linear Algebra, Probability & Statistics, and Calculus. Includes direct GO Classes playlist & video links.
-  - **Phase 3: Core Subject Block (55 min - 2h)** — Deep study for C Programming, Data Structures, Algorithms DAA, Compiler Design, OS, or Computer Networks.
-  - **Phase 4: Practice & PYQ Block (20-30 min)** — Timed problem solving on GO-PDFs and GateOverflow.
-- **One-Click Day Completion**: Celebrate daily progress with confetti, achievement sound chimes, and auto-streak updating.
-- **Live Countdown Clocks**:
-  - Practical Exams (26 Nov 2026)
-  - IPU Theory End-Terms (11 Dec 2026)
-  - 12-Week Syllabus Wrap-up (31 Dec 2026)
-  - GATE 2027 Exam Day (Feb 2027)
-- **GATE Focus Pomodoro Timer**: 15m, 25m, 50m, 90m presets with integrated **Web Audio ambient noise synthesizer** (Rain, 40Hz Gamma Focus, Deep Space drone) + Zen Tibetan bell signals.
+The repository is pre-configured with a **GitHub Actions CI/CD pipeline** (`.github/workflows/deploy.yml`).
+Whenever changes are pushed to `main`, GitHub Pages automatically compiles and deploys the latest version to:
+👉 **`https://shre8ya.github.io/GATE/`**
 
 ---
 
-### 2. 📅 Master Planner Roadmap (13 Oct – 31 Dec 2026)
-- **Complete 80-Day Calendar Itinerary** extracted directly from your study planner spreadsheet.
-- **Smart Filters**: Filter by Subject, Completion Status, or Day Type (GATE Learning, Sunday Test, Uni Exam, Consolidation).
-- **Interactive Day Cards**: Minute allocations (Warm-up, Maths, Core, Practice), lecture titles, notes, and direct mission launcher.
+## 👤 Author & Personalization
+
+- **Author**: Shreya ([@shre8ya](https://github.com/shre8ya))
+- **Email**: `isolatoryshreya@gmail.com`
+- **Target**: GATE CSE 2027 (IIT Madras) • AIR < 100
+- **College**: Guru Gobind Singh Indraprastha University (GGSIPU), 5th Sem CSE
 
 ---
 
-### 3. 📚 Subjects & Curated Video Hub (All 8 Subjects + 559 Direct Links)
-- Dedicated deep-dive tabs for:
-  1. **C Programming** (Vishvadeep Gothi Sir)
-  2. **Data Structures** (Vishwadeep Sir)
-  3. **Algorithms (DAA)** (Abdul Bari & GO Classes)
-  4. **Compiler Design** (Prof. Ravindrababu Ravula)
-  5. **Operating Systems** (Vishvadeep Sir & NPTEL)
-  6. **Computer Networks** (Amit Khurana & NPTEL)
-  7. **Engineering Mathematics** (GO Classes Discrete, Linear Algebra, Probability, Calculus)
-  8. **General Aptitude** (Saurabh Thakur & GATE Overflow)
-- Every lecture day features:
-  - Direct **YouTube Playlist Links**
-  - Instant **1-Click YouTube Video Search**
-  - Recommended Standard Textbook References (CLRS, Galvin, Tanenbaum, Ullman, Kenneth Rosen)
-  - PYQ Targets & Count
-
----
-
-### 4. 📝 Sunday Revision & Mock Test Center
-- **Structured 3-Hour Weekly Protocol**:
-  - 30 min: Re-read short notes & cheat sheets
-  - 90 min: Timed test (25 Subject Qs + 10 Maths Qs, ~3 min/question)
-  - 60 min: Error log review and re-solving
-- **Integrated 90-Minute Test Clock**: Simulates exam conditions.
-- **Mock Test Scorecard**: Track test name, score, total marks, accuracy percentage, and weak topic tags.
-
----
-
-### 5. 🎯 Active Error Log & Spaced Repetition Engine
-- **Mistake Taxonomy**: Categorize errors into Conceptual Traps, Calculation Mistakes, Misread Questions, Formula Forgotten, or Time Pressure.
-- **Spaced Recall Progression**: Prompts you to re-solve mistakes at 1-day, 3-day, 7-day, 21-day, and 60-day intervals until permanently mastered.
-- **Due for Review Today Alert**: Never let weak concepts slip through the cracks.
-
----
-
-### 6. 🏛️ IPU 5th Sem Exam Synergy Hub
-- Fully synchronized with your university end-term datesheet (Evening slot 2:00 PM – 5:00 PM):
-  - **15 Dec 2026**: CIC-311 DAA (Algorithms)
-  - **17 Dec 2026**: CIC-303 Compiler Design
-  - **19 Dec 2026**: CIC-305 Operating Systems
-  - **22 Dec 2026**: CIC-307 Computer Networks
-  - **24 Dec 2026**: Software Engineering
-  - **28 Dec 2026**: Economics for Engineers
-- Features morning formula refresh plans, 3-hour mock exams, and university exam writing tips.
-
----
-
-### 7. 🗺️ GATE 2027 Official Syllabus Matrix
-- Complete official syllabus for **all 10 CS sections** + **4 General Aptitude sections** extracted directly from IIT Madras official PDFs.
-- 4-level mastery tracking for every single syllabus clause:
-  - 🎬 Lecture Watched
-  - ✍️ Short Notes Made
-  - 🎯 PYQs Solved
-  - ★ Mastered
-
----
-
-### 8. ⚡ Formula & Theorem Vault
-- High-yield quick-reference formulas & cheat sheets:
-  - Discrete Maths (Euler planar formula $V - E + F = 2$, Handshaking lemma, Master Theorem)
-  - Linear Algebra (Eigenvalues properties, System of linear equations rank analysis)
-  - Algorithms (Sorting complexities, Dijkstra vs Bellman-Ford vs Floyd-Warshall)
-  - Operating Systems (Paging EMAT formulas, Banker's algorithm bounds)
-  - Computer Networks (Hamming code parity formula, Flow control efficiencies, Subnetting masks)
-  - Compiler Design (FIRST & FOLLOW rules, LL(1) vs LR parsing conflicts)
-- 1-Click Copy Formula button and custom formula creator.
-
----
-
-### 9. 📅 Visual Monthly Calendar & Desk Planner
-- **Interactive Month-by-Month View**:
-  - Covers October 2026, November 2026, December 2026, January 2027, and February 2027.
-  - Every day card shows subject badges, status stamps (✓ Done, ● In Progress, ○ Not Started), and exam flags (🎯 Sunday Test, 🏛️ IPU Exam, 🚩 GATE 2027).
-  - Click any date to view day details and jump directly into Today's Journal.
-
----
-
-### 10. ⚡ Formula Vault & Handwritten Photo Notes
-- **Photo & Camera Uploads**: Snap or upload photos of handwritten notes, textbook equations, or circuit diagrams.
-- **Auto-Compression & Lightbox**: High-res full-screen zoom and download without lagging local storage.
-- **Subject Filters**: Discrete Maths, Algorithms, OS, Networks, COA, Digital, TOC, and "📸 Photo Notes Only".
-- **Vault Export**: Export all formulas to a portable JSON file.
-
----
-
-### 11. 📜 Previous Year Question Papers & Mock Test Hub
-- **Official GATE CSE Papers**: GATE 2024 (Set 1 & 2), 2023, 2022, 2021, and 2020 with official IIT links, cutoff benchmarks, and answer keys.
-- **IPU 5th Sem End-Term Papers**: DAA, Operating Systems, Compiler Design, and Computer Networks.
-- **Exam Clock Simulator**: 180-min full paper and 90-min sectional clock with virtual calculator discipline guidelines.
-- **Scorecards & Error Logging**: Track marks, accuracy percentages, and auto-flag weak topics.
-
----
-
-### 12. 👤 Personalization & Multi-Student Record System
-- **Study Persona & Avatars**: Choose between 10 hand-drawn study personas (🦉 The Architect, ⚡ The Sprinter, 🎯 The Precisionist, 🧠 The Math Wizard, etc.).
-- **Multiple Profile Switcher**: Maintain isolated study records for different students or preparation tracks.
-- **Detailed Activity History**: Tracks total Pomodoro sessions, study hours, mock accuracies, and completed milestones.
-
----
-
-### 13. 🎉 Micro-Confetti & Full-Day Celebrations
-- **Task Micro-Burst**: Crisp celebratory confetti explosion on every single task, checkbox, or syllabus clause completed.
-- **Full-Day Grand Cannon Barrage**: Massive celebratory multi-stage cannon blast with fanfare when a full day is conquered!
-
----
-
-### 14. 📌 Daily Motivational Quotes
-- 100+ curated quotes for every day of the GATE journey from Dr. APJ Abdul Kalam, Swami Vivekananda, Alan Turing, Richard Feynman, Linus Torvalds, and IIT rankers, with a 🔄 Shuffle button.
-
-
+*“Consistency is not about never falling behind; it is about having a system that welcomes you back the moment you return.”*

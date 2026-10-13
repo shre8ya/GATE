@@ -9,6 +9,7 @@ import UniversitySyncView from './components/UniversitySyncView';
 import SyllabusMatrixView from './components/SyllabusMatrixView';
 import FormulaVaultView from './components/FormulaVaultView';
 import CalendarView from './components/CalendarView';
+import JournalAchievementView from './components/JournalAchievementView';
 import PersonalizationModal from './components/PersonalizationModal';
 import BackupModal from './components/BackupModal';
 import RemindersModal from './components/RemindersModal';
@@ -41,14 +42,29 @@ export default function App() {
 
   // Theme State (Notebook Paper vs Chalkboard)
   const [theme, setTheme] = useState(() => loadItem('theme_mode', 'paper'));
+  const [paperTheme, setPaperTheme] = useState(() => loadItem('paper_theme', 'parchment'));
 
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme);
     saveItem('theme_mode', theme);
   }, [theme]);
 
+  useEffect(() => {
+    document.documentElement.setAttribute('data-paper-theme', paperTheme);
+    saveItem('paper_theme', paperTheme);
+  }, [paperTheme]);
+
   const handleToggleTheme = () => {
     setTheme(prev => prev === 'chalkboard' ? 'paper' : 'chalkboard');
+  };
+
+  const handleSelectPaperTheme = (newPaperTheme) => {
+    setPaperTheme(newPaperTheme);
+    if (newPaperTheme === 'chalkboard') {
+      setTheme('chalkboard');
+    } else {
+      setTheme('paper');
+    }
   };
 
   // Dynamic Master Schedule (Can be rescheduled by AI)
@@ -265,6 +281,8 @@ export default function App() {
         onOpenReschedule={() => setShowReschedule(true)}
         theme={theme}
         onToggleTheme={handleToggleTheme}
+        paperTheme={paperTheme}
+        onSelectPaperTheme={handleSelectPaperTheme}
         notifPermission={notifPermission}
       />
 
@@ -294,6 +312,16 @@ export default function App() {
               setActiveTab('today');
             }}
             onOpenReschedule={() => setShowReschedule(true)}
+            onUpdateDayStatus={handleUpdateDayStatus}
+          />
+        )}
+
+        {activeTab === 'achievements' && (
+          <JournalAchievementView 
+            currentDate={currentDate}
+            masterSchedule={masterSchedule}
+            dayStatus={dayStatus}
+            userProfile={userProfile}
           />
         )}
 

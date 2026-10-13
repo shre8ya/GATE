@@ -15,7 +15,9 @@ import {
   Settings,
   Sparkles,
   Sun,
-  Moon
+  Moon,
+  Trophy,
+  Palette
 } from 'lucide-react';
 
 export default function Navbar({ 
@@ -30,11 +32,14 @@ export default function Navbar({
   onOpenReschedule,
   theme,
   onToggleTheme,
+  paperTheme = 'parchment',
+  onSelectPaperTheme,
   notifPermission
 }) {
   const tabs = [
     { id: 'today', label: "Today's Journal", icon: Compass, badge: 'Live' },
-    { id: 'calendar', label: 'Calendar Desk', icon: Calendar, badge: 'Monthly' },
+    { id: 'calendar', label: 'Calendar Desk', icon: Calendar, badge: 'Clickable' },
+    { id: 'achievements', label: 'Journal & Trophies', icon: Trophy, badge: 'Rewards' },
     { id: 'planner', label: '80-Day Planner', icon: BookOpen },
     { id: 'subjects', label: 'Subjects & Videos', icon: BookOpen },
     { id: 'sunday', label: 'Sunday Tests & Papers', icon: CheckCircle },
@@ -117,17 +122,45 @@ export default function Navbar({
           </button>
         </div>
 
-        {/* Right: Theme Toggle, Notifications, Backup, Settings */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+        {/* Right: Paper Themes, Notifications, Backup, Settings */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
           
-          <button 
-            className="btn-sketch"
-            onClick={onToggleTheme}
-            style={{ padding: '6px 10px', fontSize: '0.85rem' }}
-            title="Toggle Notebook Paper / Chalkboard theme"
+          {/* Paper Color Palette Selector */}
+          <div 
+            style={{ 
+              display: 'flex', 
+              alignItems: 'center', 
+              gap: '4px', 
+              background: 'var(--paper-card-subtle)', 
+              padding: '4px 8px', 
+              borderRadius: '6px', 
+              border: '1.5px solid var(--ink-border)' 
+            }} 
+            title="Choose Hand-Drawn Paper Stationery Style"
           >
-            {theme === 'chalkboard' ? '📝 Paper' : '🖍️ Chalk'}
-          </button>
+            <Palette size={14} color="var(--ink-secondary)" />
+            <select
+              value={paperTheme}
+              onChange={e => onSelectPaperTheme && onSelectPaperTheme(e.target.value)}
+              style={{
+                border: 'none',
+                background: 'transparent',
+                fontFamily: 'inherit',
+                fontSize: '0.82rem',
+                fontWeight: 700,
+                color: 'var(--ink-primary)',
+                cursor: 'pointer',
+                outline: 'none'
+              }}
+            >
+              <option value="parchment">📜 Parchment</option>
+              <option value="ivory">📓 Ivory Moleskine</option>
+              <option value="sage">🌿 Sage Mint</option>
+              <option value="rose">🌸 Rose Coral</option>
+              <option value="blueprint">🩵 Blueprint Grid</option>
+              <option value="chalkboard">🖍️ Chalkboard</option>
+            </select>
+          </div>
 
           <button 
             className="btn-sketch" 

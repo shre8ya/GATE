@@ -49,8 +49,79 @@
   --tape-border: rgba(217, 119, 6, 0.3);
 }
 
+/* PARCHMENT (Warm Cream / Default) */
+[data-paper-theme='parchment'], :root {
+  --paper-bg: #F9F7F1;
+  --paper-card: #FFFFFF;
+  --paper-card-subtle: #F3EFE6;
+  --paper-grid: rgba(148, 163, 184, 0.22);
+  --ink-primary: #1E293B;
+  --ink-secondary: #475569;
+  --ink-muted: #64748B;
+  --ink-border: #1E293B;
+}
+
+/* IVORY (Classic Moleskine Vanilla) */
+[data-paper-theme='ivory'] {
+  --paper-bg: #FAF6E9;
+  --paper-card: #FFFDF8;
+  --paper-card-subtle: #F2EBD7;
+  --paper-grid: rgba(180, 160, 120, 0.22);
+  --ink-primary: #2B261F;
+  --ink-secondary: #574E40;
+  --ink-muted: #827562;
+  --ink-border: #2B261F;
+  --highlight-yellow: #FEF3C7;
+  --highlight-green: #D1FAE5;
+  --highlight-blue: #E0F2FE;
+}
+
+/* SAGE STUDY PAD (Mint Green - reduced eye strain) */
+[data-paper-theme='sage'] {
+  --paper-bg: #EDF5F0;
+  --paper-card: #F9FCFA;
+  --paper-card-subtle: #DEEBE2;
+  --paper-grid: rgba(46, 125, 80, 0.18);
+  --ink-primary: #153322;
+  --ink-secondary: #2E523C;
+  --ink-muted: #547B64;
+  --ink-border: #153322;
+  --highlight-yellow: #FEF9C3;
+  --highlight-green: #BBF7D0;
+  --highlight-blue: #CCFBF1;
+}
+
+/* ROSE SKETCHBOOK (Warm Pastel Coral) */
+[data-paper-theme='rose'] {
+  --paper-bg: #FDF2F4;
+  --paper-card: #FFFFFF;
+  --paper-card-subtle: #FCE4E8;
+  --paper-grid: rgba(225, 29, 72, 0.14);
+  --ink-primary: #381E24;
+  --ink-secondary: #6B3944;
+  --ink-muted: #9E5666;
+  --ink-border: #381E24;
+  --highlight-yellow: #FEF08A;
+  --highlight-green: #D1FAE5;
+  --highlight-pink: #FCE7F3;
+}
+
+/* BLUEPRINT DRAFTING (Engineering Technical Grid) */
+[data-paper-theme='blueprint'] {
+  --paper-bg: #EBF4FC;
+  --paper-card: #F8FBFE;
+  --paper-card-subtle: #D8ECF8;
+  --paper-grid: rgba(2, 132, 199, 0.22);
+  --ink-primary: #0C2840;
+  --ink-secondary: #1F4568;
+  --ink-muted: #436C94;
+  --ink-border: #0C2840;
+  --highlight-blue: #BAE6FD;
+  --highlight-yellow: #FEF08A;
+}
+
 /* DARK CHALKBOARD THEME (Toggleable) */
-[data-theme='chalkboard'] {
+[data-paper-theme='chalkboard'], [data-theme='chalkboard'] {
   --paper-bg: #151922;
   --paper-card: #1E2430;
   --paper-card-subtle: #252D3C;
@@ -81,6 +152,10 @@
   --tape-border: rgba(255, 255, 255, 0.3);
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
 * {
   margin: 0;
   padding: 0;
@@ -102,20 +177,22 @@ body {
   background-attachment: fixed;
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
+  transition: background-color 0.25s ease, color 0.25s ease;
 }
 
-/* Custom Sketched Scrollbar */
+/* Custom Sketched Textured Scrollbar */
 ::-webkit-scrollbar {
-  width: 9px;
-  height: 9px;
+  width: 10px;
+  height: 10px;
 }
 ::-webkit-scrollbar-track {
   background: var(--paper-bg);
+  border-left: 1.5px dashed var(--ink-border);
 }
 ::-webkit-scrollbar-thumb {
   background: var(--ink-muted);
-  border: 1px solid var(--ink-border);
-  border-radius: 4px;
+  border: 2px solid var(--paper-bg);
+  border-radius: 6px;
 }
 ::-webkit-scrollbar-thumb:hover {
   background: var(--ink-primary);
