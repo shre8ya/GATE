@@ -343,7 +343,7 @@ export default function CalendarView({
       </div>
 
       {/* Desk Calendar Spiral Frame */}
-      <div className="sketch-card ruled-paper" style={{ padding: '24px 20px', position: 'relative' }}>
+      <div className="sketch-card" style={{ padding: '28px 20px 24px', position: 'relative' }}>
         
         {/* Desk Spiral Binder Rings decoration */}
         <div style={{ 
@@ -370,32 +370,36 @@ export default function CalendarView({
           ))}
         </div>
 
-        {/* Days of Week Header */}
-        <div style={{ 
-          display: 'grid', 
-          gridTemplateColumns: 'repeat(7, 1fr)', 
-          gap: '8px', 
-          marginBottom: '10px',
-          marginTop: '10px',
-          textAlign: 'center',
-          fontWeight: 800,
-          fontSize: '0.9rem'
-        }}>
-          <div style={{ color: '#DC2626' }}>SUN</div>
-          <div>MON</div>
-          <div>TUE</div>
-          <div>WED</div>
-          <div>THU</div>
-          <div>FRI</div>
-          <div style={{ color: '#2563EB' }}>SAT</div>
-        </div>
+        {/* Aligned Scrollable Grid Container */}
+        <div style={{ width: '100%', overflowX: 'auto', paddingBottom: '6px' }}>
+          <div style={{ minWidth: '700px' }}>
 
-        {/* 7-Column Calendar Grid */}
-        <div style={{ 
-          display: 'grid', 
-          gridTemplateColumns: 'repeat(7, 1fr)', 
-          gap: '8px' 
-        }}>
+            {/* Days of Week Header */}
+            <div style={{ 
+              display: 'grid', 
+              gridTemplateColumns: 'repeat(7, 1fr)', 
+              gap: '8px', 
+              marginBottom: '10px',
+              marginTop: '10px',
+              textAlign: 'center',
+              fontWeight: 800,
+              fontSize: '0.9rem'
+            }}>
+              <div style={{ color: '#DC2626', padding: '4px 0', background: 'var(--paper-card-subtle)', borderRadius: '6px' }}>SUN</div>
+              <div style={{ padding: '4px 0', background: 'var(--paper-card-subtle)', borderRadius: '6px' }}>MON</div>
+              <div style={{ padding: '4px 0', background: 'var(--paper-card-subtle)', borderRadius: '6px' }}>TUE</div>
+              <div style={{ padding: '4px 0', background: 'var(--paper-card-subtle)', borderRadius: '6px' }}>WED</div>
+              <div style={{ padding: '4px 0', background: 'var(--paper-card-subtle)', borderRadius: '6px' }}>THU</div>
+              <div style={{ padding: '4px 0', background: 'var(--paper-card-subtle)', borderRadius: '6px' }}>FRI</div>
+              <div style={{ color: '#2563EB', padding: '4px 0', background: 'var(--paper-card-subtle)', borderRadius: '6px' }}>SAT</div>
+            </div>
+
+            {/* 7-Column Calendar Grid */}
+            <div style={{ 
+              display: 'grid', 
+              gridTemplateColumns: 'repeat(7, 1fr)', 
+              gap: '8px' 
+            }}>
           {dateCells.map((cell, idx) => {
             if (cell.empty) {
               return (
@@ -516,12 +520,14 @@ export default function CalendarView({
                 {/* Bottom: Hours indicator */}
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '0.62rem', color: 'var(--ink-muted)' }}>
                   <span>{cell.dayCustomEvents.length > 0 ? '📝 tasks' : ''}</span>
-                  {cell.scheduleItem && <span>⏱️ {cell.scheduleItem.totalHrs}h</span>}
+                {cell.scheduleItem && <span>⏱️ {cell.scheduleItem.totalHrs}h</span>}
                 </div>
               </div>
             );
           })}
         </div>
+      </div>
+    </div>
 
         {/* Calendar Legend */}
         <div style={{ 
@@ -572,7 +578,7 @@ export default function CalendarView({
           padding: '16px'
         }}>
           <div 
-            className="sketch-card ruled-paper" 
+            className="sketch-card" 
             style={{
               width: '100%',
               maxWidth: '680px',
@@ -653,7 +659,7 @@ export default function CalendarView({
                 }}
                 style={{ fontSize: '0.82rem', padding: '6px 12px' }}
               >
-                <BookOpen size={15} /> Open in Today's Journal
+                <BookOpen size={15} /> Open in Today's Mission
               </button>
             </div>
 

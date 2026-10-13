@@ -9,7 +9,6 @@ import UniversitySyncView from './components/UniversitySyncView';
 import SyllabusMatrixView from './components/SyllabusMatrixView';
 import FormulaVaultView from './components/FormulaVaultView';
 import CalendarView from './components/CalendarView';
-import JournalAchievementView from './components/JournalAchievementView';
 import PersonalizationModal from './components/PersonalizationModal';
 import BackupModal from './components/BackupModal';
 import RemindersModal from './components/RemindersModal';
@@ -316,14 +315,6 @@ export default function App() {
           />
         )}
 
-        {activeTab === 'achievements' && (
-          <JournalAchievementView 
-            currentDate={currentDate}
-            masterSchedule={masterSchedule}
-            dayStatus={dayStatus}
-            userProfile={userProfile}
-          />
-        )}
 
         {activeTab === 'planner' && (
           <MasterPlannerView 

@@ -16,7 +16,6 @@ import {
   Sparkles,
   Sun,
   Moon,
-  Trophy,
   Palette
 } from 'lucide-react';
 
@@ -37,9 +36,8 @@ export default function Navbar({
   notifPermission
 }) {
   const tabs = [
-    { id: 'today', label: "Today's Journal", icon: Compass, badge: 'Live' },
+    { id: 'today', label: "Today's Mission", icon: Compass, badge: 'Live' },
     { id: 'calendar', label: 'Calendar Desk', icon: Calendar, badge: 'Clickable' },
-    { id: 'achievements', label: 'Journal & Trophies', icon: Trophy, badge: 'Rewards' },
     { id: 'planner', label: '80-Day Planner', icon: BookOpen },
     { id: 'subjects', label: 'Subjects & Videos', icon: BookOpen },
     { id: 'sunday', label: 'Sunday Tests & Papers', icon: CheckCircle },

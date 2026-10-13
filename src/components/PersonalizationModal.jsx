@@ -377,7 +377,7 @@ export default function PersonalizationModal({
             {studySessions.length === 0 ? (
               <div style={{ textAlign: 'center', padding: '24px 0', color: 'var(--ink-muted)', fontSize: '0.85rem' }}>
                 No completed Pomodoro sessions yet.<br/>
-                Complete your first 25m focus block on Today's Journal to log your session!
+                Complete your first focus block on Today's Mission to log your session!
               </div>
             ) : (
               <div style={{ maxHeight: '220px', overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '8px' }}>

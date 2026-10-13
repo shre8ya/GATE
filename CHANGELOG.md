@@ -4,7 +4,25 @@ All notable changes to this project are documented in this file using Semantic V
 
 ---
 
-## [v1.2.0] — 2026-10-13 (Current Release)
+## [v1.3.0] — 2026-10-13 (Current Release)
+### ⏱️ Customizable Pomodoro Study Clock (User Option)
+- **Arbitrary Study Time Option**: Users can now set any study duration from 1 to 240 minutes via a dedicated hand-drawn input box or quick preset chips (`15m`, `25m`, `30m`, `45m`, `60m`, `90m`, `120m`).
+- **Persistent Preferences**: Custom study duration is saved to `localStorage` (`gate_pomodoro_custom_mins_v1`), remembering the user's preferred duration across sessions and reloads.
+- **Quick-Tweak Controls**: Added instant `[-5m]` and `[+5m]` buttons to effortlessly extend or shorten a study session on the fly.
+- **Session Types**: Switch seamlessly between 🎯 Focus Block, ☕ Short Break (5m), and 🧘 Long Break (15m).
+- **Elapsed Progress Bar**: Hand-drawn visual progress bar showing percentage of session completed in real time.
+- **Non-blocking Celebration Banner**: Replaced intrusive browser alert popups with an in-app celebratory banner with sound effects, task confetti, and 1-click break transitions.
+
+### 🧹 Interface Streamlining & Cleanups
+- **Removed Journal & Achievements**: Completely removed the redundant Journal and Trophies view and navbar tab as requested to keep the workspace laser-focused on active study tasks.
+- **Primary Tab Clarity**: Streamlined the primary view title to **Today's Mission**.
+
+### 📐 Calendar Alignment Fix
+- **Desk Calendar Grid Alignment**: Fixed the asymmetrical shift caused by notebook paper margin CSS. The 7-day grid and header labels (`SUN` through `SAT`) are now symmetrically aligned across all viewport sizes with responsive overflow protection.
+
+---
+
+## [v1.2.0] — 2026-10-13
 ### 🚀 Added
 - **Cloud Deployment Setup**: Automated GitHub Pages deployment pipeline via `.github/workflows/deploy.yml` with relative base path configuration in `vite.config.js`.
 - **Google Calendar 1-Click Sync**:

@@ -17,7 +17,11 @@ import {
   Sparkles,
   FileEdit,
   AlertTriangle,
-  Calendar
+  Calendar,
+  Coffee,
+  Plus,
+  Minus,
+  X
 } from 'lucide-react';
 import { playBell, playSuccessChime, playClick, startAmbientSound, stopAmbientSound } from '../utils/audio';
 import { getDailyQuote, DAILY_MOTIVATIONAL_QUOTES } from '../data/quotes';
@@ -63,12 +67,45 @@ export default function TodayMission({
     setCurrentQuote(DAILY_MOTIVATIONAL_QUOTES[nextIdx]);
   };
 
-  // Pomodoro State
-  const [timerMode, setTimerMode] = useState(25);
-  const [timeLeft, setTimeLeft] = useState(25 * 60);
+  // Pomodoro State — Fully Customizable by User
+  const [sessionType, setSessionType] = useState('focus'); // 'focus' | 'short_break' | 'long_break'
+  const [customFocusMins, setCustomFocusMins] = useState(() => {
+    try {
+      const saved = localStorage.getItem('gate_pomodoro_custom_mins_v1');
+      return saved ? parseInt(saved, 10) || 25 : 25;
+    } catch {
+      return 25;
+    }
+  });
+  const [customInputVal, setCustomInputVal] = useState(() => {
+    try {
+      const saved = localStorage.getItem('gate_pomodoro_custom_mins_v1');
+      return saved || '25';
+    } catch {
+      return '25';
+    }
+  });
+  const [timerMode, setTimerMode] = useState(() => {
+    try {
+      const saved = localStorage.getItem('gate_pomodoro_custom_mins_v1');
+      return saved ? parseInt(saved, 10) || 25 : 25;
+    } catch {
+      return 25;
+    }
+  });
+  const [timeLeft, setTimeLeft] = useState(() => {
+    try {
+      const saved = localStorage.getItem('gate_pomodoro_custom_mins_v1');
+      const mins = saved ? parseInt(saved, 10) || 25 : 25;
+      return mins * 60;
+    } catch {
+      return 25 * 60;
+    }
+  });
   const [isRunning, setIsRunning] = useState(false);
   const [ambientType, setAmbientType] = useState('none');
   const [ambientVolume, setAmbientVolume] = useState(0.3);
+  const [sessionCompletedBanner, setSessionCompletedBanner] = useState(null);
 
   const [noteText, setNoteText] = useState(currentStatus.note || '');
 
@@ -85,16 +122,29 @@ export default function TodayMission({
     } else if (isRunning && timeLeft === 0) {
       setIsRunning(false);
       playBell();
-      onLogStudySession({
-        durationMinutes: timerMode,
-        subject: currentMasterItem?.subject || 'GATE Study',
-        topic: currentMasterItem?.mainFocus || 'Focus Block',
-        date: currentDate
-      });
-      alert(`🎉 Focus session of ${timerMode} minutes completed! Time for a break.`);
+      fireTaskConfetti();
+      if (sessionType === 'focus') {
+        onLogStudySession({
+          durationMinutes: timerMode,
+          subject: currentMasterItem?.subject || 'GATE Study',
+          topic: currentMasterItem?.mainFocus || 'Focus Block',
+          date: currentDate
+        });
+        setSessionCompletedBanner({
+          title: `🎉 Focus Block Finished (${timerMode}m)!`,
+          message: `Logged to your study record. Take a well-deserved breather!`,
+          type: 'focus'
+        });
+      } else {
+        setSessionCompletedBanner({
+          title: `☕ Break Time Over (${timerMode}m)!`,
+          message: `Refreshed and ready for your next study streak?`,
+          type: 'break'
+        });
+      }
     }
     return () => clearInterval(interval);
-  }, [isRunning, timeLeft]);
+  }, [isRunning, timeLeft, sessionType, timerMode, currentMasterItem, currentDate]);
 
   const toggleAmbient = (type) => {
     if (ambientType === type) {
@@ -106,13 +156,56 @@ export default function TodayMission({
     }
   };
 
-  const handleStartTimer = () => { playClick(); setIsRunning(true); };
+  const handleStartTimer = () => { 
+    playClick(); 
+    setSessionCompletedBanner(null);
+    setIsRunning(true); 
+  };
   const handlePauseTimer = () => { playClick(); setIsRunning(false); };
+  
   const handleResetTimer = (minutes = timerMode) => {
     playClick();
     setIsRunning(false);
     setTimerMode(minutes);
     setTimeLeft(minutes * 60);
+  };
+
+  const handleApplyCustomMinutes = (minsToSet) => {
+    playClick();
+    const parsed = parseInt(minsToSet, 10);
+    const validMins = isNaN(parsed) ? 25 : Math.max(1, Math.min(240, parsed));
+    setCustomFocusMins(validMins);
+    setCustomInputVal(String(validMins));
+    try {
+      localStorage.setItem('gate_pomodoro_custom_mins_v1', String(validMins));
+    } catch (e) {}
+    setSessionType('focus');
+    handleResetTimer(validMins);
+  };
+
+  const handleAdjustTime = (deltaMins) => {
+    playClick();
+    const newSeconds = Math.max(60, timeLeft + deltaMins * 60);
+    setTimeLeft(newSeconds);
+    const updatedMins = Math.ceil(newSeconds / 60);
+    setTimerMode(updatedMins);
+  };
+
+  const handleSelectSessionType = (type) => {
+    playClick();
+    setSessionType(type);
+    setIsRunning(false);
+    setSessionCompletedBanner(null);
+    if (type === 'focus') {
+      setTimerMode(customFocusMins);
+      setTimeLeft(customFocusMins * 60);
+    } else if (type === 'short_break') {
+      setTimerMode(5);
+      setTimeLeft(5 * 60);
+    } else if (type === 'long_break') {
+      setTimerMode(15);
+      setTimeLeft(15 * 60);
+    }
   };
 
   const formatTime = (seconds) => {
@@ -632,63 +725,194 @@ export default function TodayMission({
         {/* Right Column: Hand-Drawn Pomodoro & Focus Ambient Sounds */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
           
-          <div className="sketch-card" style={{ padding: '24px', textAlign: 'center' }}>
+          <div className="sketch-card" style={{ padding: '24px', textAlign: 'center', position: 'relative' }}>
             <div className="tape-strip"></div>
             
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', marginBottom: '12px' }}>
-              <Clock size={20} />
-              <h2 className="font-title" style={{ fontSize: '1.3rem', margin: 0 }}>Pomodoro Study Clock</h2>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', marginBottom: '14px' }}>
+              <Clock size={22} />
+              <h2 className="font-title" style={{ fontSize: '1.35rem', margin: 0 }}>Pomodoro Study Clock</h2>
             </div>
 
-            {/* Big Sketched Timer */}
+            {/* Mode Selector Tabs */}
+            <div style={{ display: 'flex', justifyContent: 'center', gap: '6px', marginBottom: '16px', flexWrap: 'wrap' }}>
+              <button
+                className="btn-sketch"
+                onClick={() => handleSelectSessionType('focus')}
+                style={{
+                  padding: '5px 12px',
+                  fontSize: '0.85rem',
+                  fontWeight: 700,
+                  background: sessionType === 'focus' ? 'var(--highlight-yellow)' : 'var(--paper-card)',
+                  borderColor: sessionType === 'focus' ? 'var(--ink-primary)' : 'var(--ink-border)'
+                }}
+              >
+                🎯 Focus ({customFocusMins}m)
+              </button>
+              <button
+                className="btn-sketch"
+                onClick={() => handleSelectSessionType('short_break')}
+                style={{
+                  padding: '5px 12px',
+                  fontSize: '0.85rem',
+                  background: sessionType === 'short_break' ? 'var(--highlight-blue)' : 'var(--paper-card)',
+                  borderColor: sessionType === 'short_break' ? 'var(--ink-primary)' : 'var(--ink-border)'
+                }}
+              >
+                <Coffee size={14} style={{ verticalAlign: 'text-bottom', marginRight: '4px' }} />
+                Short Break (5m)
+              </button>
+              <button
+                className="btn-sketch"
+                onClick={() => handleSelectSessionType('long_break')}
+                style={{
+                  padding: '5px 12px',
+                  fontSize: '0.85rem',
+                  background: sessionType === 'long_break' ? 'var(--highlight-purple)' : 'var(--paper-card)',
+                  borderColor: sessionType === 'long_break' ? 'var(--ink-primary)' : 'var(--ink-border)'
+                }}
+              >
+                🧘 Long Break (15m)
+              </button>
+            </div>
+
+            {/* In-App Celebratory Notification Banner */}
+            {sessionCompletedBanner && (
+              <div 
+                className="sketch-card" 
+                style={{ 
+                  margin: '0 0 16px', 
+                  padding: '12px 14px', 
+                  background: sessionCompletedBanner.type === 'focus' ? 'var(--highlight-green)' : 'var(--highlight-blue)',
+                  textAlign: 'left',
+                  position: 'relative'
+                }}
+              >
+                <button
+                  onClick={() => setSessionCompletedBanner(null)}
+                  style={{
+                    position: 'absolute',
+                    top: '8px',
+                    right: '8px',
+                    background: 'none',
+                    border: 'none',
+                    cursor: 'pointer',
+                    color: 'var(--ink-primary)'
+                  }}
+                  title="Dismiss"
+                >
+                  <X size={16} />
+                </button>
+                <div style={{ fontWeight: 700, fontSize: '0.95rem', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                  <Sparkles size={16} /> {sessionCompletedBanner.title}
+                </div>
+                <div style={{ fontSize: '0.82rem', marginTop: '2px', color: 'var(--ink-secondary)' }}>
+                  {sessionCompletedBanner.message}
+                </div>
+                <div style={{ marginTop: '8px', display: 'flex', gap: '8px' }}>
+                  {sessionCompletedBanner.type === 'focus' ? (
+                    <button
+                      className="btn-sketch btn-sketch-primary"
+                      onClick={() => {
+                        handleSelectSessionType('short_break');
+                        handleStartTimer();
+                      }}
+                      style={{ padding: '4px 10px', fontSize: '0.78rem' }}
+                    >
+                      ☕ Take 5m Break
+                    </button>
+                  ) : (
+                    <button
+                      className="btn-sketch btn-sketch-primary"
+                      onClick={() => {
+                        handleSelectSessionType('focus');
+                        handleStartTimer();
+                      }}
+                      style={{ padding: '4px 10px', fontSize: '0.78rem' }}
+                    >
+                      🎯 Start Next Focus ({customFocusMins}m)
+                    </button>
+                  )}
+                </div>
+              </div>
+            )}
+
+            {/* Big Sketched Timer Display */}
             <div style={{ 
               fontFamily: 'var(--font-mono)', 
               fontSize: '3.6rem', 
               fontWeight: 700, 
               letterSpacing: '2px', 
-              margin: '8px 0 16px',
+              margin: '4px 0 6px',
               color: isRunning ? 'var(--ink-blue)' : 'var(--ink-primary)'
             }}>
               {formatTime(timeLeft)}
             </div>
 
-            {/* Presets */}
-            <div style={{ display: 'flex', justifyContent: 'center', gap: '8px', marginBottom: '18px' }}>
-              {[15, 25, 50, 90].map((mins) => (
-                <button
-                  key={mins}
-                  className="btn-sketch"
-                  onClick={() => handleResetTimer(mins)}
-                  style={{
-                    padding: '4px 10px',
-                    fontSize: '0.85rem',
-                    background: timerMode === mins ? 'var(--highlight-yellow)' : 'var(--paper-card)'
-                  }}
-                >
-                  {mins}m
-                </button>
-              ))}
-            </div>
+            {/* Progress Bar */}
+            {(() => {
+              const totalSec = Math.max(1, timerMode * 60);
+              const elapsedSec = Math.max(0, totalSec - timeLeft);
+              const progressPct = Math.min(100, Math.round((elapsedSec / totalSec) * 100));
+              return (
+                <div style={{ margin: '0 auto 16px', maxWidth: '280px' }}>
+                  <div style={{
+                    width: '100%',
+                    height: '8px',
+                    borderRadius: '4px',
+                    background: 'var(--paper-dark)',
+                    border: '1.5px solid var(--ink-border)',
+                    overflow: 'hidden'
+                  }}>
+                    <div style={{
+                      width: `${progressPct}%`,
+                      height: '100%',
+                      background: sessionType === 'focus' ? 'var(--ink-blue)' : 'var(--highlight-purple)',
+                      transition: 'width 0.4s ease'
+                    }} />
+                  </div>
+                  <div style={{ 
+                    display: 'flex', 
+                    justifyContent: 'space-between', 
+                    fontSize: '0.75rem', 
+                    color: 'var(--ink-muted)', 
+                    marginTop: '4px' 
+                  }}>
+                    <span>{sessionType === 'focus' ? '🎯 Study Block' : '☕ Rest Period'}</span>
+                    <span>{progressPct}% elapsed</span>
+                  </div>
+                </div>
+              );
+            })()}
 
-            {/* Controls */}
-            <div style={{ display: 'flex', justifyContent: 'center', gap: '10px', marginBottom: '22px' }}>
+            {/* Primary Controls & Quick +/- 5m Adjust */}
+            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '8px', marginBottom: '20px' }}>
+              <button 
+                className="btn-sketch" 
+                onClick={() => handleAdjustTime(-5)}
+                style={{ padding: '8px 12px', fontSize: '0.85rem' }}
+                title="Subtract 5 minutes"
+              >
+                <Minus size={14} style={{ marginRight: '2px' }} /> 5m
+              </button>
+
               {!isRunning ? (
                 <button 
                   className="btn-sketch btn-sketch-primary" 
                   onClick={handleStartTimer}
-                  style={{ padding: '10px 22px', fontSize: '1.05rem' }}
+                  style={{ padding: '10px 24px', fontSize: '1.05rem', fontWeight: 700 }}
                 >
-                  <Play size={18} fill="currentColor" /> Start Focus
+                  <Play size={18} fill="currentColor" /> Start {sessionType === 'focus' ? 'Focus' : 'Break'}
                 </button>
               ) : (
                 <button 
                   className="btn-sketch btn-sketch-pink" 
                   onClick={handlePauseTimer}
-                  style={{ padding: '10px 22px', fontSize: '1.05rem' }}
+                  style={{ padding: '10px 24px', fontSize: '1.05rem', fontWeight: 700 }}
                 >
                   <Pause size={18} /> Pause
                 </button>
               )}
+
               <button 
                 className="btn-sketch" 
                 onClick={() => handleResetTimer(timerMode)}
@@ -697,6 +921,95 @@ export default function TodayMission({
               >
                 <RotateCcw size={18} />
               </button>
+
+              <button 
+                className="btn-sketch" 
+                onClick={() => handleAdjustTime(5)}
+                style={{ padding: '8px 12px', fontSize: '0.85rem' }}
+                title="Add 5 minutes"
+              >
+                <Plus size={14} style={{ marginRight: '2px' }} /> 5m
+              </button>
+            </div>
+
+            {/* Study Time According to User Option */}
+            <div style={{
+              background: 'var(--paper-card-subtle)',
+              border: '1.5px dashed var(--ink-border)',
+              borderRadius: '8px',
+              padding: '14px 12px',
+              marginBottom: '18px',
+              textAlign: 'left'
+            }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
+                <span className="font-title" style={{ fontSize: '0.92rem', fontWeight: 700 }}>
+                  ⏱️ Study Time (Your Option):
+                </span>
+                <span style={{ fontSize: '0.72rem', color: 'var(--ink-muted)' }}>
+                  Current: <strong>{customFocusMins}m</strong>
+                </span>
+              </div>
+
+              {/* Quick Presets */}
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px', marginBottom: '10px' }}>
+                {[15, 25, 30, 45, 60, 90, 120].map((mins) => (
+                  <button
+                    key={mins}
+                    className="btn-sketch"
+                    onClick={() => handleApplyCustomMinutes(mins)}
+                    style={{
+                      padding: '4px 8px',
+                      fontSize: '0.8rem',
+                      fontWeight: customFocusMins === mins && sessionType === 'focus' ? 700 : 500,
+                      background: customFocusMins === mins && sessionType === 'focus' ? 'var(--highlight-yellow)' : 'var(--paper-card)'
+                    }}
+                  >
+                    {mins}m
+                  </button>
+                ))}
+              </div>
+
+              {/* Custom Number Input by User */}
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <div style={{ position: 'relative', width: '90px' }}>
+                  <input
+                    type="number"
+                    min="1"
+                    max="240"
+                    className="input-sketch"
+                    value={customInputVal}
+                    onChange={(e) => setCustomInputVal(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter') {
+                        handleApplyCustomMinutes(customInputVal);
+                      }
+                    }}
+                    style={{
+                      padding: '5px 8px',
+                      fontSize: '0.88rem',
+                      textAlign: 'center',
+                      fontWeight: 700
+                    }}
+                    placeholder="Mins"
+                  />
+                </div>
+                <span style={{ fontSize: '0.82rem', color: 'var(--ink-secondary)' }}>minutes</span>
+
+                <button
+                  className="btn-sketch btn-sketch-primary"
+                  onClick={() => handleApplyCustomMinutes(customInputVal)}
+                  style={{
+                    padding: '5px 12px',
+                    fontSize: '0.82rem',
+                    marginLeft: 'auto'
+                  }}
+                >
+                  Set Duration
+                </button>
+              </div>
+              <div style={{ fontSize: '0.72rem', color: 'var(--ink-muted)', marginTop: '6px' }}>
+                💡 Type any minutes (1-240) or pick a preset. Automatically saved for your future study sessions!
+              </div>
             </div>
 
             {/* Ambient Focus Generator */}
