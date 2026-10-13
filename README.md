@@ -161,12 +161,4 @@ Whenever changes are pushed to `main`, GitHub Pages automatically compiles and d
 
 ---
 
-## 👤 Author & Personalization
-
-- **Author**: Shreya ([@shre8ya](https://github.com/shre8ya))
-- **Email**: `isolatoryshreya@gmail.com`
-- **College**: Guru Gobind Singh Indraprastha University (GGSIPU), 5th Sem CSE
-
----
-
 *“Consistency is not about never falling behind; it is about having a system that welcomes you back the moment you return.”*
