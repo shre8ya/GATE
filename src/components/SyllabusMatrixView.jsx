@@ -4,6 +4,7 @@ import {
   ChevronUp 
 } from 'lucide-react';
 import { playClick, playSuccessChime } from '../utils/audio';
+import { fireTaskConfetti } from '../utils/confetti';
 
 export default function SyllabusMatrixView({ 
   officialSyllabus, 
@@ -24,12 +25,14 @@ export default function SyllabusMatrixView({
 
   const sections = activeTab === 'cs' ? officialSyllabus.cs : officialSyllabus.ga;
 
-  const handleToggleCheck = (topicKey, checkField) => {
-    playClick();
+  const handleToggleCheck = (e, topicKey, checkField) => {
     const curr = syllabusProgress[topicKey] || { watched: false, notes: false, pyqs: false, mastered: false };
-    const updated = { ...curr, [checkField]: !curr[checkField] };
-    if (checkField === 'mastered' && updated.mastered) {
-      playSuccessChime();
+    const nextVal = !curr[checkField];
+    const updated = { ...curr, [checkField]: nextVal };
+    if (nextVal) {
+      fireTaskConfetti(e);
+    } else {
+      playClick();
     }
     onUpdateSyllabusProgress(topicKey, updated);
   };
@@ -183,7 +186,7 @@ export default function SyllabusMatrixView({
 
                         <div style={{ textAlign: 'center' }}>
                           <button
-                            onClick={() => handleToggleCheck(key, 'watched')}
+                            onClick={(e) => handleToggleCheck(e, key, 'watched')}
                             className="btn-sketch"
                             style={{ 
                               background: prog.watched ? 'var(--highlight-blue)' : 'var(--paper-card)',
@@ -197,7 +200,7 @@ export default function SyllabusMatrixView({
 
                         <div style={{ textAlign: 'center' }}>
                           <button
-                            onClick={() => handleToggleCheck(key, 'notes')}
+                            onClick={(e) => handleToggleCheck(e, key, 'notes')}
                             className="btn-sketch"
                             style={{ 
                               background: prog.notes ? 'var(--highlight-green)' : 'var(--paper-card)',
@@ -211,7 +214,7 @@ export default function SyllabusMatrixView({
 
                         <div style={{ textAlign: 'center' }}>
                           <button
-                            onClick={() => handleToggleCheck(key, 'pyqs')}
+                            onClick={(e) => handleToggleCheck(e, key, 'pyqs')}
                             className="btn-sketch"
                             style={{ 
                               background: prog.pyqs ? 'var(--highlight-yellow)' : 'var(--paper-card)',
@@ -225,7 +228,7 @@ export default function SyllabusMatrixView({
 
                         <div style={{ textAlign: 'center' }}>
                           <button
-                            onClick={() => handleToggleCheck(key, 'mastered')}
+                            onClick={(e) => handleToggleCheck(e, key, 'mastered')}
                             className="btn-sketch"
                             style={{ 
                               background: prog.mastered ? 'var(--highlight-pink)' : 'var(--paper-card)',

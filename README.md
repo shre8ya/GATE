@@ -117,39 +117,44 @@ npm run build
 
 ---
 
-### 9. 🤖 AI Study Mentor & Doubt Solver
-- Context-aware GATE CSE assistant:
-  - **Doubt Solver**: Explains edge cases, boundary conditions, and proofs.
-  - **PYQ Hint Generator**: Gives progressive hints before spoiling answers.
-  - **Quiz Mode**: 3-question rapid quizzes on today's lecture.
-  - **Strategy & Motivation**: Guidance on balancing college and GATE.
-- Works offline with built-in knowledge base, and supports optional live **Gemini API** integration via your personal API key.
+### 9. 📅 Visual Monthly Calendar & Desk Planner
+- **Interactive Month-by-Month View**:
+  - Covers October 2026, November 2026, December 2026, January 2027, and February 2027.
+  - Every day card shows subject badges, status stamps (✓ Done, ● In Progress, ○ Not Started), and exam flags (🎯 Sunday Test, 🏛️ IPU Exam, 🚩 GATE 2027).
+  - Click any date to view day details and jump directly into Today's Journal.
 
 ---
 
-### 10. 🔔 Reminders, Notifications & Local Persistence
-- **Web Desktop Notifications**: Receive daily study kickoff and revision alerts.
-- **Audio Chimes**: Native Web Audio Tibetan bell for study focus and break transitions.
-- **100% Local Privacy**: Everything saves directly in `localStorage`.
-- **1-Click JSON Backup & Restore**: Export and restore your complete progress anytime.
+### 10. ⚡ Formula Vault & Handwritten Photo Notes
+- **Photo & Camera Uploads**: Snap or upload photos of handwritten notes, textbook equations, or circuit diagrams.
+- **Auto-Compression & Lightbox**: High-res full-screen zoom and download without lagging local storage.
+- **Subject Filters**: Discrete Maths, Algorithms, OS, Networks, COA, Digital, TOC, and "📸 Photo Notes Only".
+- **Vault Export**: Export all formulas to a portable JSON file.
 
 ---
 
-### 11. 🧠 AI Dynamic Rescheduling Engine (Missed Topic Recovery)
-- **Automatic Recovery When Behind**: If you miss a lecture or study day, the AI Reorganizer recalibrates your master planner without risking exam deadlines.
-- **3 Dynamic Strategies**:
-  1. **Sunday Buffer Allocation**: Absorbs missed hours into upcoming Sunday buffers without disturbing weekday consistency.
-  2. **Micro-Sprint Catch-Up (+25m/day)**: Spreads missed study load across the next 3 days by adding 25–30 minutes to your daily pomodoros.
-  3. **Smart Shift**: Shifts subsequent days forward while strictly protecting the **IPU University Exam Freeze period (Nov 24 – Dec 12, 2026)** and January Full Mock Test sprints.
-- **Gemini 1.5 Integration**: Generates encouraging, contextual advice and high-yield focus areas for the missed topic using your personal API key.
+### 11. 📜 Previous Year Question Papers & Mock Test Hub
+- **Official GATE CSE Papers**: GATE 2024 (Set 1 & 2), 2023, 2022, 2021, and 2020 with official IIT links, cutoff benchmarks, and answer keys.
+- **IPU 5th Sem End-Term Papers**: DAA, Operating Systems, Compiler Design, and Computer Networks.
+- **Exam Clock Simulator**: 180-min full paper and 90-min sectional clock with virtual calculator discipline guidelines.
+- **Scorecards & Error Logging**: Track marks, accuracy percentages, and auto-flag weak topics.
 
 ---
 
-### 12. 🎨 Hand-Drawn Sketchbook Aesthetic
-- **Authentic Paper & Pencil Look**: Designed to look and feel like a tactile study journal rather than generic software.
-- **Handwritten Typography**: Google Fonts (`Kalam`, `Caveat`, `Patrick Hand`, `Architects Daughter`).
-- **Tactile UI Elements**: Ruled graph paper textures, wobbly sketched cards, washi tape strips, highlighter pen strokes, and tactile checkboxes.
-- **Dual Themes**: 
-  - **📝 Paper Notebook** (warm graph paper `#FDFBF7`)
-  - **🖍️ Chalkboard / Blackboard** (deep chalkboard green `#1B2421`)
+### 12. 👤 Personalization & Multi-Student Record System
+- **Study Persona & Avatars**: Choose between 10 hand-drawn study personas (🦉 The Architect, ⚡ The Sprinter, 🎯 The Precisionist, 🧠 The Math Wizard, etc.).
+- **Multiple Profile Switcher**: Maintain isolated study records for different students or preparation tracks.
+- **Detailed Activity History**: Tracks total Pomodoro sessions, study hours, mock accuracies, and completed milestones.
+
+---
+
+### 13. 🎉 Micro-Confetti & Full-Day Celebrations
+- **Task Micro-Burst**: Crisp celebratory confetti explosion on every single task, checkbox, or syllabus clause completed.
+- **Full-Day Grand Cannon Barrage**: Massive celebratory multi-stage cannon blast with fanfare when a full day is conquered!
+
+---
+
+### 14. 📌 Daily Motivational Quotes
+- 100+ curated quotes for every day of the GATE journey from Dr. APJ Abdul Kalam, Swami Vivekananda, Alan Turing, Richard Feynman, Linus Torvalds, and IIT rankers, with a 🔄 Shuffle button.
+
 

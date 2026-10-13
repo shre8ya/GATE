@@ -7,6 +7,7 @@ import {
   Check 
 } from 'lucide-react';
 import { playClick, playSuccessChime } from '../utils/audio';
+import { fireTaskConfetti } from '../utils/confetti';
 
 export default function ErrorLogView({ 
   errorLog, 
@@ -71,8 +72,7 @@ export default function ErrorLogView({
     playClick();
     const nextStep = item.intervalStep + 1;
     if (nextStep >= intervals.length) {
-      playSuccessChime();
-      try { confetti({ particleCount: 50, spread: 60 }); } catch (e) {}
+      fireTaskConfetti();
       onUpdateErrorItem(item.id, {
         ...item,
         intervalStep: nextStep,

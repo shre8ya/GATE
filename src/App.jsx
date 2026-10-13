@@ -8,9 +8,8 @@ import ErrorLogView from './components/ErrorLogView';
 import UniversitySyncView from './components/UniversitySyncView';
 import SyllabusMatrixView from './components/SyllabusMatrixView';
 import FormulaVaultView from './components/FormulaVaultView';
-import AiMentorView from './components/AiMentorView';
-
-import SettingsModal from './components/SettingsModal';
+import CalendarView from './components/CalendarView';
+import PersonalizationModal from './components/PersonalizationModal';
 import BackupModal from './components/BackupModal';
 import RemindersModal from './components/RemindersModal';
 import RescheduleModal from './components/RescheduleModal';
@@ -65,9 +64,13 @@ export default function App() {
   // Persistent States
   const [userProfile, setUserProfile] = useState(() => 
     loadItem('user_profile', {
-      name: 'GATE Aspirant',
+      name: 'Shreya',
+      avatar: '🦉',
       targetRank: 'AIR < 100',
+      targetScore: '80+ Marks',
+      college: 'GGSIPU (5th Sem CSE)',
       dailyGoalHours: 3.5,
+      weakSubjects: 'Operating Systems, COA',
       geminiApiKey: ''
     })
   );
@@ -255,6 +258,7 @@ export default function App() {
           hoursToday: userProfile.dailyGoalHours,
           errorsDue: errorsDueCount
         }}
+        userProfile={userProfile}
         onOpenSettings={() => setShowSettings(true)}
         onOpenBackup={() => setShowBackup(true)}
         onOpenReminders={() => setShowReminders(true)}
@@ -276,6 +280,19 @@ export default function App() {
             dayStatus={dayStatus}
             onUpdateDayStatus={handleUpdateDayStatus}
             onLogStudySession={handleLogStudySession}
+            onOpenReschedule={() => setShowReschedule(true)}
+          />
+        )}
+
+        {activeTab === 'calendar' && (
+          <CalendarView 
+            masterSchedule={masterSchedule}
+            dayStatus={dayStatus}
+            currentDate={currentDate}
+            onSelectDate={(d) => {
+              setCurrentDate(d);
+              setActiveTab('today');
+            }}
             onOpenReschedule={() => setShowReschedule(true)}
           />
         )}
@@ -347,22 +364,18 @@ export default function App() {
             onDeleteCustomFormula={handleDeleteCustomFormula}
           />
         )}
-
-        {activeTab === 'aimentor' && (
-          <AiMentorView 
-            currentDate={currentDate}
-            masterSchedule={masterSchedule}
-            geminiApiKey={userProfile.geminiApiKey}
-            onOpenSettings={() => setShowSettings(true)}
-          />
-        )}
       </main>
 
       {/* Modals */}
       {showSettings && (
-        <SettingsModal 
+        <PersonalizationModal 
           userProfile={userProfile}
           onSaveProfile={handleSaveProfile}
+          studySessions={studySessions}
+          dayStatus={dayStatus}
+          mockTests={mockTests}
+          errorLog={errorLog}
+          customFormulas={customFormulas}
           onResetAll={handleResetAll}
           onClose={() => setShowSettings(false)}
         />

@@ -23,6 +23,7 @@ export default function Navbar({
   setActiveTab, 
   streak = 1, 
   todayStats, 
+  userProfile,
   onOpenSettings, 
   onOpenBackup, 
   onOpenReminders,
@@ -33,14 +34,14 @@ export default function Navbar({
 }) {
   const tabs = [
     { id: 'today', label: "Today's Journal", icon: Compass, badge: 'Live' },
-    { id: 'planner', label: '80-Day Planner', icon: Calendar },
+    { id: 'calendar', label: 'Calendar Desk', icon: Calendar, badge: 'Monthly' },
+    { id: 'planner', label: '80-Day Planner', icon: BookOpen },
     { id: 'subjects', label: 'Subjects & Videos', icon: BookOpen },
-    { id: 'sunday', label: 'Sunday Tests', icon: CheckCircle },
+    { id: 'sunday', label: 'Sunday Tests & Papers', icon: CheckCircle },
     { id: 'errorlog', label: 'Error Log', icon: AlertTriangle, count: todayStats?.errorsDue || 0 },
     { id: 'university', label: 'IPU Exam Sync', icon: GraduationCap },
     { id: 'syllabus', label: 'Syllabus Matrix', icon: BookOpen },
     { id: 'formulas', label: 'Formula Vault', icon: Zap },
-    { id: 'aimentor', label: 'AI Study Mentor', icon: Bot, highlight: true },
   ];
 
   return (
@@ -147,12 +148,13 @@ export default function Navbar({
           </button>
 
           <button 
-            className="btn-sketch" 
+            className="btn-sketch btn-sketch-primary" 
             onClick={onOpenSettings}
-            title="Profile & Settings"
-            style={{ padding: '6px 10px' }}
+            title="Personalization & Study Records"
+            style={{ padding: '6px 12px', fontSize: '0.85rem', display: 'flex', alignItems: 'center', gap: '6px' }}
           >
-            <Settings size={16} />
+            <span>{userProfile?.avatar || '🦉'}</span>
+            <span style={{ fontWeight: 700 }}>{userProfile?.name || 'Shreya'}</span>
           </button>
         </div>
 

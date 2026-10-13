@@ -6,19 +6,21 @@ import {
   BookOpen 
 } from 'lucide-react';
 import { playClick, playSuccessChime } from '../utils/audio';
+import { fireTaskConfetti } from '../utils/confetti';
 
 export default function UniversitySyncView({ 
   universityExamsData, 
   uniStatus, 
   onUpdateUniStatus 
 }) {
-  const handleToggle = (id) => {
-    playClick();
+  const handleToggle = (e, id) => {
     const curr = uniStatus[id] || { status: 'Not Started' };
     const nextStatus = curr.status === 'Done' ? 'Not Started' : 'Done';
     
     if (nextStatus === 'Done') {
-      playSuccessChime();
+      fireTaskConfetti(e);
+    } else {
+      playClick();
     }
 
     onUpdateUniStatus(id, { ...curr, status: nextStatus });
@@ -120,7 +122,7 @@ export default function UniversitySyncView({
                 <div style={{ display: 'flex', alignItems: 'flex-start', gap: '14px' }}>
                   <div 
                     className={`sketch-check ${isDone ? 'checked' : ''}`}
-                    onClick={() => handleToggle(item.id)}
+                    onClick={(e) => handleToggle(e, item.id)}
                     style={{ marginTop: '2px' }}
                   >
                     {isDone && <span>✓</span>}

@@ -19,6 +19,8 @@ import {
   AlertTriangle
 } from 'lucide-react';
 import { playBell, playSuccessChime, playClick, startAmbientSound, stopAmbientSound } from '../utils/audio';
+import { getDailyQuote, DAILY_MOTIVATIONAL_QUOTES } from '../data/quotes';
+import { fireTaskConfetti, fireFullDayConfetti } from '../utils/confetti';
 
 export default function TodayMission({ 
   currentDate, 
@@ -27,9 +29,9 @@ export default function TodayMission({
   mathsSchedule, 
   aptitudeSchedule, 
   dayStatus, 
-  onUpdateDayStatus,
-  onLogStudySession,
-  onOpenReschedule
+  onUpdateDayStatus, 
+  onLogStudySession, 
+  onOpenReschedule 
 }) {
   const currentMasterItem = masterSchedule.find(m => m.date === currentDate) || masterSchedule[0];
   const currentMathsItem = mathsSchedule.find(m => m.date === currentDate) || null;
@@ -42,6 +44,21 @@ export default function TodayMission({
     phase3: false,
     phase4: false,
     note: ''
+  };
+
+  // Motivational Quote State
+  const [quoteIdx, setQuoteIdx] = useState(0);
+  const [currentQuote, setCurrentQuote] = useState(() => getDailyQuote(currentDate));
+
+  useEffect(() => {
+    setCurrentQuote(getDailyQuote(currentDate));
+  }, [currentDate]);
+
+  const handleShuffleQuote = () => {
+    playClick();
+    const nextIdx = (quoteIdx + 1) % DAILY_MOTIVATIONAL_QUOTES.length;
+    setQuoteIdx(nextIdx);
+    setCurrentQuote(DAILY_MOTIVATIONAL_QUOTES[nextIdx]);
   };
 
   // Pomodoro State
@@ -110,27 +127,32 @@ export default function TodayMission({
   const gateExamDate = new Date('2027-02-06');
   const diffDays = (target) => Math.ceil((target - todayObj) / (1000 * 60 * 60 * 24));
 
-  const handleTogglePhase = (phaseKey) => {
-    playClick();
+  const handleTogglePhase = (e, phaseKey) => {
+    const nextVal = !currentStatus[phaseKey];
     const updated = {
       ...currentStatus,
-      [phaseKey]: !currentStatus[phaseKey]
+      [phaseKey]: nextVal
     };
     
     if (updated.phase1 && updated.phase2 && updated.phase3 && updated.phase4) {
       updated.status = 'Done';
-      try { confetti({ particleCount: 70, spread: 60 }); } catch (e) {}
-      playSuccessChime();
+      fireFullDayConfetti();
     } else if (updated.phase1 || updated.phase2 || updated.phase3 || updated.phase4) {
       updated.status = 'In Progress';
+      if (nextVal) {
+        fireTaskConfetti(e);
+      } else {
+        playClick();
+      }
     } else {
       updated.status = 'Not Started';
+      playClick();
     }
 
     onUpdateDayStatus(currentDate, updated);
   };
 
-  const handleMarkDayDone = () => {
+  const handleMarkDayDone = (e) => {
     const isAlreadyDone = currentStatus.status === 'Done';
     const updated = {
       ...currentStatus,
@@ -142,8 +164,7 @@ export default function TodayMission({
     };
 
     if (!isAlreadyDone) {
-      try { confetti({ particleCount: 90, spread: 70 }); } catch (e) {}
-      playSuccessChime();
+      fireFullDayConfetti();
     } else {
       playClick();
     }
@@ -293,13 +314,57 @@ export default function TodayMission({
         {/* Left Column: 4-Phase Hand-Drawn Daily Mission Cards */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
           
+          {/* Daily Motivational Quote Note */}
+          <div className="sketch-card" style={{ 
+            padding: '16px 20px', 
+            background: 'var(--highlight-yellow)', 
+            position: 'relative',
+            border: '2px solid var(--ink-border)'
+          }}>
+            <div className="tape-strip"></div>
+            <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: '12px' }}>
+              <div style={{ display: 'flex', alignItems: 'flex-start', gap: '10px' }}>
+                <span style={{ fontSize: '1.5rem' }}>📌</span>
+                <div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <span className="badge-sketch" style={{ background: '#FEF9C3', fontSize: '0.75rem', fontWeight: 700 }}>
+                      DAILY INSPIRATION • {currentQuote?.theme || 'Consistency'}
+                    </span>
+                  </div>
+                  <blockquote style={{ 
+                    margin: '8px 0 4px', 
+                    fontSize: '1.05rem', 
+                    fontStyle: 'italic', 
+                    fontWeight: 600, 
+                    color: '#1E293B',
+                    lineHeight: 1.45
+                  }}>
+                    "{currentQuote?.quote}"
+                  </blockquote>
+                  <div style={{ fontSize: '0.85rem', color: '#475569', fontWeight: 600 }}>
+                    — <span style={{ color: '#0F172A', fontWeight: 700 }}>{currentQuote?.author}</span> ({currentQuote?.role})
+                  </div>
+                </div>
+              </div>
+
+              <button 
+                className="btn-sketch"
+                onClick={handleShuffleQuote}
+                title="Shuffle Daily Motivation"
+                style={{ padding: '4px 8px', fontSize: '0.78rem', flexShrink: 0 }}
+              >
+                🔄 Shuffle
+              </button>
+            </div>
+          </div>
+
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
             <h2 className="font-title" style={{ fontSize: '1.35rem', margin: 0 }}>
               ✏️ Today's 4-Phase Study Mission
             </h2>
             <button 
               className={`btn-sketch ${currentStatus.status === 'Done' ? 'btn-sketch-green' : 'btn-sketch-primary'}`}
-              onClick={handleMarkDayDone}
+              onClick={(e) => handleMarkDayDone(e)}
             >
               <CheckCheck size={18} />
               {currentStatus.status === 'Done' ? 'Day Completed!' : 'Mark Day Completed'}
@@ -315,7 +380,7 @@ export default function TodayMission({
               <div style={{ display: 'flex', gap: '14px', alignItems: 'flex-start' }}>
                 <div 
                   className={`sketch-check ${currentStatus.phase1 ? 'checked' : ''}`}
-                  onClick={() => handleTogglePhase('phase1')}
+                  onClick={(e) => handleTogglePhase(e, 'phase1')}
                 >
                   {currentStatus.phase1 && <span>✓</span>}
                 </div>
@@ -377,7 +442,7 @@ export default function TodayMission({
               <div style={{ display: 'flex', gap: '14px', alignItems: 'flex-start' }}>
                 <div 
                   className={`sketch-check ${currentStatus.phase2 ? 'checked' : ''}`}
-                  onClick={() => handleTogglePhase('phase2')}
+                  onClick={(e) => handleTogglePhase(e, 'phase2')}
                 >
                   {currentStatus.phase2 && <span>✓</span>}
                 </div>
@@ -444,7 +509,7 @@ export default function TodayMission({
               <div style={{ display: 'flex', gap: '14px', alignItems: 'flex-start' }}>
                 <div 
                   className={`sketch-check ${currentStatus.phase3 ? 'checked' : ''}`}
-                  onClick={() => handleTogglePhase('phase3')}
+                  onClick={(e) => handleTogglePhase(e, 'phase3')}
                 >
                   {currentStatus.phase3 && <span>✓</span>}
                 </div>
@@ -492,7 +557,7 @@ export default function TodayMission({
               <div style={{ display: 'flex', gap: '14px', alignItems: 'flex-start' }}>
                 <div 
                   className={`sketch-check ${currentStatus.phase4 ? 'checked' : ''}`}
-                  onClick={() => handleTogglePhase('phase4')}
+                  onClick={(e) => handleTogglePhase(e, 'phase4')}
                 >
                   {currentStatus.phase4 && <span>✓</span>}
                 </div>
